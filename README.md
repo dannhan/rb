@@ -1,5 +1,6 @@
 # RIA BUSANA PROJECT
 
 ## TODO
-- [ ] Setup the auth
+- [x] Setup the auth
+- [ ] Can auth be fully server side?
 - [ ] Set up database (decide what service should i use)

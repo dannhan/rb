@@ -1,3 +1,5 @@
+"use client";
+
 import { signIn } from "next-auth/react";
 
 import { Label } from "@/components/ui/label";
@@ -8,8 +10,6 @@ import { Icons } from "@/components/icons";
 
 export function LoginForm() {
   const login = async (formData: FormData) => {
-    "use server";
-
     const password = formData.get("password");
      await signIn("credentials", {
       password,
