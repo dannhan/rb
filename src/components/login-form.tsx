@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { Label } from "@/components/ui/label";
@@ -7,20 +8,34 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { Icons } from "@/components/icons";
+import { LoginButton } from "./login-button";
 
 export function LoginForm() {
+  const router = useRouter();
+
+  // todo: make it server side?
   const login = async (formData: FormData) => {
     const password = formData.get("password");
-     await signIn("credentials", {
+    await signIn("credentials", {
       password,
       redirect: false,
-      callbackUrl: '/'
-    });
+      callbackUrl: "/",
+    })
+      .then((response) => {
+        if (response?.ok) {
+          router.push("/");
+          router.refresh();
+          return;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
-    <div className="space-y-2 mx-auto w-full max-w-md rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
-      <div className="text-center pb-2">
+    <div className="mx-auto w-full max-w-md space-y-2 rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
+      <div className="pb-2 text-center">
         <h2 className="text-2xl font-bold tracking-tight">Welcome back</h2>
         <p className="text-gray-500 dark:text-gray-400">
           Enter the password to continue.
@@ -42,7 +57,7 @@ export function LoginForm() {
 
           {/* Show Password Button */}
           <Button
-            className="absolute bottom-1 right-1 h-7 w-7 hidden"
+            className="absolute bottom-1 right-1 hidden h-7 w-7"
             size="icon"
             variant="ghost"
             type="button"
@@ -51,9 +66,8 @@ export function LoginForm() {
             <span className="sr-only">Toggle password visibility</span>
           </Button>
         </div>
-        <Button className="w-full" type="submit">
-          Sign in
-        </Button>
+
+        <LoginButton className="w-full" />
       </form>
     </div>
   );
