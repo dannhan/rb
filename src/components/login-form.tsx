@@ -1,38 +1,15 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { login } from "@/lib/actions";
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { Icons } from "@/components/icons";
-import { LoginButton } from "./login-button";
+import { LoginButton } from "@/components/login-button";
 
 export function LoginForm() {
-  const router = useRouter();
-
-  // todo: make it server side?
-  const login = async (formData: FormData) => {
-    const password = formData.get("password");
-    await signIn("credentials", {
-      password,
-      redirect: false,
-      callbackUrl: "/",
-    })
-      .then((response) => {
-        if (response?.ok) {
-          router.push("/");
-          router.refresh();
-          return;
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   return (
     <div className="mx-auto w-full max-w-md space-y-2 rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
       <div className="pb-2 text-center">

@@ -1,18 +1,14 @@
-import { getToken } from "next-auth/jwt";
-import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
 
-export default async function middleware(req: NextRequest) {
-  const token = await getToken({ req });
-  const isAuthenticated = !!token;
-
-  if (req.nextUrl.pathname === "/" && isAuthenticated) {
-    return NextResponse.redirect(new URL("/home", req.url));
+export default auth((req) => {
+  if (req.nextUrl.pathname === "/" && req.auth) {
+    return Response.redirect(new URL("/home", req.url));
   }
 
-  if (req.nextUrl.pathname.startsWith("/home") && !isAuthenticated) {
-    return NextResponse.redirect(new URL("/", req.url));
+  if (req.nextUrl.pathname.startsWith("/home") && !req.auth) {
+    return Response.redirect(new URL("/", req.url));
   }
-}
+});
 
 export const config = {
   matcher: ["/", "/home"],
