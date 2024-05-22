@@ -6,9 +6,10 @@
 - [x] Loading state on login
 - [x] Can auth be fully server side?
 
-- [ ] Better login and logout
+- [ ] Validation on login and logout
 - [ ] Set up database (decide what service should i use)
 - [ ] Integrate auth with firebase
+- [ ] Set good padding for sign out button
 
 
 - [x] middleware

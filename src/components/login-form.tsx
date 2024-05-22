@@ -1,5 +1,7 @@
 "use client";
 
+import { useFormState } from "react-dom";
+
 import { login } from "@/lib/actions";
 
 import { Label } from "@/components/ui/label";
@@ -7,19 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { Icons } from "@/components/icons";
-import { LoginButton } from "@/components/login-button";
+import { SubmitButton } from "@/components/submit-button";
 
 export function LoginForm() {
-  return (
-    <div className="mx-auto w-full max-w-md space-y-2 rounded-lg bg-white p-8 shadow-lg dark:bg-gray-800">
-      <div className="pb-2 text-center">
-        <h2 className="text-2xl font-bold tracking-tight">Welcome back</h2>
-        <p className="text-gray-500 dark:text-gray-400">
-          Enter the password to continue.
-        </p>
-      </div>
+  const [state, formAction] = useFormState(login, { message: "" });
 
-      <form className="space-y-4" action={login}>
+  return (
+      <form action={formAction} className="space-y-4">
         <div className="relative">
           <Label className="sr-only" htmlFor="password">
             Password
@@ -31,6 +27,7 @@ export function LoginForm() {
             type="password"
             required
           />
+          <p className="pt-1 text-destructive">{state.message}</p>
 
           {/* Show Password Button */}
           <Button
@@ -44,8 +41,9 @@ export function LoginForm() {
           </Button>
         </div>
 
-        <LoginButton className="w-full" />
+        <SubmitButton className="w-full">
+          Sign In
+        </SubmitButton>
       </form>
-    </div>
   );
 }

@@ -1,11 +1,10 @@
 import { logout } from "@/lib/actions";
+import { SubmitButton } from "@/components/submit-button";
 
-import { LogoutButton } from "@/components/logout-button";
-
-export function LogoutForm() {
+export function LogoutForm({ className }: { className?: string }) {
   return (
     <form action={logout}>
-      <LogoutButton />
+      <SubmitButton size="sm" className={className}>Sign Out</SubmitButton>
     </form>
   );
 }

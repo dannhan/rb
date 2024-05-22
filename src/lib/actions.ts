@@ -1,18 +1,26 @@
 "use server";
 
-import { signIn, signOut } from "@/auth";
 import { isRedirectError } from "next/dist/client/components/redirect";
+import { CredentialsSignin } from "next-auth";
+import { signIn, signOut } from "@/auth";
 
-export async function login(formData: FormData) {
+export async function login(_: any, formData: FormData) {
   try {
     const password = formData.get("password");
-    await signIn("credentials", { password, redirectTo: "/home" });
+    await signIn("credentials", { password, redirectTo: "/blocks" });
+
+    return { message: "" };
   } catch (error: any) {
     if (isRedirectError(error)) {
       throw error;
     }
 
-    console.log(error.message);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    if (error instanceof CredentialsSignin) {
+      return { message: "Incorrect password. Please try again." };
+    }
+    return { message: "Login failed" };
   }
 }
 
