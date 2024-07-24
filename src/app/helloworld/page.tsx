@@ -1,3 +1,5 @@
+/* development page for test fetching data */
+
 import { LogoutForm } from "@/components/logout-form";
 import { db } from "@/firebase/config";
 
