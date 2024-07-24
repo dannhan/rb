@@ -7,6 +7,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       credentials: {
         password: {},
       },
+
+      /* todo:
+       - implement proper auth using hash and salt and save the password to db
+       - read the docs to clarify, should it throw an error if the password is incorrect
+      */
       async authorize(credentials) {
         const { password } = credentials;
 

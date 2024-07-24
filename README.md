@@ -6,6 +6,9 @@
 - [x] Loading state on login
 - [x] Can auth be fully server side?
 
+- [ ] implementing dynamic route
+- [ ] implementing better redirect when login
+- [ ] change blocks url path
 - [ ] Validation on login and logout
 - [ ] Set up database (decide what service should i use)
 - [ ] Integrate auth with firebase
