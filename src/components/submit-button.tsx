@@ -2,8 +2,8 @@
 
 import { useFormStatus } from "react-dom";
 
-import { LoaderCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/icons";
 
 type Props = {
   size?: "default" | "sm" | "lg" | "icon" | null;
@@ -16,7 +16,9 @@ export function SubmitButton({ size, className, children }: Props) {
 
   return (
     <Button size={size} type="submit" disabled={pending} className={className}>
-      {pending && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+      {pending && (
+        <Icons.SpinnerIcon className="mr-2 h-4 w-4 animate-spin [animation-duration:1250ms]" />
+      )}
       {children}
     </Button>
   );
