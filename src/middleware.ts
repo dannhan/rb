@@ -7,7 +7,7 @@ import { auth } from "@/auth";
 
 export default auth((req) => {
   /* protecting resources for non-authenticated users */
-  if (!req.auth && req.nextUrl.pathname) {
+  if (!req.auth && req.nextUrl.pathname !== "/") {
     return Response.redirect(new URL("/", req.url));
   }
 
