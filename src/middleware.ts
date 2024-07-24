@@ -1,15 +1,22 @@
 import { auth } from "@/auth";
 
+/* todo: 
+  - consider using authorized callback in your auth.ts
+  - https://authjs.dev/getting-started/session-management/protecting 
+*/
+
 export default auth((req) => {
-  if (req.nextUrl.pathname === "/" && req.auth) {
-    return Response.redirect(new URL("/home", req.url));
+  /* protecting resources for non-authenticated users */
+  if (!req.auth && req.nextUrl.pathname) {
+    return Response.redirect(new URL("/", req.url));
   }
 
-  if (req.nextUrl.pathname.startsWith("/home") && !req.auth) {
-    return Response.redirect(new URL("/", req.url));
+  /* redirect authenticated users */
+  if (req.auth && req.nextUrl.pathname === "/") {
+    return Response.redirect(new URL("/blocks", req.url));
   }
 });
 
 export const config = {
-  matcher: ["/", "/home"],
-};
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+}
