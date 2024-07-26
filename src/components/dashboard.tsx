@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Sidebar } from "./blocks/sidebar";
-import { Header } from "./blocks/header";
+import { Sidebar } from "@/components/blocks/sidebar";
+import { Header } from "@/components/blocks/header";
 
-export function Dashboard() {
+export function Dashboard({ children }: { children?: React.ReactNode }) {
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <Sidebar />
@@ -15,17 +14,7 @@ export function Dashboard() {
             <h1 className="text-lg font-semibold md:text-2xl">Inventory</h1>
           </div> */}
 
-          <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
-            <div className="flex flex-col items-center gap-1 text-center">
-              <h3 className="text-2xl font-bold tracking-tight">
-                You have no products
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                You can start selling as soon as you add a product.
-              </p>
-              <Button className="mt-4">Add Product</Button>
-            </div>
-          </div>
+          {children}
         </main>
       </div>
     </div>
