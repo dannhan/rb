@@ -9,6 +9,8 @@ import {
   Users,
 } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -32,49 +34,49 @@ export function SidebarMobile() {
             <Package2 className="h-6 w-6" />
             <span className="sr-only">Acme Inc</span>
           </Link>
-          <Link
-            href="#"
-            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-          >
+          <SidebarMobileLink active>
             <Home className="h-5 w-5" />
             Dashboard
-          </Link>
-          <Link
-            href="#"
-            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
-          >
+          </SidebarMobileLink>
+          <SidebarMobileLink>
             <ShoppingCart className="h-5 w-5" />
             Orders
             <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
               6
             </Badge>
-          </Link>
-          <Link
-            href="#"
-            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-          >
+          </SidebarMobileLink>
+          <SidebarMobileLink>
             <Package className="h-5 w-5" />
             Products
-          </Link>
-          <Link
-            href="#"
-            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-          >
+          </SidebarMobileLink>
+          <SidebarMobileLink>
             <Users className="h-5 w-5" />
             Customers
-          </Link>
-          <Link
-            href="#"
-            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-          >
+          </SidebarMobileLink>
+          <SidebarMobileLink>
             <LineChart className="h-5 w-5" />
             Analytics
-          </Link>
+          </SidebarMobileLink>
         </nav>
+
         <div className="mt-auto">
           <LogoutForm className="w-full" />
         </div>
       </SheetContent>
     </Sheet>
+  );
+}
+
+function SidebarMobileLink({ children, active }: { children?: React.ReactNode, active?: boolean }) {
+  return (
+    <Link
+      href="#"
+      className={cn(
+        "mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground",
+        active && "bg-muted text-foreground"
+      )}
+    >
+      {children}
+    </Link>
   );
 }

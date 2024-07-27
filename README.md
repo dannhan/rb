@@ -6,6 +6,7 @@
 - [x] Loading state on login
 - [x] Can auth be fully server side?
 - [x] implementing dynamic route
+- [x] remove unused classes in sidebars-link component
 
 - [ ] make sidebar much more DRY
 - [ ] implementing better redirect when login
