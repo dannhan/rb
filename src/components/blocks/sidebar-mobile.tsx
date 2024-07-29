@@ -1,22 +1,21 @@
-import Link from "next/link";
-import {
-  Home,
-  LineChart,
-  Menu,
-  Package,
-  Package2,
-  ShoppingCart,
-  Users,
-} from "lucide-react";
+"use client";
 
+import Link from "next/link";
+import { useSelectedLayoutSegment } from "next/navigation";
+
+import { Menu, Package, Package2, ShoppingCart } from "lucide-react";
+import { SidebarItem } from "@/types";
 import { cn } from "@/lib/utils";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LogoutForm } from "@/components/logout-form";
+import { Icons } from "@/components/icons";
 
-export function SidebarMobile() {
+export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
+  const segment = useSelectedLayoutSegment();
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -34,29 +33,42 @@ export function SidebarMobile() {
             <Package2 className="h-6 w-6" />
             <span className="sr-only">Acme Inc</span>
           </Link>
-          <SidebarMobileLink active>
-            <Home className="h-5 w-5" />
-            Dashboard
-          </SidebarMobileLink>
-          <SidebarMobileLink>
+
+          {items?.map((item, index) => {
+            const Icon = Icons[item.icon || "arrowRight"];
+            return (
+              <Link
+                key={index}
+                href={item.href}
+                className={cn(
+                  "mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground",
+                  item.href.startsWith(`${segment}`) &&
+                    "bg-muted text-foreground",
+                )}
+              >
+                <Icon className="h-5 w-5" />
+                {item.title}
+              </Link>
+            );
+          })}
+
+          <Link
+            href="#"
+            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+          >
             <ShoppingCart className="h-5 w-5" />
             Orders
             <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
               6
             </Badge>
-          </SidebarMobileLink>
-          <SidebarMobileLink>
+          </Link>
+          <Link
+            href="#"
+            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
+          >
             <Package className="h-5 w-5" />
             Products
-          </SidebarMobileLink>
-          <SidebarMobileLink>
-            <Users className="h-5 w-5" />
-            Customers
-          </SidebarMobileLink>
-          <SidebarMobileLink>
-            <LineChart className="h-5 w-5" />
-            Analytics
-          </SidebarMobileLink>
+          </Link>
         </nav>
 
         <div className="mt-auto">
@@ -64,19 +76,5 @@ export function SidebarMobile() {
         </div>
       </SheetContent>
     </Sheet>
-  );
-}
-
-function SidebarMobileLink({ children, active }: { children?: React.ReactNode, active?: boolean }) {
-  return (
-    <Link
-      href="#"
-      className={cn(
-        "mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground",
-        active && "bg-muted text-foreground"
-      )}
-    >
-      {children}
-    </Link>
   );
 }

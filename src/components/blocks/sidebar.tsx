@@ -1,21 +1,20 @@
-import Link from "next/link";
-import {
-  Bell,
-  Home,
-  LineChart,
-  Package,
-  Package2,
-  ShoppingCart,
-  Users,
-} from "lucide-react";
+"use client";
 
+import Link from "next/link";
+import { useSelectedLayoutSegment } from "next/navigation";
+
+import { Bell, Package, Package2, ShoppingCart } from "lucide-react";
+import { SidebarItem } from "@/types";
 import { cn } from "@/lib/utils";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LogoutForm } from "@/components/logout-form";
+import { Icons } from "@/components/icons";
 
-export function Sidebar() {
+export function Sidebar({ items }: { items?: SidebarItem[] }) {
+  const segment = useSelectedLayoutSegment();
+
   return (
     <div className="hidden border-r bg-muted/40 md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
@@ -31,27 +30,41 @@ export function Sidebar() {
         </div>
         <div className="flex-1">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-            <SidebarLink active>
-              <Home className="h-4 w-4" />
-              Dashboard
-            </SidebarLink>
-            <SidebarLink>
+            {items?.map((item, index) => {
+              const Icon = Icons[item.icon || "arrowRight"];
+              return (
+                <Link
+                  key={index}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+                    item.href.startsWith(`${segment}`) &&
+                      "bg-muted text-primary",
+                  )}
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.title}
+                </Link>
+              );
+            })}
+
+            <Link
+              href="#"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+            >
               <ShoppingCart className="h-4 w-4" />
               Orders
-              <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">6</Badge>
-            </SidebarLink>
-            <SidebarLink>
+              <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
+                6
+              </Badge>
+            </Link>
+            <Link
+              href="#"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+            >
               <Package className="h-4 w-4" />
-              Products{" "}
-            </SidebarLink>
-            <SidebarLink>
-              <Users className="h-4 w-4" />
-              Customers
-            </SidebarLink>
-            <SidebarLink>
-              <LineChart className="h-4 w-4" />
-              Analytics
-            </SidebarLink>
+              Products
+            </Link>
           </nav>
         </div>
 
@@ -60,19 +73,5 @@ export function Sidebar() {
         </div>
       </div>
     </div>
-  );
-}
-
-function SidebarLink({ children, active }: { children?: React.ReactNode, active?: boolean }) {
-  return (
-    <Link
-      href="#"
-      className={cn(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
-        active && "bg-muted text-primary"
-      )}
-    >
-      {children}
-    </Link>
   );
 }
