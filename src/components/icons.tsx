@@ -1,7 +1,11 @@
+import { CalendarCheck2, Images, Users } from "lucide-react";
 import { HTMLAttributes } from "react";
 
 export const Icons = {
-  EyeIcon: (props: HTMLAttributes<SVGElement>) => (
+  users: Users,
+  images: Images,
+  calendar: CalendarCheck2,
+  eyeIcon: (props: HTMLAttributes<SVGElement>) => (
     <svg
       {...props}
       xmlns="http://www.w3.org/2000/svg"
@@ -18,7 +22,7 @@ export const Icons = {
       <circle cx="12" cy="12" r="3" />
     </svg>
   ),
-  SpinnerIcon: (props: HTMLAttributes<SVGElement>) => (
+  spinnerIcon: (props: HTMLAttributes<SVGElement>) => (
     <svg
       {...props}
       xmlns="http://www.w3.org/2000/svg"

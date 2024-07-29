@@ -36,7 +36,7 @@ export function LoginForm() {
           variant="ghost"
           type="button"
         >
-          <Icons.EyeIcon className="h-4 w-4" />
+          <Icons.eyeIcon className="h-4 w-4" />
           <span className="sr-only">Toggle password visibility</span>
         </Button>
       </div>

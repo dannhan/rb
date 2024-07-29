@@ -17,7 +17,7 @@ export function SubmitButton({ size, className, children }: Props) {
   return (
     <Button size={size} type="submit" disabled={pending} className={className}>
       {pending && (
-        <Icons.SpinnerIcon className="mr-2 h-4 w-4 animate-spin [animation-duration:1250ms]" />
+        <Icons.spinnerIcon className="mr-2 h-4 w-4 animate-spin [animation-duration:1250ms]" />
       )}
       {children}
     </Button>
