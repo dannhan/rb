@@ -12,17 +12,18 @@
 - [x] no importing config directly from component
 - [x] click sidebars-link on mobile should close the sheet
 - [x] is it possible to make the sidebar close after loading completed?
+- [x] change blocks url path
 
 ### High-Priority
 - [ ] set up database (decide what service should i use)
-- [ ] change blocks url path
 - [ ] integrate auth with firebase
 - [ ] implement proper auth for manager and admin
 
 ### Medium-Priority
-- [ ] change title placeholder for dashboard header (currently: inventory)
+- [x] change title placeholder for dashboard header
+- [x] make sidebar much more DRY
+- [ ] top loading bar
 - [ ] think about what should i put inside card content in home page
-- [ ] make sidebar much more DRY
 - [ ] implementing better redirect when login
 
 ### Low-Priority

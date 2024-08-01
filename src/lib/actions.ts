@@ -7,7 +7,7 @@ import { signIn, signOut } from "@/auth";
 export async function login(_: any, formData: FormData) {
   try {
     const password = formData.get("password");
-    await signIn("credentials", { password, redirectTo: "/blocks" });
+    await signIn("credentials", { password, redirectTo: "/home" });
 
     return { message: "" };
   } catch (error: any) {

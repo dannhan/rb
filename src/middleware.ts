@@ -13,7 +13,7 @@ export default auth((req) => {
 
   /* redirect authenticated users */
   if (req.auth && req.nextUrl.pathname === "/") {
-    return Response.redirect(new URL("/blocks", req.url));
+    return Response.redirect(new URL("/home", req.url));
   }
 });
 
