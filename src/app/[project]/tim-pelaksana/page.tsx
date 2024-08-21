@@ -1,15 +1,8 @@
-import { Metadata } from "next"
-
 import { getTasks } from "@/lib/mocks"
 
 import { columns } from "@/components/task-table/columns"
 import { DataTable } from "@/components/task-table/data-table"
 
-// TODO
-export const metadata: Metadata = {
-  title: "Tasks",
-  description: "A task and issue tracker.",
-}
 export default async function TaskPage() {
   const tasks = await getTasks()
 
