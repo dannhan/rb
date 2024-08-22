@@ -1,14 +1,14 @@
-// todo: optimize this page performance
-
 import { getProjects } from "@/lib/mocks";
 
 import { Separator } from "@/components/ui/separator";
 import { Header } from "@/components/blocks/header";
+import { ModeToggle } from "@/components/blocks/mode-toggle";
 import { ProjectCard } from "@/components/project-card";
 
 export default async function Page() {
   const projects = await getProjects();
 
+  // todo: optimize this
   const konstruksiProjects = projects.filter(
     (project) => project.type === "konstruksi",
   );
@@ -19,9 +19,13 @@ export default async function Page() {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Header>
-        <h1 className="w-full text-lg font-semibold md:text-xl">Ria Busana</h1>
+        {/* todo: populate this, create sign-out button or something */}
+        <div className="flex items-center w-full max-w-screen-xl">
+          <h1 className="w-full text-lg font-semibold md:text-xl">Ria Busana</h1>
+          <ModeToggle />
+        </div>
       </Header>
-      <main className="flex flex-1 flex-col items-center gap-4 p-4 md:p-8">
+      <main className="flex flex-1 flex-col items-center gap-4 p-4 lg:p-6">
         <h2 className="w-full max-w-screen-xl text-xl font-semibold">
           Konstruksi
         </h2>
