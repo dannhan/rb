@@ -1,16 +1,15 @@
-import { getTasks } from "@/lib/mocks"
+import { getTeam } from "@/lib/mocks";
+import { columns } from "@/components/team-table/columns";
+import { DataTable } from "@/components/team-table/data-table";
 
-import { columns } from "@/components/task-table/columns"
-import { DataTable } from "@/components/task-table/data-table"
-
-export default async function TaskPage() {
-  const tasks = await getTasks()
+export default async function Page() {
+  const team = await getTeam();
 
   return (
     <div>
-      <div className="hidden h-full flex-1 flex-col space-y-8 md:flex">
-        <DataTable data={tasks} columns={columns} />
+      <div className="flex h-full flex-1 flex-col space-y-8">
+        <DataTable data={team} columns={columns} />
       </div>
     </div>
-  )
+  );
 }

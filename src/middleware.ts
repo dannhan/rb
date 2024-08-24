@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 
 /* todo: 
   - consider using authorized callback in your auth.ts
-  - https://authjs.dev/getting-started/session-management/protecting 
+  - https://authjs.dev/getting-started/session-management/protecting
 */
 
 export default auth((req) => {

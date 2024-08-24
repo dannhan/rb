@@ -29,33 +29,6 @@ export const labels = [
 
 export const statuses = [
   {
-    value: "backlog",
-    label: "Backlog",
-    icon: CircleHelpIcon,
-  },
-  {
-    value: "todo",
-    label: "Todo",
-    icon: CircleIcon,
-  },
-  {
-    value: "in progress",
-    label: "In Progress",
-    icon: TimerIcon,
-  },
-  {
-    value: "done",
-    label: "Done",
-    icon: CheckCircleIcon,
-  },
-  {
-    value: "canceled",
-    label: "Canceled",
-    icon: CircleXIcon,
-  },
-
-  // todo
-  {
     value: "On Progress",
     label: "On Progress",
     icon: TimerIcon,
