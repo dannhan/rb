@@ -12,7 +12,7 @@ export default async function Page() {
   });
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gray-100 dark:bg-gray-900">
+    <main className="flex min-h-screen flex-col items-center justify-center">
       {data.map(({ id, value }) => (
         <p key={id}>
           {id} =&gt; {JSON.stringify(value)}

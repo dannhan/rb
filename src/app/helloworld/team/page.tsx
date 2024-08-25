@@ -2,10 +2,10 @@ import { Metadata } from "next";
 
 import { getTeam } from "@/lib/mocks";
 
-import { columns } from "./team-table/columns";
-import { DataTable } from "./team-table/data-table";
+import { columns } from "@/components/team-table/columns";
+import { DataTable } from "@/components/team-table/data-table";
 
-// TODO
+// todo: metadata
 export const metadata: Metadata = {
   title: "Tasks",
   description: "A task and issue tracker.",
