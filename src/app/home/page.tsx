@@ -18,35 +18,29 @@ export default async function Page() {
 
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <Header className="bg-backgroundk border-none">
-        {/* todo: populate this, create sign-out button or something */}
-        {/* <div className="flex items-center w-full max-w-screen-xl"> */}
-          <h1 className="w-full text-lg font-semibold md:text-xl">Ria Busana</h1>
-          {/* <ModeToggle /> */}
-        {/* </div> */}
+      <Header className="border-none bg-background">
+        <h1 className="w-full text-lg font-semibold md:text-xl">Ria Busana</h1>
       </Header>
-      <main className="flex flex-1 flex-col items-center gap-4 p-4 lg:p-6">
-        <h2 className="w-full max-w-screen-xl text-xl font-semibold">
-          Konstruksi
-        </h2>
-        <div className="grid w-full max-w-screen-xl gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-          <CreateProjectButton />
-          {konstruksiProjects.map((project, index) => (
-            <ProjectCard key={index} project={project} />
-          ))}
-        </div>
-
+      <main className="flex flex-1 flex-col items-center gap-4 px-4 pb-8 pt-4 lg:px-6 lg:pb-12 lg:pt-6">
+        <section className="flex max-h-56 w-full max-w-screen-xl flex-1 flex-col gap-4">
+          <h2 className="text-xl font-semibold">Konstruksi</h2>
+          <div className="grid flex-1 gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+            <CreateProjectButton />
+            {konstruksiProjects.map((project, index) => (
+              <ProjectCard key={index} project={project} />
+            ))}
+          </div>
+        </section>
         <Separator className="my-4 w-full max-w-screen-xl" />
-
-        <h2 className="w-full max-w-screen-xl text-xl font-semibold">
-          Renovasi
-        </h2>
-        <div className="grid w-full max-w-screen-xl gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-          <CreateProjectButton />
-          {renovasiProjects.map((project, index) => (
-            <ProjectCard key={index} project={project} />
-          ))}
-        </div>
+        <section className="flex max-h-56 w-full max-w-screen-xl flex-1 flex-col gap-4">
+          <h2 className="text-xl font-semibold">Renovasi</h2>
+          <div className="grid flex-1 gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+            <CreateProjectButton />
+            {renovasiProjects.map((project, index) => (
+              <ProjectCard key={index} project={project} />
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );
