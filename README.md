@@ -27,6 +27,7 @@
 #### Medium-Priority
 - [x] change title placeholder for dashboard header
 - [x] make sidebar much more DRY
+- [ ] change colors to blue-ish and add some 3d figures
 - [ ] create breadcrumbs for navigation in the header
 - [ ] add correct metadata for every page
 - [ ] top loading bar

@@ -12,9 +12,9 @@ type ProjectCardProps = {
 export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Link href={`${project.slug}/tim-pelaksana`} className="rounded-lg">
-      <Card className="h-full hover:bg-muted/25">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-0">
-          <CardTitle className="text-xl font-medium">{project.title}</CardTitle>
+      <Card className="h-20 md:h-full border-none shadow-[0px_1px_2px_.75px_#00000024] transition-colors hover:bg-accent/75 dark:bg-accent/25 dark:hover:bg-accent/40">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 p-4 lg:p-6">
+          <CardTitle className="text-base lg:text-xl font-medium">{project.title}</CardTitle>
         </CardHeader>
         {/* <CardContent>
           <p className="text-sm font-medium text-muted-foreground">
