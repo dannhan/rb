@@ -1,6 +1,6 @@
 /* development page for test fetching data */
 
-import { LogoutForm } from "@/components/logout-form";
+import { CreateProjectForm } from "@/components/create-project-form";
 import { db } from "@/firebase/config";
 
 export default async function Page() {
@@ -18,7 +18,7 @@ export default async function Page() {
           {id} =&gt; {JSON.stringify(value)}
         </p>
       ))}
-      <LogoutForm />
+      <CreateProjectForm />
     </main>
   );
 }
