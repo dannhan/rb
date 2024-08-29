@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 
 import { Slash } from "lucide-react";
@@ -31,9 +32,12 @@ export function BreadcrumbNav({ projectTitle }: Props) {
     <Breadcrumb className="hidden flex-1 md:flex">
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="/" className="text-base">
+          <Link
+            href="/home"
+            className="text-base transition-colors hover:text-foreground"
+          >
             Home
-          </BreadcrumbLink>
+          </Link>
         </BreadcrumbItem>
         <BreadcrumbSeparator>
           <Slash />

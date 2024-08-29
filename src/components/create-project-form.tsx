@@ -1,12 +1,14 @@
 "use client";
 
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
+import { useRouter, usePathname } from "next/navigation";
 
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { projectSchema } from "@/config/schema";
 
+import NProgress from "nprogress";
 import { toast } from "sonner";
 import { createProjectAction } from "@/lib/actions";
 
@@ -36,6 +38,12 @@ type CreateProjectFormProps = {
 export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
   const [isPending, startTransition] = useTransition();
 
+  const router = useRouter();
+  const pathname = usePathname();
+  useEffect(() => {
+    NProgress.done();
+  }, [pathname]);
+
   const formSchema = projectSchema.omit({ slug: true });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -56,7 +64,9 @@ export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
       if (res.errors) {
         toast.error(res.message);
       } else {
-        toast.success(res.message);
+        toast.success(res.message, { duration: 5000 });
+        NProgress.start();
+        router.push(`${res.slug}/tim-pelaksana`);
       }
     });
   };
