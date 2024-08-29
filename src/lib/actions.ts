@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { CredentialsSignin } from "next-auth";
 import { signIn, signOut } from "@/auth";
@@ -46,6 +47,7 @@ export async function createProjectAction(data: FormData) {
   }
 
   await postProjectFirebase(parsed.data);
+  revalidatePath("/home");
 
   return { message: "Project has been created.", slug: parsed.data.slug };
 }
