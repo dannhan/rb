@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { projectSchema } from "@/config/schema";
 
+import { toast } from "sonner";
 import { createProjectAction } from "@/lib/actions";
 
 import { Input } from "@/components/ui/input";
@@ -51,6 +52,12 @@ export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
       formData.append("type", values.type);
 
       const res = await createProjectAction(formData);
+
+      if (res.errors) {
+        toast.error(res.message);
+      } else {
+        toast.success(res.message);
+      }
     });
   };
 
