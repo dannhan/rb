@@ -25,7 +25,7 @@ export default async function Page() {
         <section className="flex w-full max-w-screen-xl flex-1 flex-col gap-4 md:max-h-56">
           <h2 className="text-xl font-semibold">Konstruksi</h2>
           <div className="grid flex-1 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-            <CreateProjectSheet />
+            <CreateProjectSheet defaultType="konstruksi" />
             {konstruksiProjects.map((project, index) => (
               <ProjectCard key={index} project={project} />
             ))}
@@ -35,7 +35,7 @@ export default async function Page() {
         <section className="flex w-full max-w-screen-xl flex-1 flex-col gap-4 md:max-h-56">
           <h2 className="text-xl font-semibold">Renovasi</h2>
           <div className="grid flex-1 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-            <CreateProjectSheet />
+            <CreateProjectSheet defaultType="renovasi" />
             {renovasiProjects.map((project, index) => (
               <ProjectCard key={index} project={project} />
             ))}
