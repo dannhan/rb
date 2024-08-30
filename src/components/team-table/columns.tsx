@@ -4,10 +4,10 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { Team } from "@/types";
 
+import { teamTableConfig } from "@/config/table";
+
 import { Checkbox } from "@/components/ui/checkbox";
-
-import { labels, statuses, priorities } from "@/data";
-
+import { Icons } from "@/components/icons";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 
@@ -94,7 +94,7 @@ export const columns: ColumnDef<Team>[] = [
       <DataTableColumnHeader column={column} title="Status" />
     ),
     cell: ({ row }) => {
-      const status = statuses.find(
+      const status = teamTableConfig.statuses.find(
         (status) => status.value === row.getValue("status"),
       );
 
@@ -102,10 +102,11 @@ export const columns: ColumnDef<Team>[] = [
         return null;
       }
 
+      const Icon = Icons[status.icon || "circle"];
       return (
         <div className="flex max-w-[120px] items-center">
           {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+            <Icon className="mr-2 h-4 w-4 text-muted-foreground" />
           )}
           <span>{status.label}</span>
         </div>

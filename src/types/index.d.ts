@@ -13,6 +13,14 @@ export type ProjectConfig = {
   sidebarItems: SidebarItem[];
 };
 
+export type TeamTableConfig = {
+  statuses: {
+    value: string;
+    label: string;
+    icon: keyof typeof Icons;
+  }[];
+};
+
 export type Task = z.infer<typeof taskSchema>;
 
 export type Project = z.infer<typeof projectSchema>;

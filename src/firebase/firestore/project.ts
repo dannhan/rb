@@ -1,6 +1,6 @@
 // todo: think about the purpose of this file
 
-import { db } from "@/firebase/config";
+import { db } from "@/firebase/init";
 
 import { z } from "zod";
 import { projectSchema } from "@/config/schema";

@@ -3,11 +3,11 @@
 import { XIcon } from "lucide-react";
 import { Table } from "@tanstack/react-table";
 
+import { teamTableConfig } from "@/config/table";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
-
-import { statuses,} from "@/data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {
@@ -34,7 +34,7 @@ export function DataTableToolbar<TData>({
           <DataTableFacetedFilter
             column={table.getColumn("status")}
             title="Status"
-            options={statuses}
+            options={teamTableConfig.statuses}
           />
         )}
         {isFiltered && (

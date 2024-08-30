@@ -1,10 +1,13 @@
-import { CalendarCheck2, Images, Users } from "lucide-react";
+import { CalendarCheck2, Images, Users, Timer, CheckCircle, Circle } from "lucide-react";
 import { HTMLAttributes } from "react";
 
 export const Icons = {
+  circle: Circle,
   users: Users,
   images: Images,
   calendar: CalendarCheck2,
+  timer: Timer,
+  "check-circle": CheckCircle,
   eyeIcon: (props: HTMLAttributes<SVGElement>) => (
     <svg
       {...props}
