@@ -82,11 +82,11 @@ export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
           control={form.control}
           name="type"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="hidden">Tipe Proyek</FormLabel>
+            <FormItem className="space-y-1">
+              <FormLabel className="text-muted-foreground text-xs font-normal">Choose a project type</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
-                  <SelectTrigger className="rounded-sm border-2 text-lg">
+                  <SelectTrigger className="rounded-sm border-2 text-lg mt-0 px-2">
                     <SelectValue placeholder="Select project type" />
                   </SelectTrigger>
                 </FormControl>
@@ -103,12 +103,12 @@ export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
           control={form.control}
           name="title"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="hidden">Nama Proyek</FormLabel>
+            <FormItem className="space-y-1">
+              <FormLabel className="text-muted-foreground text-xs font-normal">Project Name</FormLabel>
               <FormControl>
                 <Input
                   placeholder="Enter the project name"
-                  className="col-span-3 rounded-none border-0 border-b-2 text-xl focus-visible:ring-offset-0"
+                  className="col-span-3 rounded-none border-0 border-b-2 text-2xl focus-visible:ring-offset-0 px-1"
                   {...field}
                 />
               </FormControl>
