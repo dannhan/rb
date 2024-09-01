@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { cn } from "@/lib/utils";
 import { Plus, X } from "lucide-react";
 import {
   Sheet,
@@ -26,7 +27,11 @@ export function CreateProjectSheet({ defaultType }: CreateProjectSheetProps) {
       <SheetTrigger asChild>
         <Button
           variant="ghost"
-          className="flex h-full gap-2 rounded-lg bg-background p-4 shadow-[0px_1px_2px_.75px_#00000024] transition-colors hover:bg-accent/75 dark:bg-accent/25 dark:hover:bg-accent/40 lg:flex-col lg:p-8"
+          className={cn(
+            "flex flex-row gap-2 rounded-lg border-none p-4 md:h-full lg:flex-col lg:gap-0",
+            "bg-card text-primary shadow-[0px_1px_2px_.75px_#00000024] transition-colors",
+            "hover:bg-accent hover:text-primary",
+          )}
         >
           <Plus className="h-5 w-5 lg:h-8 lg:w-8" />
           <span className="text-base lg:text-lg lg:font-semibold">

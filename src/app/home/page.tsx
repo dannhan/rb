@@ -2,8 +2,9 @@ import { getProjectsFirebase } from "@/firebase/firestore/project";
 
 import { Separator } from "@/components/ui/separator";
 import { Header } from "@/components/blocks/header";
-import { CreateProjectSheet } from "@/components/create-project-sheet";
-import { ProjectCard } from "@/components/project-card";
+import { ModeToggle } from "@/components/blocks/mode-toggle";
+import { ProjectListCommandDialog } from "@/components/project-list-command-dialog";
+import { ProjectCardsList } from "@/components/project-cards-list";
 
 export default async function Page() {
   const projects = await getProjectsFirebase();
@@ -17,30 +18,22 @@ export default async function Page() {
   );
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-accent/10 dark:bg-background">
-      <Header className="border-none bg-transparent">
-        <h1 className="w-full text-2xl font-semibold md:text-xl">Ria Busana</h1>
+    <div className="flex min-h-screen w-full flex-col">
+      {/* todo: <div className="absolute top-0 -z-10 h-screen w-screen bg-background bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,theme(colors.accent.DEFAULT),theme(colors.background))]"></div> */}
+      <Header className="border-none bg-background text-muted-foreground shadow-md">
+        <h1 className="text-lg font-semibold md:text-xl">Ria Busana</h1>
+        <div className="flex items-center gap-2">
+          <ProjectListCommandDialog
+            konstruksiProjects={konstruksiProjects || []}
+            renovasiProjects={renovasiProjects || []}
+          />
+          <ModeToggle />
+        </div>
       </Header>
-      <main className="flex flex-1 flex-col items-center gap-4 px-4 pb-8 pt-4 lg:px-6 lg:pb-12 lg:pt-6">
-        <section className="flex w-full max-w-screen-xl flex-1 flex-col gap-4 md:max-h-56">
-          <h2 className="text-lg font-medium">Konstruksi</h2>
-          <div className="grid flex-1 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-            <CreateProjectSheet defaultType="konstruksi" />
-            {konstruksiProjects.map((project, index) => (
-              <ProjectCard key={index} project={project} />
-            ))}
-          </div>
-        </section>
-        <Separator className="my-4 w-full max-w-screen-xl" />
-        <section className="flex w-full max-w-screen-xl flex-1 flex-col gap-4 md:max-h-56">
-          <h2 className="text-lg font-medium">Renovasi</h2>
-          <div className="grid flex-1 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
-            <CreateProjectSheet defaultType="renovasi" />
-            {renovasiProjects.map((project, index) => (
-              <ProjectCard key={index} project={project} />
-            ))}
-          </div>
-        </section>
+      <main className="flex flex-1 flex-col items-center gap-4 p-4 lg:p-6 lg:pb-10">
+        <ProjectCardsList projects={konstruksiProjects} type="konstruksi" />
+        <Separator className="my-2 w-full max-w-screen-lg 2xl:max-w-screen-xl" />
+        <ProjectCardsList projects={renovasiProjects} type="renovasi" />
       </main>
     </div>
   );

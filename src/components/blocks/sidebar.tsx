@@ -16,9 +16,9 @@ export function Sidebar({ items }: { items?: SidebarItem[] }) {
   const segment = useSelectedLayoutSegment();
 
   return (
-    <div className="hidden w-[220px] border-r bg-muted/40 md:block lg:w-[280px]">
+    <div className="hidden w-[220px] border-r bg-surface md:block lg:w-[280px]">
       <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+        <div className="flex h-14 items-center border-b px-4 lg:h-14 lg:px-6">
           <Link href="/" className="flex items-center gap-2 font-semibold">
             <Package2 className="h-6 w-6" />
             <span className="">Acme Inc</span>

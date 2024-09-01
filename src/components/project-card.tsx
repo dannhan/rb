@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 type ProjectCardProps = {
@@ -12,15 +13,17 @@ type ProjectCardProps = {
 export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Link href={`${project.slug}/tim-pelaksana`} className="rounded-lg">
-      <Card className="h-20 md:h-full border-none shadow-[0px_1px_2px_.75px_#00000024] transition-colors hover:bg-accent/75 dark:bg-accent/25 dark:hover:bg-accent/40">
+      <Card
+        className={cn(
+          "h-20 border-none md:h-full",
+          "shadow-[0px_1px_2px_.75px_#00000024] transition-colors hover:bg-accent",
+        )}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 p-4 lg:p-6">
-          <CardTitle className="text-base lg:text-xl font-medium">{project.title}</CardTitle>
+          <CardTitle className="text-base font-medium lg:text-lg">
+            {project.title}
+          </CardTitle>
         </CardHeader>
-        {/* <CardContent>
-          <p className="text-sm font-medium text-muted-foreground">
-            pemilihan-omega
-          </p>
-        </CardContent> */}
       </Card>
     </Link>
   );
