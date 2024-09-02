@@ -15,7 +15,7 @@ export const projectSchema = z.object({
 });
 
 export const teamSchema = z.object({
-  id: z.number(),
+  no: z.number(),
   pekerjaan: z.string(),
   spk: z.string(),
   pelaksana: z.string(),

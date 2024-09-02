@@ -35,11 +35,11 @@ export const columns: ColumnDef<Team>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "id",
+    accessorKey: "no",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="No." />
     ),
-    cell: ({ row }) => <div className="w-[40px]">{row.getValue("id")}</div>,
+    cell: ({ row }) => <div className="w-[40px]">{row.getValue("no")}</div>,
     enableSorting: true,
     enableHiding: false,
   },
