@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { getProjectsFirebase } from "@/firebase/firestore/project";
-import { getProjects } from "@/lib/mocks";
+import { getProjectBySlugFirebase } from "@/firebase/firestore/project";
 
 import { projectConfig } from "@/config/project";
 import { Dashboard } from "@/components/dashboard";
@@ -12,8 +11,7 @@ type Props = {
 };
 
 export default async function Layout({ children, params }: Props) {
-  const projects = await getProjectsFirebase();
-  const project = projects.find((project) => project.slug === params.project);
+  const project = await getProjectBySlugFirebase(params.project);
 
   if (!project) return notFound();
 

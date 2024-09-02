@@ -1,4 +1,4 @@
-import { getProjectsFirebase } from "@/firebase/firestore/project";
+import { getProjectsByTypeFirebase } from "@/firebase/firestore/project";
 
 import { Separator } from "@/components/ui/separator";
 import { Header } from "@/components/blocks/header";
@@ -7,15 +7,10 @@ import { ProjectListCommandDialog } from "@/components/project-list-command-dial
 import { ProjectCardsList } from "@/components/project-cards-list";
 
 export default async function Page() {
-  const projects = await getProjectsFirebase();
-
-  // todo: optimize this
-  const konstruksiProjects = projects.filter(
-    (project) => project.type === "konstruksi",
-  );
-  const renovasiProjects = projects.filter(
-    (project) => project.type === "renovasi",
-  );
+  const [konstruksiProjects, renovasiProjects] = await Promise.all([
+    getProjectsByTypeFirebase("konstruksi"),
+    getProjectsByTypeFirebase("renovasi"),
+  ]);
 
   return (
     <div className="flex min-h-screen w-full flex-col">

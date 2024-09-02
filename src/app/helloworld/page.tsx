@@ -1,7 +1,7 @@
 /* development page for test fetching data */
 
 import { CreateProjectForm } from "@/components/create-project-form";
-import { db } from "@/firebase/config";
+import { db } from "@/firebase/init";
 
 export default async function Page() {
   const snapshot = await db.collection("projects").get();
