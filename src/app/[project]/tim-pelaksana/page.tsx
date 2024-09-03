@@ -1,9 +1,13 @@
-import { getTeam } from "@/lib/mocks";
+import { getTeamBySlugFirebase } from "@/firebase/firestore/team";
 import { columns } from "@/components/team-table/columns";
 import { DataTable } from "@/components/team-table/data-table";
 
-export default async function Page() {
-  const team = await getTeam();
+type Props = {
+  params: { project: string };
+};
+
+export default async function Page({ params }: Props) {
+  const team = await getTeamBySlugFirebase(params.project);
 
   return (
     <div>
