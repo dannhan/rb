@@ -9,10 +9,9 @@ export const taskSchema = z.object({
 });
 
 export const projectSchema = z.object({
-  id: z.string(),
+  slug: z.string().trim(),
   title: z.string().trim().min(1, { message: "Project name is required" }),
   type: z.string().trim().min(1, { message: "Project type is required" }),
-  slug: z.string().trim(),
 });
 
 export const projectFormSchema = z.object({
