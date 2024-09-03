@@ -43,7 +43,7 @@ export async function createProjectAction(data: FormData) {
   const parsed = projectSchema.safeParse(formData);
 
   if (!parsed.success) {
-    return { message: "An error occured", errors: parsed.error };
+    return { message: "An error occured", errors: "Invalid type." };
   }
 
   await postProjectFirebase(parsed.data);
