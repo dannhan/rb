@@ -15,27 +15,30 @@
 - [x] change blocks url path
 
 #### High-Priority
-- [ ] fix the tim-pelaksana module
+- [x] `getProjects()` 
+- [x] `getTasks()`
 
+- [ ] fix the tim-pelaksana module
 - [ ] refactor data table, schema, mocks and other stuff related to it
 - [ ] set up database (decide what service should i use)
 - [ ] integrate auth with firebase
 - [ ] implement proper auth for manager and admin
-- [ ] `getProjects()` 
-- [ ] `getTasks()`
 
 #### Medium-Priority
 - [x] change title placeholder for dashboard header
 - [x] make sidebar much more DRY
+- [x] top loading bar
+
+- [ ] sentry
 - [ ] change colors to blue-ish and add some 3d figures
 - [ ] create breadcrumbs for navigation in the header
 - [ ] add correct metadata for every page
-- [ ] top loading bar
 - [ ] think about what should i put inside card content in home page
 - [ ] implementing better redirect when login
 - [ ] add a bar image ???
 
 #### Low-Priority
+- [ ] maybe think about adding checkmark on project list command so the user can see which project is fully completed
 - [ ] why importing types using "@/types" instead of just "types"
 - [ ] set good padding for sign out button
 - [ ] create default variable in config for tim-pelaksana route

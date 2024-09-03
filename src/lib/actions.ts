@@ -66,10 +66,8 @@ export async function createTeamAction(slug: string, team: FormData) {
     return { message: "Invalid data type.", errors: "Invalid type." };
   }
 
-  console.log({ slug, ...parsed.data });
-
   try {
-    const length = await getTeamLengthBySlugFirebase(slug) + 1;
+    const length = await getTeamLengthBySlugFirebase(slug);
 
     await postTeamFirebase(slug, { no: length + 1, ...parsed.data });
     return { message: "New data has been added." };
