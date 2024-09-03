@@ -6,7 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { projectSchema } from "@/config/schema";
+import { projectFormSchema } from "@/config/schema";
 
 import NProgress from "nprogress";
 import { toast } from "sonner";
@@ -44,16 +44,15 @@ export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
     NProgress.done();
   }, [pathname]);
 
-  const formSchema = projectSchema.omit({ slug: true });
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof projectFormSchema>>({
+    resolver: zodResolver(projectFormSchema),
     defaultValues: {
       title: "",
       type: defaultType || "",
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof projectFormSchema>) => {
     startTransition(async () => {
       const formData = new FormData();
       formData.append("title", values.title);

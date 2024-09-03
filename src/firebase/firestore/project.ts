@@ -15,7 +15,10 @@ export async function getProjectsByTypeFirebase(
     const data: FirebaseFirestore.DocumentData[] = [];
 
     snapshot.forEach((doc) => {
-      data.push(doc.data());
+      data.push({
+        id: doc.id,
+        ...doc.data(),
+      });
     });
     return z.array(projectSchema).parse(data);
   } catch (error) {
@@ -39,6 +42,8 @@ export async function getProjectBySlugFirebase(
     }
 
     const projectData = snapshot.docs[0].data();
+    projectData.id = snapshot.docs[0].id;
+
     return projectSchema.parse(projectData);
   } catch (error) {
     console.error("Error fetching project", error);
