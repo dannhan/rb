@@ -47,11 +47,7 @@ export async function postProjectFirebase({
   title,
   type,
   slug,
-}: {
-  title: string;
-  type: string;
-  slug: string;
-}) {
+}: Project): Promise<FirebaseFirestore.WriteResult> {
   // todo: erorr handling
   const res = await db.collection("projects").doc(slug).set({ title, type });
   return res;
