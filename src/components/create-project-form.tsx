@@ -61,7 +61,7 @@ export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
       const res = await createProjectAction(formData);
 
       if (res.errors) {
-        toast.error(res.message);
+        toast.error(res.message, { duration: 5000 });
       } else {
         toast.success(res.message, { duration: 5000 });
         NProgress.start();

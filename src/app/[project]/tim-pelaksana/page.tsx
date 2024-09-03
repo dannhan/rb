@@ -12,7 +12,7 @@ export default async function Page({ params }: Props) {
   return (
     <div>
       <div className="flex h-full flex-1 flex-col space-y-8">
-        <DataTable data={team} columns={columns} />
+        <DataTable data={team} columns={columns} slug={params.project} />
       </div>
     </div>
   );

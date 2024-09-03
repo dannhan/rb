@@ -7,15 +7,18 @@ import { teamTableConfig } from "@/config/table";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CreateTeamDialog } from "@/components/create-team-dialog";
 import { DataTableViewOptions } from "./data-table-view-options";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  slug: string;
 }
 
 export function DataTableToolbar<TData>({
   table,
+  slug,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
@@ -24,7 +27,9 @@ export function DataTableToolbar<TData>({
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder="Cari Pelaksana..."
-          value={(table.getColumn("pelaksana")?.getFilterValue() as string) ?? ""}
+          value={
+            (table.getColumn("pelaksana")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
             table.getColumn("pelaksana")?.setFilterValue(event.target.value)
           }
@@ -48,6 +53,7 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
+      <CreateTeamDialog slug={slug} />
       <DataTableViewOptions table={table} />
     </div>
   );

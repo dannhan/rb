@@ -26,3 +26,10 @@ export const teamSchema = z.object({
   pelaksana: z.string(),
   status: z.string(),
 });
+
+export const teamFormSchema = z.object({
+  pekerjaan: z.string().trim().min(1, { message: "Pekerjaan is required" }),
+  spk: z.string().trim().min(1, { message: "SPK is required" }),
+  pelaksana: z.string().trim().min(1, { message: "Pelaksana name is required" }),
+  status: z.string().trim().min(1, { message: "Status name is required" }),
+});
