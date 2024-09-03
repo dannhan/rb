@@ -5,7 +5,7 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { CredentialsSignin } from "next-auth";
 import { signIn, signOut } from "@/auth";
 
-import { projectSchema } from "@/config/schema";
+import { projectFormSchema } from "@/config/schema";
 import { postProjectFirebase } from "@/firebase/firestore/project";
 
 export async function login(_: any, formData: FormData) {
@@ -34,20 +34,20 @@ export async function logout(_: FormData) {
 
 // todo: add more error handling, invalid data, server error, etc.
 export async function createProjectAction(data: FormData) {
-  data.append(
-    "slug",
-    encodeURI((data.get("title") as string).split(" ").join("-").toLowerCase()),
-  );
-
   const formData = Object.fromEntries(data);
-  const parsed = projectSchema.safeParse(formData);
+  const parsed = projectFormSchema.safeParse(formData);
 
   if (!parsed.success) {
     return { message: "An error occured", errors: "Invalid type." };
   }
 
-  await postProjectFirebase(parsed.data);
+  const slug = encodeURI(parsed.data.title.split(" ").join("-").toLowerCase())
+
+  await postProjectFirebase({
+    slug,
+    ...parsed.data,
+  });
   revalidatePath("/home");
 
-  return { message: "Project has been created.", slug: parsed.data.slug };
+  return { message: "Project has been created.", slug };
 }
