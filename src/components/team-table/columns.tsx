@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Icons } from "@/components/icons";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
+import { Badge } from "../ui/badge";
 
 export const columns: ColumnDef<Team>[] = [
   {
@@ -104,11 +105,11 @@ export const columns: ColumnDef<Team>[] = [
 
       const Icon = Icons[status.icon || "circle"];
       return (
-        <div className="flex max-w-[120px] items-center">
-          {status.icon && (
-            <Icon className="mr-2 h-4 w-4 text-muted-foreground" />
-          )}
-          <span>{status.label}</span>
+        <div className="flex min-w-[120px] items-center">
+          <Badge variant={status.value === "Finish" ? "default" : "secondary"}>
+            {status.icon && <Icon className="mr-2 h-3 w-3" />}
+            <span>{status.label}</span>
+          </Badge>
         </div>
       );
     },

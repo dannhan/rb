@@ -14,7 +14,6 @@ export default function Page() {
       <FileUploader
         maxFileCount={4}
         maxSize={4 * 1024 * 1024}
-        disabled={true}
         // progresses={progresses}
         // onUpload={onUpload}
         // disabled={isUploading}

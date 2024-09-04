@@ -16,7 +16,7 @@ export async function ProjectCardsList({ projects, type }: Props) {
   return (
     <section className="flex w-full max-w-screen-lg flex-1 flex-col gap-4 md:max-h-56 lg:max-h-64 xl:max-h-72 2xl:max-w-screen-xl">
       <h2 className="text-lg font-medium capitalize">{type}</h2>
-      <div className="grid flex-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid flex-1 gap-2 md:grid-cols-2 md:gap-4 lg:grid-cols-4">
         <CreateProjectSheet defaultType={type} />
         {displayedProjects.map((project, index) => (
           <ProjectCard key={index} project={project} />

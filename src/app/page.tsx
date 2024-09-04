@@ -9,8 +9,8 @@ import {
 
 export default function Page() {
   return (
-    <main className="flex h-dvh items-center justify-center">
-      <Card className="mx-auto w-full max-w-md border-none dark:border sm:shadow-lg">
+    <main className="flex h-svh items-center justify-center">
+      <Card className="mx-auto w-full max-w-md border-none bg-background shadow-none dark:border sm:bg-card sm:shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="font-bold tracking-tight">
             Welcome back
