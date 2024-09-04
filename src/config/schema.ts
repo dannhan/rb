@@ -33,3 +33,12 @@ export const teamFormSchema = z.object({
   pelaksana: z.string().trim().min(1, { message: "Pelaksana name is required" }),
   status: z.string().trim().min(1, { message: "Status name is required" }),
 });
+
+export const designImageSchema = z.object({
+  no: z.number(),
+  url: z.string(),
+})
+
+export const designImageFormSchema = z.object({
+  urls: z.array(z.string()).min(1, { message: "At least one image is required" }),
+})

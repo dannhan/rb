@@ -5,10 +5,11 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { CredentialsSignin } from "next-auth";
 import { signIn, signOut } from "@/auth";
 
-import { projectFormSchema, teamFormSchema } from "@/config/schema";
+import { designImageFormSchema, projectFormSchema, teamFormSchema } from "@/config/schema";
 
 import { postProjectFirebase } from "@/firebase/firestore/project";
 import { getTeamLengthBySlugFirebase, postTeamFirebase } from "@/firebase/firestore/team";
+import { postDesignImageUrlFirebase } from "@/firebase/firestore/design-image";
 
 export async function login(_: any, formData: FormData) {
   try {
@@ -73,6 +74,28 @@ export async function createTeamAction(slug: string, team: FormData) {
     return { message: "New data has been added." };
   } catch (error) {
     console.error("Error creating team:", error);
+    return { message: "An error occured", errors: error };
+  }
+}
+
+export async function postDesignImagesAction(slug: string, designImages: FormData) {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  const formData = Object.fromEntries(designImages);
+  const parsed = designImageFormSchema.safeParse(formData);
+
+  if (!parsed.success) {
+    return { message: "Invalid data type.", errors: "Invalid type." };
+  }
+
+  try {
+    await Promise.all(
+      parsed.data.urls.map((url) => postDesignImageUrlFirebase(slug, url))
+    );
+
+    return { message: "New images has been added." };
+  } catch (error) {
+    console.error("Error creating images:", error);
     return { message: "An error occured", errors: error };
   }
 }

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { taskSchema, projectSchema, teamSchema } from "@/config/schema";
+import { taskSchema, projectSchema, teamSchema, designImageSchema } from "@/config/schema";
 
 import { type ClientUploadedFileData } from "uploadthing/types"
 
@@ -23,10 +23,12 @@ export type TeamTableConfig = {
   }[];
 };
 
+export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> { }
+
 export type Task = z.infer<typeof taskSchema>;
 
 export type Project = z.infer<typeof projectSchema>;
 
 export type Team = z.infer<typeof teamSchema>;
 
-export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> { }
+export type DesignImage = z.infer<typeof designImageSchema>;
