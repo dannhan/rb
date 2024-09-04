@@ -1,24 +1,28 @@
 "use client";
 
-import { FileUploader } from "@/components/file-uploader";
-import { UploadedFilesCard } from "./uploaded-files-card";
+import { useUploadFile } from "@/hooks/use-upload-file";
 
+import { FileUploader } from "@/components/file-uploader";
+import { UploadedFilesCard } from "@/components/uploaded-files-card";
+
+// todo: don't make this as a cline component
 export default function Page() {
-  // const { onUpload, progresses, uploadedFiles, isUploading } = useUploadFile(
-  //   "imageUploader",
-  //   { defaultUploadedFiles: [] },
-  // );
+  const { onUpload, progresses, uploadedFiles, isUploading } = useUploadFile(
+    "imageUploader",
+    { defaultUploadedFiles: [] },
+  );
 
   return (
     <div className="space-y-6">
+      <pre>{JSON.stringify(uploadedFiles, null, 2)}</pre>
       <FileUploader
         maxFileCount={4}
         maxSize={4 * 1024 * 1024}
-        // progresses={progresses}
-        // onUpload={onUpload}
-        // disabled={isUploading}
+        progresses={progresses}
+        onUpload={onUpload}
+        disabled={isUploading}
       />
-      <UploadedFilesCard uploadedFiles={[]} />
+      <UploadedFilesCard uploadedFiles={uploadedFiles} />
     </div>
   );
 }

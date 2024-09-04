@@ -29,6 +29,7 @@
 - [x] make sidebar much more DRY
 - [x] top loading bar
 
+- [ ] what is rate limit
 - [ ] sentry
 - [ ] change colors to blue-ish and add some 3d figures
 - [ ] create breadcrumbs for navigation in the header
