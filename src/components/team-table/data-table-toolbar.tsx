@@ -23,17 +23,17 @@ export function DataTableToolbar<TData>({
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+    <div className="flex flex-col-reverse items-center justify-between gap-2 md:flex-row md:gap-0">
+      <div className="flex w-full flex-1 items-center space-x-2">
         <Input
-          placeholder="Cari Pelaksana..."
+          placeholder="Search"
           value={
             (table.getColumn("pelaksana")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
             table.getColumn("pelaksana")?.setFilterValue(event.target.value)
           }
-          className="h-8 w-[150px] lg:w-[250px]"
+          className="h-8 flex-1 md:w-[125px] md:flex-initial lg:w-[250px]"
         />
         {table.getColumn("status") && (
           <DataTableFacetedFilter
@@ -53,8 +53,10 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <CreateTeamDialog slug={slug} />
-      <DataTableViewOptions table={table} />
+      <div className="flex w-full justify-between gap-2 md:w-fit">
+        <CreateTeamDialog slug={slug} />
+        <DataTableViewOptions table={table} />
+      </div>
     </div>
   );
 }

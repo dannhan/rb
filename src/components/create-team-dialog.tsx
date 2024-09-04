@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { cn } from "@/lib/utils";
+
 import { PlusIcon } from "lucide-react";
 import {
   Dialog,
@@ -14,21 +16,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { CreateTeamForm } from "@/components/create-team-form";
 
-export function CreateTeamDialog({ slug }: { slug: string }) {
+type Props = {
+  slug: string;
+  className?: string;
+};
+
+export function CreateTeamDialog({ slug, className }: Props) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="default"
-          size="sm"
-          className="ml-2 h-8 sm:ml-0 lg:mr-2"
-        >
-          <PlusIcon
-            className="mr-2 hidden size-4 md:block"
-            aria-hidden="true"
-          />
+        <Button variant="default" size="sm" className={cn("h-8", className)}>
+          <PlusIcon className="mr-2 size-4" aria-hidden="true" />
           Add Data
         </Button>
       </DialogTrigger>
