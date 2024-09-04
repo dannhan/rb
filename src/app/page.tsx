@@ -9,7 +9,7 @@ import {
 
 export default function Page() {
   return (
-    <main className="flex min-h-screen items-center justify-center">
+    <main className="flex h-dvh items-center justify-center">
       <Card className="mx-auto w-full max-w-md border-none dark:border sm:shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="font-bold tracking-tight">

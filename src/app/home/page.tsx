@@ -25,7 +25,7 @@ export default async function Page() {
           <ModeToggle />
         </div>
       </Header>
-      <main className="flex flex-1 flex-col items-center gap-4 p-4 lg:p-6 lg:pb-10">
+      <main className="flex flex-col items-center gap-4 p-4 md:flex-1 lg:p-6 lg:pb-10">
         <ProjectCardsList projects={konstruksiProjects} type="konstruksi" />
         <Separator className="my-2 w-full max-w-screen-lg 2xl:max-w-screen-xl" />
         <ProjectCardsList projects={renovasiProjects} type="renovasi" />

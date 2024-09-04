@@ -40,7 +40,7 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
       <SheetContent side="left" className="flex flex-col">
         <nav className="grid gap-2 text-lg font-medium">
           <Link
-            href="#"
+            href="/home"
             className="relative bottom-3 flex items-center gap-2 text-lg font-semibold"
           >
             {/* todo, important */}
