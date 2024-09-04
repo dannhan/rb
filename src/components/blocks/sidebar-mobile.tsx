@@ -41,10 +41,15 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
         <nav className="grid gap-2 text-lg font-medium">
           <Link
             href="#"
-            className="flex items-center gap-2 text-lg font-semibold relative bottom-3"
+            className="relative bottom-3 flex items-center gap-2 text-lg font-semibold"
           >
-            <Package2 className="h-6 w-6" />
-            <span className="sr-only">Acme Inc</span>
+            {/* todo, important */}
+            {/* <Package2 className="h-6 w-6" />
+            <span className="sr-only">Acme Inc</span> */}
+
+            <h1 className="text-lg font-semibold text-muted-foreground md:hidden md:text-xl">
+              Ria Busana
+            </h1>
           </Link>
 
           {items?.map((item, index) => {
@@ -56,7 +61,7 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
                 className={cn(
                   "mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground",
                   item.href.startsWith(`${segment}`) &&
-                  "bg-muted text-foreground",
+                    "bg-muted text-foreground",
                 )}
               >
                 <Icon className="h-5 w-5" />
@@ -65,7 +70,8 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
             );
           })}
 
-          <Link
+          {/* todo, important */}
+          {/* <Link
             href="#"
             className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
           >
@@ -81,7 +87,7 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
           >
             <Package className="h-5 w-5" />
             Products
-          </Link>
+          </Link> */}
         </nav>
 
         <div className="mt-auto">

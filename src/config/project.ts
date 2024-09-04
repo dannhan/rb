@@ -12,10 +12,11 @@ export const projectConfig: ProjectConfig = {
       href: "gambar-desain",
       icon: "images",
     },
-    {
-      title: "Jadwal Proyek",
-      href: "jadwal-proyek",
-      icon: "calendar",
-    },
+    // todo, important
+    // {
+    //   title: "Jadwal Proyek",
+    //   href: "jadwal-proyek",
+    //   icon: "calendar",
+    // },
   ],
 };

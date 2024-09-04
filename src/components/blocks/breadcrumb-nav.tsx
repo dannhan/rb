@@ -43,6 +43,15 @@ export function BreadcrumbNav({ projectTitle }: Props) {
           <Slash />
         </BreadcrumbSeparator>
         <BreadcrumbItem>
+          <Link
+            href="#"
+            className="text-base transition-colors hover:text-foreground"
+          >
+            {projectTitle}
+          </Link>
+        </BreadcrumbItem>
+        {/* todo, important */}
+        {/* <BreadcrumbItem>
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-0.5 text-base">
               {projectTitle}
@@ -54,7 +63,7 @@ export function BreadcrumbNav({ projectTitle }: Props) {
               <DropdownMenuItem>GitHub</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </BreadcrumbItem>
+        </BreadcrumbItem> */}
         <BreadcrumbSeparator>
           <Slash />
         </BreadcrumbSeparator>
