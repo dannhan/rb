@@ -20,7 +20,7 @@ export function CreateTeamDialog({ slug }: { slug: string }) {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 lg:mr-2">
+        <Button variant="default" size="sm" className="h-8 lg:mr-2">
           <PlusIcon className="mr-2 size-4" aria-hidden="true" />
           Add Data
         </Button>
