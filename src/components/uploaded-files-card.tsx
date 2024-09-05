@@ -1,3 +1,4 @@
+import React from "react";
 import Image from "next/image";
 
 import { UploadedFile } from "@/types";
@@ -14,24 +15,35 @@ import { EmptyCard } from "@/components/empty-card";
 
 interface UploadedFilesCardProps {
   uploadedFiles: UploadedFile[];
+  children?: React.ReactNode;
 }
 
-export function UploadedFilesCard({ uploadedFiles }: UploadedFilesCardProps) {
+export function UploadedFilesCard({
+  children,
+  uploadedFiles,
+}: UploadedFilesCardProps) {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Uploaded files</CardTitle>
-        <CardDescription>View the uploaded files here</CardDescription>
+      <CardHeader className="flex flex-row justify-between">
+        <div>
+          <CardTitle className="text-xl">Images</CardTitle>
+          <CardDescription className="text-xs sm:block">
+            These are all of the images that have been uploaded.
+          </CardDescription>
+        </div>
+        {children}
       </CardHeader>
       <CardContent>
         {uploadedFiles.length > 0 ? (
           <div>
-            <ScrollArea className="pb-4">
-              <div className="flex w-max space-x-2.5">
+            <ScrollArea>
+              {/* <div className="grid w-max min-w-full grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4"> */}
+              <div className="flex w-max gap-2">
                 {uploadedFiles.map((file) => (
                   <div
                     key={file.key}
-                    className="relative aspect-[2/3] h-[425px] bg-transparent"
+                    className="min-w-1/2 relative aspect-[2/3] h-[425px] bg-transparent"
+                    // className="relative aspect-[2/3] max-h-[425px]"
                   >
                     <Image
                       src={file.url}
