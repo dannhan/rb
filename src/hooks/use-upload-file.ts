@@ -5,6 +5,7 @@ import type { UploadedFile } from "@/types"
 import { toast } from "sonner"
 import type { UploadFilesOptions } from "uploadthing/types"
 
+import { storeImagesUrlsAction } from "@/lib/actions"
 import { getErrorMessage } from "@/lib/handle-error"
 import { uploadFiles } from "@/lib/uploadthing"
 import { type OurFileRouter } from "@/app/api/uploadthing/core"
@@ -19,7 +20,8 @@ interface UseUploadFileProps
 
 export function useUploadFile(
   endpoint: keyof OurFileRouter,
-  { defaultUploadedFiles = [], ...props }: UseUploadFileProps = {}
+  { defaultUploadedFiles = [], ...props }: UseUploadFileProps = {},
+  slug?: string,
 ) {
   const [uploadedFiles, setUploadedFiles] =
     React.useState<UploadedFile[]>(defaultUploadedFiles)
@@ -42,7 +44,13 @@ export function useUploadFile(
         },
       })
 
+      // update local state
       setUploadedFiles((prev) => (prev ? [...prev, ...res] : res))
+
+      // store URLs in Firebase
+      if (slug) {
+        await storeImagesUrlsAction(slug, res);
+      }
     } catch (err) {
       toast.error(getErrorMessage(err))
     } finally {

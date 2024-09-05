@@ -30,5 +30,3 @@ export type Task = z.infer<typeof taskSchema>;
 export type Project = z.infer<typeof projectSchema>;
 
 export type Team = z.infer<typeof teamSchema>;
-
-export type DesignImage = z.infer<typeof designImageSchema>;

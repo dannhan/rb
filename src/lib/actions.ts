@@ -5,7 +5,8 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { CredentialsSignin } from "next-auth";
 import { signIn, signOut } from "@/auth";
 
-import { designImageFormSchema, projectFormSchema, teamFormSchema } from "@/config/schema";
+import type { UploadedFile } from "@/types"
+import { projectFormSchema, teamFormSchema } from "@/config/schema";
 
 import { postProjectFirebase } from "@/firebase/firestore/project";
 import { getTeamLengthBySlugFirebase, postTeamFirebase } from "@/firebase/firestore/team";
@@ -78,24 +79,14 @@ export async function createTeamAction(slug: string, team: FormData) {
   }
 }
 
-export async function postDesignImagesAction(slug: string, designImages: FormData) {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  const formData = Object.fromEntries(designImages);
-  const parsed = designImageFormSchema.safeParse(formData);
-
-  if (!parsed.success) {
-    return { message: "Invalid data type.", errors: "Invalid type." };
-  }
-
+// todo: maybe add zod schema and type checking
+export async function storeImagesUrlsAction(slug: string, designImages: UploadedFile[]) {
   try {
-    await Promise.all(
-      parsed.data.urls.map((url) => postDesignImageUrlFirebase(slug, url))
-    );
+    await postDesignImageUrlFirebase(slug, designImages);
 
     return { message: "New images has been added." };
   } catch (error) {
     console.error("Error creating images:", error);
-    return { message: "An error occured", errors: error };
+    throw new Error("Error creating images.");
   }
 }

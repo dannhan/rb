@@ -1,25 +1,28 @@
 import { db } from "@/firebase/init";
 
-import { DesignImage } from "@/types";
-import { z } from "zod";
-import { designImageSchema } from "@/config/schema";
+import type { UploadedFile } from "@/types"
+import { FieldValue } from "firebase-admin/firestore";
 
 /* fetching data logic */
-export async function getDesignImagesBySlugFirebase(slug: string): Promise<DesignImage[]> {
+export async function getDesignImagesBySlugFirebase(slug: string): Promise<UploadedFile[]> {
   try {
-    const designImageRef = db.collection("projects").doc(slug).collection("designImages");
-    const snapshot = await designImageRef.get();
-    const data: FirebaseFirestore.DocumentData[] = [];
-    snapshot.forEach((doc) => { data.push(doc.data()); });
+    const projectRef = db.collection("projects").doc(slug);
+    const doc = await projectRef.get();
+    if (!doc.exists) {
+      return [];
+    }
 
-    return z.array(designImageSchema).parse(data);
+    return doc.data()?.designImages;
   } catch (error) {
     console.error("Error fetching images:", error);
     throw new Error("Failed to fetch images.");
   }
 }
 
-export async function postDesignImageUrlFirebase(slug: string, imageUrl: string): Promise<void> {
-  const designImageRef = db.collection("projects").doc(slug).collection("designImages");
-  await designImageRef.add({ url: imageUrl });
+/* firebase post-only method, no logic here for now */
+export async function postDesignImageUrlFirebase(slug: string, designImages: UploadedFile[]): Promise<void> {
+  const projectRef = db.collection("projects").doc(slug);
+  await projectRef.update({
+    designImages: FieldValue.arrayUnion(...designImages)
+  });
 }
