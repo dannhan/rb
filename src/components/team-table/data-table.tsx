@@ -24,6 +24,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
@@ -32,12 +34,14 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   slug: string;
+  isLoading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   slug,
+  isLoading,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -72,7 +76,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} slug={slug} />
-      <div className="rounded-md border">
+      <ScrollArea className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -111,23 +115,35 @@ export function DataTable<TData, TValue>({
                     ))}
                   </TableRow>
                 ))}
-                {[...Array(9 - table.getRowModel().rows.length)].map((i) => (
+                {[
+                  ...Array(
+                    table.getState().pagination.pageSize -
+                      table.getRowModel().rows.length,
+                  ),
+                ].map((i) => (
                   <tr key={i} className="h-[57px]"></tr>
                 ))}
               </>
+            ) : isLoading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="p-0">
+                  <Skeleton className="h-96 w-full rounded-none"></Skeleton>
+                </TableCell>
+              </TableRow>
             ) : (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
                   className="h-96 text-center text-lg"
                 >
-                  No data uploaded yet.
+                  No data found.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-      </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
       <DataTablePagination table={table} />
     </div>
   );

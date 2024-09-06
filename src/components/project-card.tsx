@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 
 type ProjectCardProps = {
