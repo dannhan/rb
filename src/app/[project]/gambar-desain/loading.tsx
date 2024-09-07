@@ -1,7 +1,5 @@
-import { UploadFilesDialog } from "@/components/upload-files-dialog";
+import { DesignImagesCard } from "@/components/design-images-card";
 
 export default function Loading() {
-  return (
-    <UploadFilesDialog params={{ project: "" }} designImages={[]} isLoading />
-  );
+  return <DesignImagesCard designImages={[]} isLoading />;
 }

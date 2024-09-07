@@ -1,5 +1,5 @@
 import { getDesignImagesBySlugFirebase } from "@/firebase/firestore/design-image";
-import { UploadFilesDialog } from "@/components/upload-files-dialog";
+import { DesignImagesCard } from "@/components/design-images-card";
 
 type Props = {
   params: { project: string };
@@ -8,5 +8,5 @@ type Props = {
 export default async function Page({ params }: Props) {
   const designImages = await getDesignImagesBySlugFirebase(params.project);
 
-  return <UploadFilesDialog params={params} designImages={designImages} />;
+  return <DesignImagesCard designImages={designImages} slug={params.project} />;
 }

@@ -12,7 +12,7 @@ export async function getDesignImagesBySlugFirebase(slug: string): Promise<Uploa
       return [];
     }
 
-    return doc.data()?.designImages;
+    return doc.data()?.designImages || [];
   } catch (error) {
     console.error("Error fetching images:", error);
     throw new Error("Failed to fetch images.");

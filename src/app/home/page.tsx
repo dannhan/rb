@@ -1,8 +1,8 @@
 import { getProjectsByTypeFirebase } from "@/firebase/firestore/project";
 
+import { Header } from "@/layouts/header";
 import { Separator } from "@/components/ui/separator";
-import { Header } from "@/components/blocks/header";
-import { ModeToggle } from "@/components/blocks/mode-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
 import { ProjectListCommandDialog } from "@/components/project-list-command-dialog";
 import { ProjectCardsList } from "@/components/project-cards-list";
 
