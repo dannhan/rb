@@ -7,6 +7,7 @@ import { z } from "zod";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { postDesignImageUrlFirebase } from "@/firebase/firestore/design-image";
+import { postProjectScheduleFirebase } from "@/firebase/firestore/project-schedule";
 
 const f = createUploadthing();
 
@@ -49,7 +50,6 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       // todo: try to throw an error here
       // This code RUNS ON YOUR SERVER after upload
-      console.log("file url", file.url);
       console.log("Upload complete for slug:", metadata.slug);
       const { key, type, name, url, size } = file;
 
@@ -63,6 +63,32 @@ export const ourFileRouter = {
           customId: null,
           serverData: null,
         });
+      } catch (error) {
+        return { error: "Failed to upload the data." };
+      }
+    }),
+
+  projectSchedule: f({ image: { maxFileSize: "8MB", maxFileCount: 1 } })
+    .input(z.object({ slug: z.string() }))
+    .middleware(async ({ input }) => ({ slug: input.slug }))
+    .onUploadComplete(async ({ metadata, file }) => {
+      // This code RUNS ON YOUR SERVER after upload
+      console.log("Upload complete for slug:", metadata.slug);
+      const { key, type, name, url, size } = file;
+
+      // todo:
+      try {
+        await postProjectScheduleFirebase(metadata.slug, {
+          key,
+          type,
+          name,
+          url,
+          size,
+          customId: null,
+          serverData: null,
+        });
+
+        console.log({ key, type, name, url, size });
       } catch (error) {
         return { error: "Failed to upload the data." };
       }
