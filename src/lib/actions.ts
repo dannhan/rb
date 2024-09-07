@@ -5,12 +5,13 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { CredentialsSignin } from "next-auth";
 import { signIn, signOut } from "@/auth";
 
-import type { UploadedFile } from "@/types"
 import { projectFormSchema, teamFormSchema } from "@/config/schema";
 
 import { postProjectFirebase } from "@/firebase/firestore/project";
-import { getTeamLengthBySlugFirebase, postTeamFirebase } from "@/firebase/firestore/team";
-import { postDesignImageUrlFirebase } from "@/firebase/firestore/design-image";
+import {
+  getTeamLengthBySlugFirebase,
+  postTeamFirebase,
+} from "@/firebase/firestore/team";
 
 export async function login(_: any, formData: FormData) {
   try {
@@ -45,7 +46,7 @@ export async function createProjectAction(data: FormData) {
     return { message: "Invalid data type.", errors: "Invalid type." };
   }
 
-  const slug = encodeURI(parsed.data.title.split(" ").join("-").toLowerCase())
+  const slug = encodeURI(parsed.data.title.split(" ").join("-").toLowerCase());
 
   await postProjectFirebase({
     slug,
@@ -76,17 +77,5 @@ export async function createTeamAction(slug: string, team: FormData) {
   } catch (error) {
     console.error("Error creating team:", error);
     return { message: "An error occured", errors: error };
-  }
-}
-
-// todo: maybe add zod schema and type checking
-export async function storeImagesUrlsAction(slug: string, designImages: UploadedFile[]) {
-  try {
-    await postDesignImageUrlFirebase(slug, designImages);
-
-    return { message: "New images has been added." };
-  } catch (error) {
-    console.error("Error creating images:", error);
-    throw new Error("Error creating images.");
   }
 }

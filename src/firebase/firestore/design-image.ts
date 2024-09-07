@@ -1,10 +1,12 @@
 import { db } from "@/firebase/init";
-
-import type { UploadedFile } from "@/types"
 import { FieldValue } from "firebase-admin/firestore";
 
+import type { UploadedFile } from "@/types";
+
 /* fetching data logic */
-export async function getDesignImagesBySlugFirebase(slug: string): Promise<UploadedFile[]> {
+export async function getDesignImagesBySlugFirebase(
+  slug: string,
+): Promise<UploadedFile[]> {
   try {
     const projectRef = db.collection("projects").doc(slug);
     const doc = await projectRef.get();
@@ -20,9 +22,22 @@ export async function getDesignImagesBySlugFirebase(slug: string): Promise<Uploa
 }
 
 /* firebase post-only method, no logic here for now */
-export async function postDesignImageUrlFirebase(slug: string, designImages: UploadedFile[]): Promise<void> {
+export async function postDesignImageUrlFirebase(
+  slug: string,
+  designImages: UploadedFile,
+): Promise<void> {
   const projectRef = db.collection("projects").doc(slug);
   await projectRef.update({
-    designImages: FieldValue.arrayUnion(...designImages)
+    designImages: FieldValue.arrayUnion(designImages),
+  });
+}
+
+export async function deleteDesignImageBySlugFirebase(
+  slug: string,
+  designImage: UploadedFile,
+): Promise<void> {
+  const projectRef = db.collection("projects").doc(slug);
+  await projectRef.update({
+    designImages: FieldValue.arrayRemove(designImage),
   });
 }

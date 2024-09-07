@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import * as React from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 
 import { UploadedFile } from "@/types";
+import { useUploadFile } from "@/hooks/use-upload-file";
 
 import {
   Card,
@@ -23,13 +24,15 @@ const DialogUploader = dynamic(() =>
 
 interface Props {
   designImages: UploadedFile[];
-  slug?: string;
+  slug: string;
   isLoading?: boolean;
 }
 
 export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
-  const [uploadedImages, setUploadedImages] =
-    useState<UploadedFile[]>(designImages);
+  const { progresses, onUpload, uploadedFiles, isUploading } = useUploadFile(
+    "designImages",
+    { defaultUploadedFiles: designImages, input: { slug } },
+  );
 
   return (
     <Card>
@@ -41,17 +44,17 @@ export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
           </CardDescription>
         </div>
         <DialogUploader
-          files={uploadedImages}
-          setFiles={setUploadedImages}
-          slug={slug}
+          progresses={progresses}
+          onUpload={onUpload}
+          isUploading={isUploading}
         />
       </CardHeader>
       <CardContent>
-        {uploadedImages.length > 0 ? (
+        {uploadedFiles.length > 0 ? (
           <ScrollArea>
             <div className="flex w-max gap-2">
               {/* todo, important: create image card component and add hover effect to delete and full screen image */}
-              {uploadedImages.map((file) => (
+              {uploadedFiles.map((file) => (
                 <div
                   key={file.key}
                   className="min-w-1/2 relative aspect-[2/3] h-[425px] bg-transparent"

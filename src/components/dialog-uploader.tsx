@@ -1,9 +1,4 @@
-"use client";
-
 import * as React from "react";
-
-import { UploadedFile } from "@/types";
-import { useUploadFile } from "@/hooks/use-upload-file";
 
 import { UploadCloudIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -18,22 +13,12 @@ import {
 import { FileUploader } from "@/components/file-uploader";
 
 type Props = {
-  files: UploadedFile[];
-  setFiles: React.Dispatch<React.SetStateAction<UploadedFile<unknown>[]>>;
-  slug?: string;
+  progresses: Record<string, number>;
+  onUpload: (files: File[]) => Promise<void>;
+  isUploading: boolean;
 };
 
-export function DialogUploader({ files, setFiles, slug }: Props) {
-  const { onUpload, progresses, uploadedFiles, isUploading } = useUploadFile(
-    "imageUploader",
-    { defaultUploadedFiles: files },
-    slug,
-  );
-
-  React.useEffect(() => {
-    setFiles(uploadedFiles);
-  }, [uploadedFiles, setFiles]);
-
+export function DialogUploader({ progresses, onUpload, isUploading }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
