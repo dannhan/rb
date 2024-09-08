@@ -39,7 +39,7 @@ export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row justify-between pb-0 mb-0">
+      <CardHeader className="mb-0 flex flex-row justify-between pb-0">
         <div>
           <CardTitle className="text-xl">Gambar Desain</CardTitle>
           <CardDescription className="text-xs sm:block">
@@ -55,7 +55,7 @@ export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
       <CardContent>
         {uploadedFiles.length > 0 ? (
           <ScrollArea>
-            <div className="flex w-max gap-8 my-4">
+            <div className="my-4 flex w-max gap-8">
               {uploadedFiles.map((file) => (
                 <ImageCard
                   key={file.key}
@@ -75,10 +75,10 @@ export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
           <EmptyCard
             title="No files uploaded"
             description="Upload some files to see them here"
-            className="h-[425px] w-full mt-6"
+            className="mt-6 h-[425px] w-full"
           />
         ) : (
-          <Skeleton className="h-[425px] w-full mt-6" />
+          <Skeleton className="mt-6 h-[425px] w-full" />
         )}
       </CardContent>
     </Card>

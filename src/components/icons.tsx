@@ -1,4 +1,11 @@
-import { CalendarCheck2, Images, Users, Timer, CheckCircle, Circle } from "lucide-react";
+import {
+  CalendarCheck2,
+  Images,
+  Users,
+  Timer,
+  CheckCircle,
+  Circle,
+} from "lucide-react";
 import { HTMLAttributes } from "react";
 
 export const Icons = {

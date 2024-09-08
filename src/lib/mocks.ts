@@ -19,21 +19,21 @@ export async function getProjects() {
 // Simulate a database read for tasks.
 export async function getTasks() {
   const data = await fs.readFile(
-    path.join(process.cwd(), "src/data/tasks.json")
-  )
+    path.join(process.cwd(), "src/data/tasks.json"),
+  );
 
-  const tasks = JSON.parse(data.toString())
+  const tasks = JSON.parse(data.toString());
 
-  return z.array(taskSchema).parse(tasks)
+  return z.array(taskSchema).parse(tasks);
 }
 
 // Simulate a database read for team.
 export async function getTeam() {
   const data = await fs.readFile(
-    path.join(process.cwd(), "src/data/team.json")
-  )
+    path.join(process.cwd(), "src/data/team.json"),
+  );
 
-  const team = JSON.parse(data.toString())
+  const team = JSON.parse(data.toString());
 
-  return z.array(teamSchema).parse(team)
+  return z.array(teamSchema).parse(team);
 }

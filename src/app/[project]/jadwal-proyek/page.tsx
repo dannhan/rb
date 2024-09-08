@@ -10,5 +10,7 @@ export default async function Page({ params }: Props) {
     params.project,
   );
 
-  return <BasicUploader projectSchedule={projectSchedule} slug={params.project} />;
+  return (
+    <BasicUploader projectSchedule={projectSchedule} slug={params.project} />
+  );
 }

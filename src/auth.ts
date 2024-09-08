@@ -17,7 +17,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         const { password } = credentials;
 
         if (password === "admin") {
-          return {}
+          return {};
         }
 
         return null;

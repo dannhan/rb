@@ -8,9 +8,11 @@ import { teamSchema } from "@/config/schema";
 export async function getTeamBySlugFirebase(slug: string): Promise<Team[]> {
   try {
     const teamsRef = db.collection("projects").doc(slug).collection("teams");
-    const snapshot = await teamsRef.orderBy('no').get();
+    const snapshot = await teamsRef.orderBy("no").get();
     const data: FirebaseFirestore.DocumentData[] = [];
-    snapshot.forEach((doc) => { data.push(doc.data()); });
+    snapshot.forEach((doc) => {
+      data.push(doc.data());
+    });
 
     return z.array(teamSchema).parse(data);
   } catch (error) {
@@ -23,7 +25,9 @@ export async function getTeamBySlugFirebase(slug: string): Promise<Team[]> {
   }
 }
 
-export async function getTeamLengthBySlugFirebase(slug: string): Promise<number> {
+export async function getTeamLengthBySlugFirebase(
+  slug: string,
+): Promise<number> {
   try {
     const teamsRef = db.collection("projects").doc(slug).collection("teams");
     const snapshot = await teamsRef.get();
@@ -39,7 +43,10 @@ export async function getTeamLengthBySlugFirebase(slug: string): Promise<number>
 }
 
 /* firebase post-only method, no logic here for now */
-export async function postTeamFirebase(slug: string, team: Team): Promise<void> {
+export async function postTeamFirebase(
+  slug: string,
+  team: Team,
+): Promise<void> {
   // todo: erorr handling
   const teamsRef = db.collection("projects").doc(slug).collection("teams");
   await teamsRef.add(team);

@@ -2,12 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
- :root {
+  :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
-    
+
     --surface: 0 0% 98%;
 
     --card: 0 0% 100%;
@@ -35,7 +34,6 @@
 
     --radius: 0.5rem;
   }
- 
 
   .dark {
     --background: 228 19% 10%; /* 900 */

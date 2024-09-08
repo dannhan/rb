@@ -11,7 +11,10 @@ export async function getProjectsByTypeFirebase(
   // todo: implement pagination and caching
   try {
     const projectsRef = db.collection("projects");
-    const snapshot = await projectsRef.where("type", "==", type).select("title", "type").get();
+    const snapshot = await projectsRef
+      .where("type", "==", type)
+      .select("title", "type")
+      .get();
     const data: FirebaseFirestore.DocumentData[] = [];
 
     snapshot.forEach((doc) => {

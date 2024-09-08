@@ -1,6 +1,7 @@
 # RIA BUSANA PROJECT
 
 ## TODO
+
 - [x] Tailwind auto sort
 - [x] Setup the auth
 - [x] Loading state on login
@@ -15,7 +16,8 @@
 - [x] change blocks url path
 
 #### High-Priority
-- [x] `getProjects()` 
+
+- [x] `getProjects()`
 - [x] `getTasks()`
 
 - [ ] fix the tim-pelaksana module
@@ -25,6 +27,7 @@
 - [ ] implement proper auth for manager and admin
 
 #### Medium-Priority
+
 - [x] change title placeholder for dashboard header
 - [x] make sidebar much more DRY
 - [x] top loading bar
@@ -39,15 +42,18 @@
 - [ ] add a bar image ???
 
 #### Low-Priority
+
 - [ ] maybe think about adding checkmark on project list command so the user can see which project is fully completed
 - [ ] why importing types using "@/types" instead of just "types"
 - [ ] set good padding for sign out button
 - [ ] create default variable in config for tim-pelaksana route
 
 ### Bugs:
+
 - [x] `/undefined/tim-pelaksana` should return not-found instead (fixed by moving the data to layout)
 
 #### Not Sure:
+
 - [ ] dashboard layout (scroll and overfow)
 
 - [x] middleware

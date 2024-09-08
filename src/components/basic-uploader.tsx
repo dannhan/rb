@@ -14,13 +14,11 @@ type Props = {
 };
 
 export function BasicUploader({ projectSchedule, slug }: Props) {
-  const { onUpload, progresses, uploadedFiles, isUploading, setUploadedFiles } = useUploadFile(
-    "projectSchedule",
-    {
+  const { onUpload, progresses, uploadedFiles, isUploading, setUploadedFiles } =
+    useUploadFile("projectSchedule", {
       defaultUploadedFiles: projectSchedule ? [projectSchedule] : [],
       input: { slug },
-    },
-  );
+    });
 
   return uploadedFiles.length === 0 ? (
     <FileUploader

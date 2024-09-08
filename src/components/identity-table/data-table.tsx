@@ -28,7 +28,6 @@ import {
 } from "@/components/ui/table";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 
-
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
