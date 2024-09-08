@@ -30,6 +30,14 @@ export type TeamTableConfig = {
 
 export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> {}
 
+export type StoredImage = {
+  route: string;
+  customId: string | null;
+  key: string;
+  name: string;
+  url: string;
+};
+
 export type Task = z.infer<typeof taskSchema>;
 
 export type Project = z.infer<typeof projectSchema>;

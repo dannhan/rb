@@ -6,7 +6,9 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
-  const pic = await getProjectScheduleBySlugFirebase(params.project);
+  const projectSchedule = await getProjectScheduleBySlugFirebase(
+    params.project,
+  );
 
-  return <Uploader projectSchedule={pic} slug={params.project} />;
+  return <Uploader projectSchedule={projectSchedule} slug={params.project} />;
 }

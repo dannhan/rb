@@ -1,17 +1,20 @@
 "use client";
 
-import Image from "next/image";
-import { UploadedFile } from "@/types";
+import { StoredImage } from "@/types";
+
+import { deleteProjectScheduleAction } from "@/lib/actions";
+
 import { useUploadFile } from "@/hooks/use-upload-file";
 import { FileUploader } from "@/components/file-uploader";
+import { ImageCard } from "@/components/image-card";
 
 type Props = {
-  projectSchedule: UploadedFile | null;
+  projectSchedule: StoredImage | null;
   slug: string;
 };
 
 export function Uploader({ projectSchedule, slug }: Props) {
-  const { onUpload, progresses, uploadedFiles, isUploading } = useUploadFile(
+  const { onUpload, progresses, uploadedFiles, isUploading, setUploadedFiles } = useUploadFile(
     "projectSchedule",
     {
       defaultUploadedFiles: projectSchedule ? [projectSchedule] : [],
@@ -29,11 +32,13 @@ export function Uploader({ projectSchedule, slug }: Props) {
     />
   ) : (
     <div className="relative flex h-full justify-center">
-      <Image
-        src={uploadedFiles[0].url}
-        alt={uploadedFiles[0].name}
-        fill
-        className="h-full rounded-lg object-contain"
+      <ImageCard
+        image={uploadedFiles[0]}
+        className="mt-0 h-full"
+        action={async () => {
+          await deleteProjectScheduleAction(slug, uploadedFiles[0].customId);
+          setUploadedFiles([]);
+        }}
       />
     </div>
   );

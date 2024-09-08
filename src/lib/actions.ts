@@ -2,16 +2,24 @@
 
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
+
 import { CredentialsSignin } from "next-auth";
 import { signIn, signOut } from "@/auth";
 
+import { StoredImage } from "@/types";
 import { projectFormSchema, teamFormSchema } from "@/config/schema";
 
+import { UTApi } from "uploadthing/server";
 import { postProjectFirebase } from "@/firebase/firestore/project";
 import {
-  getTeamLengthBySlugFirebase,
   postTeamFirebase,
+  getTeamLengthBySlugFirebase,
 } from "@/firebase/firestore/team";
+import {
+  deleteDesignImageIdFirebase,
+  deleteDesignImageByIdFirebase,
+} from "@/firebase/firestore/design-image";
+import { deleteProjectScheduleBySlugAndIdFirebase } from "@/firebase/firestore/project-schedule";
 
 export async function login(_: any, formData: FormData) {
   try {
@@ -78,4 +86,34 @@ export async function createTeamAction(slug: string, team: FormData) {
     console.error("Error creating team:", error);
     return { message: "An error occured", errors: error };
   }
+}
+
+// todo: error handling
+export async function deleteDesignImageAction(
+  slug: string,
+  file: StoredImage,
+): Promise<void> {
+  const utapi = new UTApi();
+
+  if (!file.customId) {
+    throw new Error("customId is required.");
+  }
+
+  await Promise.all([
+    utapi.deleteFiles([file.key]),
+    deleteDesignImageIdFirebase(slug, file.customId),
+    deleteDesignImageByIdFirebase(slug, file.customId),
+  ]);
+}
+
+// todo: error handling
+export async function deleteProjectScheduleAction(
+  slug: string,
+  id: string | null,
+) {
+  if (!id) {
+    throw new Error("id is required.");
+  }
+
+  await deleteProjectScheduleBySlugAndIdFirebase(slug, id);
 }

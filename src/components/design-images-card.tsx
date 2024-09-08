@@ -2,9 +2,10 @@
 
 import * as React from "react";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 
-import { UploadedFile } from "@/types";
+import { deleteDesignImageAction } from "@/lib/actions";
+
+import { StoredImage, UploadedFile } from "@/types";
 import { useUploadFile } from "@/hooks/use-upload-file";
 
 import {
@@ -15,28 +16,30 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ImageCard } from "@/components/image-card";
 import { EmptyCard } from "@/components/empty-card";
-import { Skeleton } from "./ui/skeleton";
 
 const DialogUploader = dynamic(() =>
   import("@/components/dialog-uploader").then((mod) => mod.DialogUploader),
 );
 
 interface Props {
-  designImages: UploadedFile[];
+  designImages: (UploadedFile | StoredImage)[];
   slug: string;
   isLoading?: boolean;
 }
 
 export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
-  const { progresses, onUpload, uploadedFiles, isUploading } = useUploadFile(
-    "designImages",
-    { defaultUploadedFiles: designImages, input: { slug } },
-  );
+  const { progresses, onUpload, uploadedFiles, isUploading, setUploadedFiles } =
+    useUploadFile("designImages", {
+      defaultUploadedFiles: designImages,
+      input: { slug },
+    });
 
   return (
     <Card>
-      <CardHeader className="flex flex-row justify-between">
+      <CardHeader className="flex flex-row justify-between pb-0 mb-0">
         <div>
           <CardTitle className="text-xl">Gambar Desain</CardTitle>
           <CardDescription className="text-xs sm:block">
@@ -52,20 +55,19 @@ export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
       <CardContent>
         {uploadedFiles.length > 0 ? (
           <ScrollArea>
-            <div className="flex w-max gap-2">
-              {/* todo, important: create image card component and add hover effect to delete and full screen image */}
+            <div className="flex w-max gap-8">
               {uploadedFiles.map((file) => (
-                <div
+                <ImageCard
                   key={file.key}
-                  className="min-w-1/2 relative aspect-[2/3] h-[425px] bg-transparent"
-                >
-                  <Image
-                    src={file.url}
-                    alt={file.name}
-                    fill
-                    className="rounded-md object-contain"
-                  />
-                </div>
+                  image={file}
+                  action={async () => {
+                    await deleteDesignImageAction(slug, file as StoredImage);
+                    setUploadedFiles(
+                      uploadedFiles.filter((f) => f.key !== file.key),
+                    );
+                  }}
+                  className="mt-6"
+                />
               ))}
             </div>
             <ScrollBar orientation="horizontal" />

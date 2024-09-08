@@ -1,18 +1,20 @@
 import * as React from "react";
-import type { UploadedFile } from "@/types";
-import { toast } from "sonner";
+
+import type { StoredImage, UploadedFile } from "@/types";
 import type { UploadFilesOptions } from "uploadthing/types";
+import type { OurFileRouter } from "@/app/api/uploadthing/core";
+
+import { toast } from "sonner";
 
 import { getErrorMessage } from "@/lib/handle-error";
 import { uploadFiles } from "@/lib/uploadthing";
-import { type OurFileRouter } from "@/app/api/uploadthing/core";
 
 interface UseUploadFileProps
   extends Pick<
     UploadFilesOptions<OurFileRouter, keyof OurFileRouter>,
     "headers" | "onUploadBegin" | "onUploadProgress" | "skipPolling"
   > {
-  defaultUploadedFiles?: UploadedFile[];
+  defaultUploadedFiles?: (UploadedFile | StoredImage)[];
 
   // todo: apaan lah any any
   input?: any;
@@ -23,7 +25,7 @@ export function useUploadFile(
   { defaultUploadedFiles = [], input = {}, ...props }: UseUploadFileProps = {},
 ) {
   const [uploadedFiles, setUploadedFiles] =
-    React.useState<UploadedFile[]>(defaultUploadedFiles);
+    React.useState<(UploadedFile | StoredImage)[]>(defaultUploadedFiles);
   const [progresses, setProgresses] = React.useState<Record<string, number>>(
     {},
   );
@@ -67,5 +69,6 @@ export function useUploadFile(
     uploadedFiles,
     progresses,
     isUploading,
+    setUploadedFiles,
   };
 }
