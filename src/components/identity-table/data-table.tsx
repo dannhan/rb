@@ -1,6 +1,9 @@
 "use client";
 
 import * as React from "react";
+
+import { cn } from "@/lib/utils";
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -15,7 +18,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import {
   Table,
   TableBody,
@@ -24,25 +26,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 
-import { DataTablePagination } from "./data-table-pagination";
-import { DataTableToolbar } from "./data-table-toolbar";
-import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   slug: string;
-  isLoading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   slug,
-  isLoading,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
@@ -55,6 +51,11 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    initialState: {
+      pagination: {
+        pageSize: 20,
+      },
+    },
     state: {
       sorting,
       columnVisibility,
@@ -75,11 +76,11 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2.5">
       <DataTableToolbar table={table} slug={slug} />
-      <ScrollArea className="overflow-hidden rounded-md border">
+      <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="sr-only">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -109,8 +110,11 @@ export function DataTable<TData, TValue>({
                       <TableCell
                         key={cell.id}
                         className={cn(
-                          cell.column.id === "select" && "",
-                          cell.column.id === "actions" && "w-0 p-2.5",
+                          cell.column.id === "field" && "border-l font-bold",
+                          cell.column.id === "value" && "border-x",
+                          (cell.column.id === "id" ||
+                            cell.column.id === "actions") &&
+                            "w-0 p-2.5 text-center",
                         )}
                       >
                         {flexRender(
@@ -121,36 +125,20 @@ export function DataTable<TData, TValue>({
                     ))}
                   </TableRow>
                 ))}
-                {[
-                  ...Array(
-                    table.getState().pagination.pageSize -
-                      table.getRowModel().rows.length,
-                  ),
-                ].map((i) => (
-                  <tr key={i} className="h-[57px]"></tr>
-                ))}
               </>
-            ) : isLoading ? (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="p-0">
-                  <Skeleton className="h-96 w-full rounded-none"></Skeleton>
-                </TableCell>
-              </TableRow>
             ) : (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
                   className="h-96 text-center text-lg"
                 >
-                  No data found.
+                  No data uploaded yet.
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
-      <DataTablePagination table={table} />
+      </div>
     </div>
   );
 }

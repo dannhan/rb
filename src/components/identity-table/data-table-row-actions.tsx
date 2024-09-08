@@ -21,7 +21,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  teamSchema.parse(row.original);
+  // todo: teamSchema.safeParse(row.original);
 
   return (
     <DropdownMenu>
