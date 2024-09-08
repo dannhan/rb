@@ -2,15 +2,24 @@
 
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect";
+
 import { CredentialsSignin } from "next-auth";
 import { signIn, signOut } from "@/auth";
 
-import type { UploadedFile } from "@/types"
+import { StoredImage } from "@/types";
 import { projectFormSchema, teamFormSchema } from "@/config/schema";
 
+import { UTApi } from "uploadthing/server";
 import { postProjectFirebase } from "@/firebase/firestore/project";
-import { getTeamLengthBySlugFirebase, postTeamFirebase } from "@/firebase/firestore/team";
-import { postDesignImageUrlFirebase } from "@/firebase/firestore/design-image";
+import {
+  postTeamFirebase,
+  getTeamLengthBySlugFirebase,
+} from "@/firebase/firestore/team";
+import {
+  deleteDesignImageIdFirebase,
+  deleteDesignImageByIdFirebase,
+} from "@/firebase/firestore/design-image";
+import { deleteProjectScheduleBySlugAndIdFirebase } from "@/firebase/firestore/project-schedule";
 
 export async function login(_: any, formData: FormData) {
   try {
@@ -45,7 +54,7 @@ export async function createProjectAction(data: FormData) {
     return { message: "Invalid data type.", errors: "Invalid type." };
   }
 
-  const slug = encodeURI(parsed.data.title.split(" ").join("-").toLowerCase())
+  const slug = encodeURI(parsed.data.title.split(" ").join("-").toLowerCase());
 
   await postProjectFirebase({
     slug,
@@ -79,14 +88,32 @@ export async function createTeamAction(slug: string, team: FormData) {
   }
 }
 
-// todo: maybe add zod schema and type checking
-export async function storeImagesUrlsAction(slug: string, designImages: UploadedFile[]) {
-  try {
-    await postDesignImageUrlFirebase(slug, designImages);
+// todo: error handling
+export async function deleteDesignImageAction(
+  slug: string,
+  file: StoredImage,
+): Promise<void> {
+  const utapi = new UTApi();
 
-    return { message: "New images has been added." };
-  } catch (error) {
-    console.error("Error creating images:", error);
-    throw new Error("Error creating images.");
+  if (!file.customId) {
+    throw new Error("customId is required.");
   }
+
+  await Promise.all([
+    utapi.deleteFiles([file.key]),
+    deleteDesignImageIdFirebase(slug, file.customId),
+    deleteDesignImageByIdFirebase(slug, file.customId),
+  ]);
+}
+
+// todo: error handling
+export async function deleteProjectScheduleAction(
+  slug: string,
+  id: string | null,
+) {
+  if (!id) {
+    throw new Error("id is required.");
+  }
+
+  await deleteProjectScheduleBySlugAndIdFirebase(slug, id);
 }

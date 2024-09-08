@@ -1,10 +1,10 @@
 import { SidebarItem } from "@/types";
 
-import { Header } from "@/components/blocks/header";
-import { Sidebar } from "@/components/blocks/sidebar";
-import { SidebarMobile } from "@/components/blocks/sidebar-mobile";
-import { BreadcrumbNav } from "@/components/blocks/breadcrumb-nav";
-import { ModeToggle } from "@/components/blocks/mode-toggle";
+import { Header } from "@/layouts/header";
+import { Sidebar } from "@/layouts/sidebar";
+import { SidebarMobile } from "@/layouts/sidebar-mobile";
+import { BreadcrumbNav } from "@/components/breadcrumb-nav";
+import { ModeToggle } from "@/components/mode-toggle";
 
 type Props = {
   children: React.ReactNode;

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getProjectBySlugFirebase } from "@/firebase/firestore/project";
 
 import { projectConfig } from "@/config/project";
-import { Dashboard } from "@/components/dashboard";
+import { Dashboard } from "@/layouts/dashboard";
 
 type Props = {
   children: React.ReactNode;

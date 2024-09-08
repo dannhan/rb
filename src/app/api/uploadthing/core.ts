@@ -1,42 +1,82 @@
 // todo: what is this
+// todo: rate limit
+// todo: set permissions and file types for this FileRoute
 
-import { createUploadthing, type FileRouter } from "uploadthing/next"
-import { UploadThingError } from "uploadthing/server"
+import { z } from "zod";
 
-const f = createUploadthing()
+import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { UTFiles } from "uploadthing/server";
+import { postDesignImageFirebase } from "@/firebase/firestore/design-image";
+import { postProjectScheduleFirebase } from "@/firebase/firestore/project-schedule";
+
+import { customAlphabet } from "nanoid";
+
+const f = createUploadthing();
+
+const alphabet =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+const nanoid = customAlphabet(alphabet);
 
 // todo: Fake auth function
 async function auth(req: Request) {
-  await new Promise((resolve) => setTimeout(resolve, 100))
-  return { id: "fakeId" }
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  return { id: "fakeId" };
 }
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
-  // Define as many FileRoutes as you like, each with a unique routeSlug
-  imageUploader: f({ image: { maxFileSize: "4MB", maxFileCount: 8 } })
-    // Set permissions and file types for this FileRoute
-    .middleware(async ({ req }) => {
-      // todo: rate limit
+  designImages: f({ image: { maxFileSize: "4MB", maxFileCount: 4 } })
+    .input(z.object({ slug: z.string() }))
+    .middleware(async ({ files, input }) => {
+      const fileOverrides = files.map((file) => {
+        return { ...file, customId: nanoid() };
+      });
 
-      // This code runs on your server before upload
-      const user = await auth(req)
-
-      // If you throw, the user will not be able to upload
-      if (!user) throw new UploadThingError("Unauthorized")
-
-      // Whatever is returned here is accessible in onUploadComplete as `metadata`
-      return { userId: user.id }
+      return { slug: input.slug, [UTFiles]: fileOverrides };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      // This code RUNS ON YOUR SERVER after upload
-      console.log("Upload complete for userId:", metadata.userId)
+      // todo: try to throw an error here
+      console.log("Upload complete for slug:", metadata.slug);
+      const { key, name, url } = file;
 
-      console.log("file url", file.url)
-
-      // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { uploadedBy: metadata.userId }
+      try {
+        await postDesignImageFirebase(metadata.slug, {
+          route: "designImages",
+          key,
+          name,
+          url,
+          customId: file.customId,
+        });
+      } catch (error) {
+        return { error: "Failed to upload the data." };
+      }
     }),
-} satisfies FileRouter
 
-export type OurFileRouter = typeof ourFileRouter
+  projectSchedule: f({ image: { maxFileSize: "8MB", maxFileCount: 1 } })
+    .input(z.object({ slug: z.string() }))
+    .middleware(async ({ files, input }) => {
+      const fileOverrides = files.map((file) => {
+        return { ...file, customId: nanoid() };
+      });
+
+      return { slug: input.slug, [UTFiles]: fileOverrides };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Upload complete for slug:", metadata.slug);
+      const { key, name, url } = file;
+
+      try {
+        await postProjectScheduleFirebase(metadata.slug, {
+          route: "projectSchedule",
+          key,
+          name,
+          url,
+          customId: file.customId,
+        });
+      } catch (error) {
+        return { error: "Failed to upload the data." };
+      }
+    }),
+} satisfies FileRouter;
+
+export type OurFileRouter = typeof ourFileRouter;

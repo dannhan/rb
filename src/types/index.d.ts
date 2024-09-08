@@ -1,7 +1,12 @@
-import { z } from "zod";
-import { taskSchema, projectSchema, teamSchema, designImageSchema } from "@/config/schema";
+import { string, z } from "zod";
+import {
+  taskSchema,
+  projectSchema,
+  teamSchema,
+  designImageSchema,
+} from "@/config/schema";
 
-import { type ClientUploadedFileData } from "uploadthing/types"
+import { type ClientUploadedFileData } from "uploadthing/types";
 
 import { Icons } from "@/components/icons";
 
@@ -23,7 +28,15 @@ export type TeamTableConfig = {
   }[];
 };
 
-export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> { }
+export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> {}
+
+export type StoredImage = {
+  route: string;
+  customId: string | null;
+  key: string;
+  name: string;
+  url: string;
+};
 
 export type Task = z.infer<typeof taskSchema>;
 

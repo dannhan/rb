@@ -34,7 +34,7 @@ export default function RootLayout({
             crawlSpeed={200}
           />
           {children}
-          <Toaster />
+          <Toaster richColors />
         </ThemeProvider>
       </body>
     </html>
