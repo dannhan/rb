@@ -55,7 +55,7 @@ export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
       <CardContent>
         {uploadedFiles.length > 0 ? (
           <ScrollArea>
-            <div className="flex w-max gap-8">
+            <div className="flex w-max gap-8 my-4">
               {uploadedFiles.map((file) => (
                 <ImageCard
                   key={file.key}
@@ -66,7 +66,6 @@ export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
                       uploadedFiles.filter((f) => f.key !== file.key),
                     );
                   }}
-                  className="mt-6"
                 />
               ))}
             </div>
@@ -76,10 +75,10 @@ export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
           <EmptyCard
             title="No files uploaded"
             description="Upload some files to see them here"
-            className="h-[425px] w-full"
+            className="h-[425px] w-full mt-6"
           />
         ) : (
-          <Skeleton className="h-[425px] w-full" />
+          <Skeleton className="h-[425px] w-full mt-6" />
         )}
       </CardContent>
     </Card>

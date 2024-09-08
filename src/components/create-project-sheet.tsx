@@ -28,7 +28,7 @@ export function CreateProjectSheet({ defaultType }: CreateProjectSheetProps) {
         <Button
           variant="ghost"
           className={cn(
-            "flex flex-row gap-2 rounded-lg border-none p-4 md:h-full lg:flex-col lg:gap-0",
+            "flex flex-row gap-2 rounded-lg border-none p-6 md:h-full lg:flex-col lg:gap-0",
             "bg-card text-primary shadow-[0px_1px_2px_.75px_#00000024] transition-colors",
             "hover:bg-accent hover:text-primary",
           )}

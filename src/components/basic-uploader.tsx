@@ -13,7 +13,7 @@ type Props = {
   slug: string;
 };
 
-export function Uploader({ projectSchedule, slug }: Props) {
+export function BasicUploader({ projectSchedule, slug }: Props) {
   const { onUpload, progresses, uploadedFiles, isUploading, setUploadedFiles } = useUploadFile(
     "projectSchedule",
     {
