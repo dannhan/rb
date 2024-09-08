@@ -17,5 +17,10 @@ export const projectConfig: ProjectConfig = {
       href: "jadwal-proyek",
       icon: "calendar",
     },
+    {
+      title: "Realisasi Biaya",
+      href: "realisasi-biaya",
+      icon: "wallet",
+    },
   ],
 };

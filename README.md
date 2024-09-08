@@ -25,6 +25,7 @@
 - [ ] set up database (decide what service should i use)
 - [ ] integrate auth with firebase
 - [ ] implement proper auth for manager and admin
+- [ ] invalidate route after file uploading
 
 #### Medium-Priority
 

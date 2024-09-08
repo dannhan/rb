@@ -1,22 +1,26 @@
 "use client";
 
 import { StoredImage } from "@/types";
+import { OurFileRouter } from "@/app/api/uploadthing/core";
 
+// todo: somehow combine theese two
 import { deleteProjectScheduleAction } from "@/lib/actions";
+import { deleteCostRealizationAction } from "@/lib/actions";
 
 import { useUploadFile } from "@/hooks/use-upload-file";
 import { FileUploader } from "@/components/file-uploader";
 import { ImageCard } from "@/components/image-card";
 
 type Props = {
-  projectSchedule: StoredImage | null;
+  storedFile: StoredImage | null;
   slug: string;
+  endpoint: keyof OurFileRouter;
 };
 
-export function BasicUploader({ projectSchedule, slug }: Props) {
+export function BasicUploader({ storedFile, slug, endpoint }: Props) {
   const { onUpload, progresses, uploadedFiles, isUploading, setUploadedFiles } =
-    useUploadFile("projectSchedule", {
-      defaultUploadedFiles: projectSchedule ? [projectSchedule] : [],
+    useUploadFile(endpoint, {
+      defaultUploadedFiles: storedFile ? [storedFile] : [],
       input: { slug },
     });
 
@@ -34,7 +38,11 @@ export function BasicUploader({ projectSchedule, slug }: Props) {
         image={uploadedFiles[0]}
         className="mt-0 h-full"
         action={async () => {
-          await deleteProjectScheduleAction(slug, uploadedFiles[0].customId);
+          if (endpoint === "projectSchedule") {
+            await deleteProjectScheduleAction(slug, uploadedFiles[0].customId);
+          } else if (endpoint === "costRealization") {
+            await deleteCostRealizationAction(slug, uploadedFiles[0].customId);
+          }
           setUploadedFiles([]);
         }}
       />

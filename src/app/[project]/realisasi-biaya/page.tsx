@@ -1,4 +1,4 @@
-import { getProjectScheduleBySlugFirebase } from "@/firebase/firestore/project-schedule";
+import { getCostRealizationBySlugFirebase } from "@/firebase/firestore/cost-realization";
 import { BasicUploader } from "@/components/basic-uploader";
 
 type Props = {
@@ -6,15 +6,15 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
-  const projectSchedule = await getProjectScheduleBySlugFirebase(
+  const costRealization = await getCostRealizationBySlugFirebase(
     params.project,
   );
 
   return (
     <BasicUploader
-      storedFile={projectSchedule}
+      storedFile={costRealization}
       slug={params.project}
-      endpoint="projectSchedule"
+      endpoint="costRealization"
     />
   );
 }

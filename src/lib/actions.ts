@@ -20,6 +20,7 @@ import {
   deleteDesignImageByIdFirebase,
 } from "@/firebase/firestore/design-image";
 import { deleteProjectScheduleBySlugAndIdFirebase } from "@/firebase/firestore/project-schedule";
+import { deleteCostRealizationBySlugAndIdFirebase } from "@/firebase/firestore/cost-realization";
 
 export async function login(_: any, formData: FormData) {
   try {
@@ -116,4 +117,15 @@ export async function deleteProjectScheduleAction(
   }
 
   await deleteProjectScheduleBySlugAndIdFirebase(slug, id);
+}
+
+export async function deleteCostRealizationAction(
+  slug: string,
+  id: string | null,
+) {
+  if (!id) {
+    throw new Error("id is required.");
+  }
+
+  await deleteCostRealizationBySlugAndIdFirebase(slug, id);
 }

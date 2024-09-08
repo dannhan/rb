@@ -10,6 +10,7 @@ import { postDesignImageFirebase } from "@/firebase/firestore/design-image";
 import { postProjectScheduleFirebase } from "@/firebase/firestore/project-schedule";
 
 import { customAlphabet } from "nanoid";
+import { postCostRealizationFirebase } from "@/firebase/firestore/cost-realization";
 
 const f = createUploadthing();
 
@@ -68,6 +69,32 @@ export const ourFileRouter = {
       try {
         await postProjectScheduleFirebase(metadata.slug, {
           route: "projectSchedule",
+          key,
+          name,
+          url,
+          customId: file.customId,
+        });
+      } catch (error) {
+        return { error: "Failed to upload the data." };
+      }
+    }),
+
+  costRealization: f({ image: { maxFileSize: "8MB", maxFileCount: 1 } })
+    .input(z.object({ slug: z.string() }))
+    .middleware(async ({ files, input }) => {
+      const fileOverrides = files.map((file) => {
+        return { ...file, customId: nanoid() };
+      });
+
+      return { slug: input.slug, [UTFiles]: fileOverrides };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Upload complete for slug:", metadata.slug);
+      const { key, name, url } = file;
+
+      try {
+        await postCostRealizationFirebase(metadata.slug, {
+          route: "costRealization",
           key,
           name,
           url,
