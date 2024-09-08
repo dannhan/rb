@@ -3,45 +3,43 @@
 import { XIcon } from "lucide-react";
 import { Table } from "@tanstack/react-table";
 
+import { teamTableConfig } from "@/config/table";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CreateTeamDialog } from "@/components/create-team-dialog";
 import { DataTableViewOptions } from "./data-table-view-options";
-
-import { statuses, priorities } from "@/data";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
+  slug: string;
 }
 
 export function DataTableToolbar<TData>({
   table,
+  slug,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+    <div className="flex flex-col-reverse items-center justify-between gap-2 md:flex-row md:gap-0">
+      <div className="flex w-full flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter tasks..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+          placeholder="Search"
+          value={
+            (table.getColumn("pelaksana")?.getFilterValue() as string) ?? ""
           }
-          className="h-8 w-[150px] lg:w-[250px]"
+          onChange={(event) =>
+            table.getColumn("pelaksana")?.setFilterValue(event.target.value)
+          }
+          className="h-8 flex-1 md:w-[125px] md:flex-initial lg:w-[250px]"
         />
         {table.getColumn("status") && (
           <DataTableFacetedFilter
             column={table.getColumn("status")}
             title="Status"
-            options={statuses}
-          />
-        )}
-        {table.getColumn("priority") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("priority")}
-            title="Priority"
-            options={priorities}
+            options={teamTableConfig.statuses}
           />
         )}
         {isFiltered && (
@@ -55,7 +53,10 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex w-full justify-between gap-2 md:w-fit">
+        <CreateTeamDialog slug={slug} />
+        <DataTableViewOptions table={table} />
+      </div>
     </div>
   );
 }
