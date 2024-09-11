@@ -30,6 +30,14 @@ export type TeamTableConfig = {
 
 export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> {}
 
+export type ProjectProgress = {
+  id: number;
+  week: number;
+  date: Date;
+  physicalProgress: number;
+  costProgress: number;
+}
+
 export type StoredImage = {
   route: string;
   customId: string | null;

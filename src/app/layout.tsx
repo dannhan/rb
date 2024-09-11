@@ -5,6 +5,7 @@ import "./globals.css";
 import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { TailwindIndicator } from "@/components/tailwind-indicator";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
           />
           {children}
           <Toaster richColors />
+          <TailwindIndicator />
         </ThemeProvider>
       </body>
     </html>
