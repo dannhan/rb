@@ -1,38 +1,33 @@
 "use client";
 
-import { XIcon } from "lucide-react";
+import { teamTableConfig } from "@/config/table";
 import { Table } from "@tanstack/react-table";
 
-import { teamTableConfig } from "@/config/table";
-
+import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { CreateTeamDialog } from "@/components/create-team-dialog";
-import { DataTableViewOptions } from "./data-table-view-options";
-import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
+import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
+import { DebouncedInput } from "@/components/debounced-input";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
-  slug: string;
+  children?: React.ReactNode;
 }
 
 export function DataTableToolbar<TData>({
   table,
-  slug,
+  children,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
     <div className="flex flex-col-reverse items-center justify-between gap-2 md:flex-row md:gap-0">
       <div className="flex w-full flex-1 items-center space-x-2">
-        <Input
+        <DebouncedInput
+          debounce={200}
           placeholder="Search"
-          value={
-            (table.getColumn("pelaksana")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("pelaksana")?.setFilterValue(event.target.value)
-          }
+          value={table.getState().globalFilter}
+          onChange={(value) => table.setGlobalFilter(String(value))}
           className="h-8 flex-1 md:w-[125px] md:flex-initial lg:w-[250px]"
         />
         {table.getColumn("status") && (
@@ -54,7 +49,7 @@ export function DataTableToolbar<TData>({
         )}
       </div>
       <div className="flex w-full justify-between gap-2 md:w-fit">
-        <CreateTeamDialog slug={slug} />
+        {children}
         <DataTableViewOptions table={table} />
       </div>
     </div>

@@ -51,3 +51,84 @@ export async function postTeamFirebase(
   const teamsRef = db.collection("projects").doc(slug).collection("teams");
   await teamsRef.add(team);
 }
+
+export async function updateTeamCheckedBySlugAndNoFirebase(
+  slug: string,
+  no: number,
+  checked: boolean,
+): Promise<void> {
+  const teamsRef = db.collection("projects").doc(slug).collection("teams");
+  const snapshot = await teamsRef.where("no", "==", no).get();
+
+  if (snapshot.empty) {
+    console.error("No matching team found, no:", no);
+    throw new Error("No matching data found.");
+  }
+
+  // Start a new batch
+  const batch = db.batch();
+
+  snapshot.forEach((doc) => {
+    batch.update(doc.ref, { checked });
+  });
+
+  // Commit the batch
+  await batch.commit();
+}
+
+export async function updateTeamBySlugAndNoFirebase(
+  slug: string,
+  team: Team,
+): Promise<void> {
+  const teamsRef = db.collection("projects").doc(slug).collection("teams");
+  const snapshot = await teamsRef.where("no", "==", team.no).get();
+
+  if (snapshot.empty) {
+    console.error("No matching team found, no:", team.no);
+    throw new Error("No matching data found.");
+  }
+
+  // Start a new batch
+  const batch = db.batch();
+
+  snapshot.forEach((doc) => {
+    batch.update(doc.ref, team);
+  });
+
+  // Commit the batch
+  await batch.commit();
+}
+
+export async function deleteTeamBySlugAndNoFirebase(
+  slug: string,
+  no: number,
+): Promise<void> {
+  const teamsRef = db.collection("projects").doc(slug).collection("teams");
+
+  // Start a new batch
+  const batch = db.batch();
+
+  // Find and delete the team
+  const snapshot = await teamsRef.where("no", "==", no).get();
+  if (snapshot.empty) {
+    console.error("No matching team found, no:", no);
+    throw new Error("No matching data found.");
+  }
+
+  snapshot.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+
+  // Get all teams with a higher number and decrement their numbers
+  const higherTeamsSnapshot = await teamsRef
+    .where("no", ">", no)
+    .orderBy("no")
+    .get();
+
+  higherTeamsSnapshot.forEach((doc) => {
+    batch.update(doc.ref, { no: doc.data().no - 1 });
+  });
+
+  // Commit the batch
+  await batch.commit();
+}

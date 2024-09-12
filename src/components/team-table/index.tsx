@@ -1,8 +1,10 @@
 "use client";
 
 import * as React from "react";
+
+import { Team } from "@/types";
+
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -16,6 +18,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -26,31 +29,36 @@ import {
 } from "@/components/ui/table";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { DataTablePagination } from "@/components/data-table/data-table-pagination";
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
+import { CreateTeamDialog } from "@/components/create-team-dialog";
+import { getColumns } from "./columns";
+import { DataTablePrint } from "./team-table-print";
 
-import { DataTablePagination } from "./data-table-pagination";
-import { DataTableToolbar } from "./data-table-toolbar";
-import { cn } from "@/lib/utils";
-
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps {
+  data: Team[];
   slug: string;
   isLoading?: boolean;
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-  slug,
-  isLoading,
-}: DataTableProps<TData, TValue>) {
-  const [rowSelection, setRowSelection] = React.useState({});
+export function DataTable({ data, slug, isLoading }: DataTableProps) {
+  const initialRowSelection: Record<string, boolean> = {};
+  data.forEach((team, index) => {
+    if (team.checked === true) {
+      initialRowSelection[index.toString()] = true;
+    }
+  });
+
+  const [rowSelection, setRowSelection] = React.useState(initialRowSelection);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
+  const [globalFilter, setGlobalFilter] = React.useState<string>("");
   const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const columns = React.useMemo(() => getColumns(slug), []);
 
   const table = useReactTable({
     data,
@@ -60,12 +68,14 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
       columnFilters,
+      globalFilter,
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -75,8 +85,12 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="space-y-4">
-      <DataTableToolbar table={table} slug={slug} />
+    <div className="space-y-4 pb-16">
+      <DataTableToolbar table={table}>
+        <CreateTeamDialog slug={slug} />
+        <DataTablePrint table={table} />
+      </DataTableToolbar>
+
       <ScrollArea className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
@@ -104,6 +118,7 @@ export function DataTable<TData, TValue>({
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
+                    className={cn("data-[state=selected]:bg-background")}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
@@ -111,6 +126,9 @@ export function DataTable<TData, TValue>({
                         className={cn(
                           cell.column.id === "select" && "",
                           cell.column.id === "actions" && "w-0 p-2.5",
+                          cell.column.id === "pekerjaan" &&
+                            row.getIsSelected() &&
+                            "text-primary",
                         )}
                       >
                         {flexRender(
@@ -126,11 +144,12 @@ export function DataTable<TData, TValue>({
                     table.getState().pagination.pageSize -
                       table.getRowModel().rows.length,
                   ),
-                ].map((i) => (
-                  <tr key={i} className="h-[57px]"></tr>
+                ].map((_, i) => (
+                  <tr key={i} className="h-[53px]"></tr>
                 ))}
               </>
             ) : isLoading ? (
+              // todo: improve skeleton loading
               <TableRow>
                 <TableCell colSpan={columns.length} className="p-0">
                   <Skeleton className="h-96 w-full rounded-none"></Skeleton>

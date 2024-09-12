@@ -1,5 +1,5 @@
-import { columns } from "@/components/identity-table/columns";
 import { DataTable } from "@/components/identity-table/data-table";
+import { columns } from "@/components/identity-table/columns";
 
 type Props = {
   params: { project: string };

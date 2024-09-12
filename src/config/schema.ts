@@ -1,3 +1,4 @@
+import { checkCustomRoutes } from "next/dist/lib/load-custom-routes";
 import { z } from "zod";
 
 export const taskSchema = z.object({
@@ -25,6 +26,7 @@ export const teamSchema = z.object({
   spk: z.string(),
   pelaksana: z.string(),
   status: z.string(),
+  checked: z.boolean().optional(),
 });
 
 export const teamFormSchema = z.object({

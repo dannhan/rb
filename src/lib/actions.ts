@@ -7,16 +7,19 @@ import { CredentialsSignin } from "next-auth";
 import { signIn, signOut } from "@/auth";
 
 import { StoredImage } from "@/types";
-import { projectFormSchema, teamFormSchema } from "@/config/schema";
+import { projectFormSchema, teamFormSchema, teamSchema } from "@/config/schema";
 
 import { UTApi } from "uploadthing/server";
 import { postProjectFirebase } from "@/firebase/firestore/project";
 import {
   postTeamFirebase,
   getTeamLengthBySlugFirebase,
+  deleteTeamBySlugAndNoFirebase,
+  updateTeamCheckedBySlugAndNoFirebase,
+  updateTeamBySlugAndNoFirebase,
 } from "@/firebase/firestore/team";
 import {
-  deleteDesignImageIdFirebase,
+  deleteDesignImagesIdFirebase,
   deleteDesignImageByIdFirebase,
 } from "@/firebase/firestore/design-image";
 import { deleteProjectScheduleBySlugAndIdFirebase } from "@/firebase/firestore/project-schedule";
@@ -69,8 +72,6 @@ export async function createProjectAction(data: FormData) {
 // todo: implement this function
 // todo: add more error handling, invalid data, server error, etc.
 export async function createTeamAction(slug: string, team: FormData) {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
   const formData = Object.fromEntries(team);
   const parsed = teamFormSchema.safeParse(formData);
 
@@ -89,6 +90,55 @@ export async function createTeamAction(slug: string, team: FormData) {
   }
 }
 
+export async function updateTeamCheckedAction(
+  slug: string,
+  no: number,
+  checked: boolean,
+) {
+  try {
+    await updateTeamCheckedBySlugAndNoFirebase(slug, no, checked);
+  } catch (error) {
+    console.error("Error updating team:", error);
+    throw new Error("Error updating team.");
+  }
+}
+
+export async function updateTeamAction(
+  slug: string,
+  no: number,
+  checked: boolean,
+  team: FormData,
+) {
+  const formData = Object.fromEntries(team);
+  const parsed = teamSchema.safeParse({
+    ...formData,
+    no,
+    checked,
+  });
+
+  if (!parsed.success) {
+    console.log(parsed.error.message);
+    return { message: "Invalid data type.", errors: "Invalid type." };
+  }
+
+  try {
+    await updateTeamBySlugAndNoFirebase(slug, parsed.data);
+    return { message: "Data has been updated." };
+  } catch (error) {
+    console.error("Error updating team:", error);
+    return { message: "An error occured", errors: error };
+  }
+}
+
+export async function deleteTeamAction(slug: string, no: number) {
+  try {
+    await deleteTeamBySlugAndNoFirebase(slug, no);
+  } catch (error) {
+    console.error("Error deleting team:", error);
+    throw new Error("Error deleting team.");
+  }
+}
+
 // todo: error handling
 export async function deleteDesignImageAction(
   slug: string,
@@ -102,7 +152,7 @@ export async function deleteDesignImageAction(
 
   await Promise.all([
     utapi.deleteFiles([file.key]),
-    deleteDesignImageIdFirebase(slug, file.customId),
+    deleteDesignImagesIdFirebase(slug, file.customId),
     deleteDesignImageByIdFirebase(slug, file.customId),
   ]);
 }

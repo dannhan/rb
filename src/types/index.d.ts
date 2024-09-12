@@ -1,4 +1,4 @@
-import { string, z } from "zod";
+import { z } from "zod";
 import {
   taskSchema,
   projectSchema,
@@ -36,7 +36,7 @@ export type ProjectProgress = {
   date: Date;
   physicalProgress: number;
   costProgress: number;
-}
+};
 
 export type StoredImage = {
   route: string;

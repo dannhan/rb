@@ -74,7 +74,7 @@ export async function storeDesignImageIdFirebase(
   });
 }
 
-export async function deleteDesignImageIdFirebase(
+export async function deleteDesignImagesIdFirebase(
   slug: string,
   designImageId: string,
 ): Promise<void> {

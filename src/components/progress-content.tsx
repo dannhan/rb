@@ -6,15 +6,10 @@ import { Noto_Sans_Mono } from "next/font/google";
 import { cn } from "@/lib/utils";
 import type { ProjectProgress } from "@/types";
 
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import {
   CalendarIcon,
-  CheckIcon,
   EditIcon,
   MoreHorizontal,
   Trash2,
@@ -85,7 +80,7 @@ export function ProgressContent({ projectProgress, setIsEditing }: Props) {
             <MoreHorizontal className="h-4 w-4 " />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="bottom" align="end">
+        <DropdownMenuContent align="end" className="w-[160px]">
           <DropdownMenuItem onClick={() => setIsEditing(true)}>
             <EditIcon className="mr-2.5 h-4 w-4" />
             Edit
