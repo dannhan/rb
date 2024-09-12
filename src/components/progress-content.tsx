@@ -8,12 +8,7 @@ import type { ProjectProgress } from "@/types";
 
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import {
-  CalendarIcon,
-  EditIcon,
-  MoreHorizontal,
-  Trash2,
-} from "lucide-react";
+import { CalendarIcon, EditIcon, MoreHorizontal, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";

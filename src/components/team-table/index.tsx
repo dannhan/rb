@@ -30,6 +30,7 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
+import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { CreateTeamDialog } from "@/components/create-team-dialog";
 import { getColumns } from "./columns";
@@ -89,6 +90,7 @@ export function DataTable({ data, slug, isLoading }: DataTableProps) {
       <DataTableToolbar table={table}>
         <CreateTeamDialog slug={slug} />
         <DataTablePrint table={table} />
+        <DataTableViewOptions table={table} />
       </DataTableToolbar>
 
       <ScrollArea className="overflow-hidden rounded-md border">

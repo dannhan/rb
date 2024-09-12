@@ -35,7 +35,7 @@ export default function RootLayout({
             crawlSpeed={200}
           />
           {children}
-          <Toaster richColors />
+          <Toaster richColors closeButton />
           <TailwindIndicator />
         </ThemeProvider>
       </body>

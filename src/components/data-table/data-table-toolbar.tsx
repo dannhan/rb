@@ -5,7 +5,6 @@ import { Table } from "@tanstack/react-table";
 
 import { XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
 import { DebouncedInput } from "@/components/debounced-input";
 
@@ -50,7 +49,6 @@ export function DataTableToolbar<TData>({
       </div>
       <div className="flex w-full justify-between gap-2 md:w-fit">
         {children}
-        <DataTableViewOptions table={table} />
       </div>
     </div>
   );

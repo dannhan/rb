@@ -3,6 +3,11 @@ import { ProjectConfig } from "@/types";
 export const projectConfig: ProjectConfig = {
   sidebarItems: [
     {
+      title: "Identitas Proyek",
+      href: "identitas-proyek",
+      icon: "info",
+    },
+    {
       title: "Tim Pelaksana",
       href: "tim-pelaksana",
       icon: "users",

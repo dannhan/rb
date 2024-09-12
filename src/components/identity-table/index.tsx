@@ -2,10 +2,9 @@
 
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { Identity } from "@/types";
 
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -14,10 +13,11 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+
+import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -26,57 +26,58 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { CreateIdentityProject } from "@/components/create-identity-project";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
+import { getColumns } from "./columns";
+import { IdentityTablePrint } from "./identity-table-print";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableProps {
+  data: Identity[];
   slug: string;
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-  slug,
-}: DataTableProps<TData, TValue>) {
+export function DataTable({ data, slug }: DataTableProps) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
+  const [globalFilter, setGlobalFilter] = React.useState<string>("");
   const [sorting, setSorting] = React.useState<SortingState>([]);
+
+  const columns = React.useMemo(() => getColumns(slug), []);
 
   const table = useReactTable({
     data,
     columns,
-    initialState: {
-      pagination: {
-        pageSize: 20,
-      },
-    },
     state: {
       sorting,
       columnVisibility,
       rowSelection,
       columnFilters,
+      globalFilter,
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
   return (
-    <div className="space-y-2.5">
-      <DataTableToolbar table={table} slug={slug} />
+    <div className="w-full max-w-screen-md flex-1 space-y-2.5 pb-16">
+      <DataTableToolbar table={table}>
+        <CreateIdentityProject slug={slug} />
+        <IdentityTablePrint table={table} />
+      </DataTableToolbar>
+
       <div className="rounded-md border">
         <Table>
           <TableHeader className="sr-only">
@@ -109,9 +110,9 @@ export function DataTable<TData, TValue>({
                       <TableCell
                         key={cell.id}
                         className={cn(
-                          cell.column.id === "field" && "border-l font-bold",
+                          cell.column.id === "field" && "border-l",
                           cell.column.id === "value" && "border-x",
-                          (cell.column.id === "id" ||
+                          (cell.column.id === "no" ||
                             cell.column.id === "actions") &&
                             "w-0 p-2.5 text-center",
                         )}

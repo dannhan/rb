@@ -4,6 +4,7 @@ import {
   projectSchema,
   teamSchema,
   designImageSchema,
+  identitySchema,
 } from "@/config/schema";
 
 import { type ClientUploadedFileData } from "uploadthing/types";
@@ -51,3 +52,5 @@ export type Task = z.infer<typeof taskSchema>;
 export type Project = z.infer<typeof projectSchema>;
 
 export type Team = z.infer<typeof teamSchema>;
+
+export type Identity = z.infer<typeof identitySchema>;

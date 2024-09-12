@@ -7,7 +7,12 @@ import { CredentialsSignin } from "next-auth";
 import { signIn, signOut } from "@/auth";
 
 import { StoredImage } from "@/types";
-import { projectFormSchema, teamFormSchema, teamSchema } from "@/config/schema";
+import {
+  identityFormSchema,
+  projectFormSchema,
+  teamFormSchema,
+  teamSchema,
+} from "@/config/schema";
 
 import { UTApi } from "uploadthing/server";
 import { postProjectFirebase } from "@/firebase/firestore/project";
@@ -24,6 +29,11 @@ import {
 } from "@/firebase/firestore/design-image";
 import { deleteProjectScheduleBySlugAndIdFirebase } from "@/firebase/firestore/project-schedule";
 import { deleteCostRealizationBySlugAndIdFirebase } from "@/firebase/firestore/cost-realization";
+import {
+  getIdentitesLengthBySlugFirebase,
+  postIdentityFirebase,
+  deleteIdentityBySlugAndNoFirebase,
+} from "@/firebase/firestore/identity";
 
 export async function login(_: any, formData: FormData) {
   try {
@@ -90,6 +100,25 @@ export async function createTeamAction(slug: string, team: FormData) {
   }
 }
 
+export async function createIdentityAction(slug: string, identity: FormData) {
+  const formData = Object.fromEntries(identity);
+  const parsed = identityFormSchema.safeParse(formData);
+
+  if (!parsed.success) {
+    return { message: "Invalid data type.", errors: "Invalid type." };
+  }
+
+  try {
+    const length = await getIdentitesLengthBySlugFirebase(slug);
+
+    await postIdentityFirebase(slug, { no: length + 1, ...parsed.data });
+    return { message: "New data has been added." };
+  } catch (error) {
+    console.error("Error creating identity:", error);
+    return { message: "An error occured", errors: error };
+  }
+}
+
 export async function updateTeamCheckedAction(
   slug: string,
   no: number,
@@ -135,7 +164,16 @@ export async function deleteTeamAction(slug: string, no: number) {
     await deleteTeamBySlugAndNoFirebase(slug, no);
   } catch (error) {
     console.error("Error deleting team:", error);
-    throw new Error("Error deleting team.");
+    throw new Error("Error deleting data.");
+  }
+}
+
+export async function deleteIdentityAction(slug: string, no: number) {
+  try {
+    await deleteIdentityBySlugAndNoFirebase(slug, no);
+  } catch (error) {
+    console.error("Error deleting identity:", error);
+    throw new Error("Error deleting data.");
   }
 }
 
