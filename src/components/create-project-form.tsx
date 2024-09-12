@@ -65,7 +65,7 @@ export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
       } else {
         toast.success(res.message, { duration: 5000 });
         NProgress.start();
-        router.push(`${res.slug}/tim-pelaksana`);
+        router.push(`${res.slug}/identitas-proyek`);
       }
     });
   };
