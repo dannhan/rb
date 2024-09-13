@@ -100,7 +100,7 @@ export function CreateIdentityProject({ slug, className }: Props) {
                   <FormItem className="w-full flex-1">
                     <FormLabel className="sr-only">Field</FormLabel>
                     <FormControl>
-                      <Input {...field} className="w-full flex-1" />
+                      <Input {...field} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -112,7 +112,7 @@ export function CreateIdentityProject({ slug, className }: Props) {
                   <FormItem className="w-full flex-1">
                     <FormLabel className="sr-only">Value</FormLabel>
                     <FormControl>
-                      <Input {...field} className="w-full flex-1" />
+                      <Input {...field} />
                     </FormControl>
                   </FormItem>
                 )}
