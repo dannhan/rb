@@ -85,22 +85,22 @@ export function CreateIdentityProject({ slug, className }: Props) {
         <DialogHeader>
           <DialogTitle>Add Data</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add data. Click submit when you're
+            Fill in the details below to add data. Click submit when you&apos;re
             done.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
           <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex space-x-2">
+            <div className="flex w-full space-x-2">
               <FormField
                 control={form.control}
                 name="field"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="w-full flex-1">
                     <FormLabel className="sr-only">Field</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} className="w-full flex-1" />
                     </FormControl>
                   </FormItem>
                 )}
@@ -109,10 +109,10 @@ export function CreateIdentityProject({ slug, className }: Props) {
                 control={form.control}
                 name="value"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="w-full flex-1">
                     <FormLabel className="sr-only">Value</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} className="w-full flex-1" />
                     </FormControl>
                   </FormItem>
                 )}
