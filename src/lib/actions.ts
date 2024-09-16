@@ -22,6 +22,7 @@ import {
   deleteTeamBySlugAndNoFirebase,
   updateTeamCheckedBySlugAndNoFirebase,
   updateTeamBySlugAndNoFirebase,
+  updateTeamCheckedBySlugBatchFirebase,
 } from "@/firebase/firestore/team";
 import {
   deleteDesignImagesIdFirebase,
@@ -126,6 +127,18 @@ export async function updateTeamCheckedAction(
 ) {
   try {
     await updateTeamCheckedBySlugAndNoFirebase(slug, no, checked);
+  } catch (error) {
+    console.error("Error updating team:", error);
+    throw new Error("Error updating team.");
+  }
+}
+
+export async function updateTeamCheckedBatchAction(
+  slug: string,
+  value: boolean,
+) {
+  try {
+    await updateTeamCheckedBySlugBatchFirebase(slug, value);
   } catch (error) {
     console.error("Error updating team:", error);
     throw new Error("Error updating team.");

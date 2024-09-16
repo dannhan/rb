@@ -1,10 +1,15 @@
 "use client";
 
+import * as React from "react";
+
 import type { Team } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
 import { teamTableConfig } from "@/config/table";
 
-import { updateTeamCheckedAction } from "@/lib/actions";
+import {
+  updateTeamCheckedAction,
+  updateTeamCheckedBatchAction,
+} from "@/lib/actions";
 
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,37 +22,37 @@ export function getColumns(slug: string): ColumnDef<Team>[] {
   return [
     {
       id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={async (value) => {
-            try {
-              // todo: improve performance
-              await Promise.all(
-                table
-                  .getRowModel()
-                  .rows.map((row) =>
-                    updateTeamCheckedAction(slug, row.getValue("no"), !!value),
-                  ),
-              );
-            } catch (error) {
-              toast.error("Error updating team.");
+      header: function TableHeaderCheckbox({ table }) {
+        const [isPending, startTransition] = React.useTransition();
+
+        return (
+          <Checkbox
+            disabled={isPending}
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
             }
-            table.toggleAllPageRowsSelected(!!value);
-          }}
-          aria-label="Select all"
-        />
-      ),
+            onCheckedChange={async (value) => {
+              startTransition(async () => {
+                try {
+                  await updateTeamCheckedBatchAction(slug, !!value);
+                } catch (error) {
+                  toast.error("Error updating team.");
+                }
+                table.toggleAllPageRowsSelected(!!value);
+              });
+            }}
+            aria-label="Select all"
+          />
+        );
+      },
       cell: ({ row }) => (
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={async (value) => {
             try {
-              row.toggleSelected(!!value);
               await updateTeamCheckedAction(slug, row.getValue("no"), !!value);
+              row.toggleSelected(!!value);
             } catch (error) {
               toast.error("Error updating team.");
             }

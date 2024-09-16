@@ -49,7 +49,11 @@ export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
             <span className="sr-only">Open menu</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[160px]">
+        <DropdownMenuContent
+          collisionPadding={{ bottom: 100 }}
+          align="end"
+          className="w-[160px]"
+        >
           <DropdownMenuItem onSelect={() => setIsDialogOpen(true)}>
             <EditIcon className="mr-2.5 h-4 w-4" />
             Edit

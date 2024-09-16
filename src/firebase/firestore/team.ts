@@ -1,3 +1,4 @@
+import { FieldPath } from "firebase-admin/firestore";
 import { db } from "@/firebase/init";
 
 import { Team } from "@/types";
@@ -58,22 +59,60 @@ export async function updateTeamCheckedBySlugAndNoFirebase(
   checked: boolean,
 ): Promise<void> {
   const teamsRef = db.collection("projects").doc(slug).collection("teams");
-  const snapshot = await teamsRef.where("no", "==", no).get();
+  const snapshot = await teamsRef.where("no", "==", no).select().get();
 
   if (snapshot.empty) {
     console.error("No matching team found, no:", no);
     throw new Error("No matching data found.");
   }
 
-  // Start a new batch
-  const batch = db.batch();
-
   snapshot.forEach((doc) => {
-    batch.update(doc.ref, { checked });
+    doc.ref.update({ checked });
   });
+}
 
-  // Commit the batch
-  await batch.commit();
+export async function updateTeamCheckedBySlugBatchFirebase(
+  slug: string,
+  value: boolean,
+) {
+  const teamCollection = db
+    .collection("projects")
+    .doc(slug)
+    .collection("teams");
+
+  // Get the total count of documents
+  const countSnapshot = await teamCollection.count().get();
+  const totalDocs = countSnapshot.data().count;
+
+  // If there are no documents, return early
+  if (totalDocs === 0) {
+    return;
+  }
+
+  // Determine the number of batches needed (max 500 operations per batch)
+  const batchSize = 500;
+  const numBatches = Math.ceil(totalDocs / batchSize);
+
+  try {
+    for (let i = 0; i < numBatches; i++) {
+      const batch = db.batch();
+
+      const querySnapshot = await teamCollection
+        .orderBy(FieldPath.documentId())
+        .limit(batchSize)
+        .offset(i * batchSize)
+        .get();
+
+      querySnapshot.forEach((doc) => {
+        batch.update(doc.ref, { checked: value });
+      });
+
+      await batch.commit();
+    }
+  } catch (error) {
+    console.error("Error updating teams in batch:", error);
+    throw new Error(`Error updating teams for project ${slug}`);
+  }
 }
 
 export async function updateTeamBySlugAndNoFirebase(
