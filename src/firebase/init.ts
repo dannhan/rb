@@ -1,6 +1,12 @@
-import type { ServiceAccount } from "firebase-admin/app";
-import { initializeApp, cert, getApps } from "firebase-admin/app";
+import {
+  type ServiceAccount,
+  initializeApp,
+  cert,
+  getApps,
+} from "firebase-admin/app";
+
 import { getFirestore } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 
 const firebaseCredential: ServiceAccount = {
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -15,3 +21,4 @@ if (getApps().length === 0) {
 }
 
 export const db = getFirestore();
+export const auth = getAuth();

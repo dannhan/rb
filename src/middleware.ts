@@ -6,13 +6,14 @@ import { auth } from "@/auth";
 */
 
 export default auth((req) => {
-  /* protecting resources for non-authenticated users */
-  if (!req.auth && req.nextUrl.pathname !== "/") {
+  const isAuthenticated = !!req.auth;
+
+  if (!isAuthenticated && req.nextUrl.pathname !== "/") {
     return Response.redirect(new URL("/", req.url));
   }
 
   /* redirect authenticated users */
-  if (req.auth && req.nextUrl.pathname === "/") {
+  if (isAuthenticated && req.nextUrl.pathname === "/") {
     return Response.redirect(new URL("/home", req.url));
   }
 });

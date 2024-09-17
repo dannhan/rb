@@ -27,7 +27,7 @@ export function LoginForm() {
           type="password"
           required
         />
-        <p className="pt-1 text-destructive">{state.message}</p>
+        <p className="pt-1 text-destructive">{state?.message}</p>
 
         {/* Show Password Button */}
         <Button
