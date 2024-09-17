@@ -1,9 +1,8 @@
 import { Project } from "@/types";
 
-import { ChevronsRight } from "lucide-react";
-import { Button } from "./ui/button";
 import { CreateProjectSheet } from "./create-project-sheet";
 import { ProjectCard } from "./project-card";
+import { ProjectSeeMoreSheet } from "./project-see-more-sheet";
 
 type Props = {
   projects: Project[];
@@ -22,15 +21,7 @@ export async function ProjectCardsList({ projects, type }: Props) {
           <ProjectCard key={index} project={project} />
         ))}
       </div>
-      <Button
-        className="flex items-center bg-background"
-        size="sm"
-        variant="outline"
-        disabled
-      >
-        <span className="mr-1">See More</span>
-        <ChevronsRight className="h-5 w-5" />
-      </Button>
+      <ProjectSeeMoreSheet projects={projects} type={type} />
     </section>
   );
 }
