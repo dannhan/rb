@@ -39,10 +39,12 @@ import { DataTablePrint } from "./team-table-print";
 interface DataTableProps {
   data: Team[];
   slug: string;
+  isAdmin?: boolean;
+  // todo
   isLoading?: boolean;
 }
 
-export function DataTable({ data, slug, isLoading }: DataTableProps) {
+export function DataTable({ data, slug, isAdmin, isLoading }: DataTableProps) {
   const initialRowSelection: Record<string, boolean> = {};
   data.forEach((team, index) => {
     if (team.checked === true) {
@@ -59,7 +61,7 @@ export function DataTable({ data, slug, isLoading }: DataTableProps) {
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
-  const columns = React.useMemo(() => getColumns(slug), []);
+  const columns = React.useMemo(() => getColumns(slug, !!isAdmin), []);
 
   const table = useReactTable({
     data,
@@ -88,7 +90,7 @@ export function DataTable({ data, slug, isLoading }: DataTableProps) {
   return (
     <div className="space-y-4 pb-16">
       <DataTableToolbar table={table}>
-        <CreateTeamDialog slug={slug} />
+        {isAdmin && <CreateTeamDialog slug={slug} />}
         <DataTablePrint table={table} />
         <DataTableViewOptions table={table} />
       </DataTableToolbar>
@@ -131,6 +133,7 @@ export function DataTable({ data, slug, isLoading }: DataTableProps) {
                           cell.column.id === "pekerjaan" &&
                             row.getIsSelected() &&
                             "text-primary",
+                          "h-[53px]",
                         )}
                       >
                         {flexRender(

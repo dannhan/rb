@@ -15,9 +15,10 @@ type Props = {
   storedFile: StoredImage | null;
   slug: string;
   endpoint: keyof OurFileRouter;
+  isAdmin?: boolean
 };
 
-export function BasicUploader({ storedFile, slug, endpoint }: Props) {
+export function BasicUploader({ storedFile, slug, endpoint, isAdmin }: Props) {
   const { onUpload, progresses, uploadedFiles, isUploading, setUploadedFiles } =
     useUploadFile(endpoint, {
       defaultUploadedFiles: storedFile ? [storedFile] : [],
@@ -30,7 +31,7 @@ export function BasicUploader({ storedFile, slug, endpoint }: Props) {
       maxSize={8 * 1024 * 1024}
       progresses={progresses}
       onUpload={onUpload}
-      disabled={isUploading}
+      disabled={!isAdmin || isUploading}
     />
   ) : (
     <div className="relative flex h-full justify-center">

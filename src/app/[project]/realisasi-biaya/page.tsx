@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { getCostRealizationBySlugFirebase } from "@/firebase/firestore/cost-realization";
 import { BasicUploader } from "@/components/basic-uploader";
 
@@ -10,11 +11,15 @@ export default async function Page({ params }: Props) {
     params.project,
   );
 
+  const session = await auth();
+  const isAdmin = session?.user.isAdmin;
+
   return (
     <BasicUploader
       storedFile={costRealization}
       slug={params.project}
       endpoint="costRealization"
+      isAdmin={isAdmin}
     />
   );
 }

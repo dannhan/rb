@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import {
   getDesignImageIdsBySlugFirebase,
   getDesignImagesBySlugAndIdsFirebase,
@@ -15,5 +16,8 @@ export default async function Page({ params }: Props) {
     designImageKeys,
   );
 
-  return <DesignImagesCard designImages={designImages} slug={params.project} />;
+  const session = await auth();
+  const isAdmin = session?.user.isAdmin;
+
+  return <DesignImagesCard designImages={designImages} slug={params.project} isAdmin={isAdmin} />;
 }

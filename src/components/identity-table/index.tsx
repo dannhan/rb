@@ -34,9 +34,10 @@ import { IdentityTablePrint } from "./identity-table-print";
 interface DataTableProps {
   data: Identity[];
   slug: string;
+  isAdmin?: boolean;
 }
 
-export function DataTable({ data, slug }: DataTableProps) {
+export function DataTable({ data, slug, isAdmin }: DataTableProps) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
@@ -46,7 +47,7 @@ export function DataTable({ data, slug }: DataTableProps) {
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
-  const columns = React.useMemo(() => getColumns(slug), []);
+  const columns = React.useMemo(() => getColumns(slug, !!isAdmin), []);
 
   const table = useReactTable({
     data,
@@ -74,7 +75,7 @@ export function DataTable({ data, slug }: DataTableProps) {
   return (
     <div className="w-full max-w-screen-md flex-1 space-y-2.5 pb-16">
       <DataTableToolbar table={table}>
-        <CreateIdentityProject slug={slug} />
+        {isAdmin && <CreateIdentityProject slug={slug} />}
         <IdentityTablePrint table={table} />
       </DataTableToolbar>
 
@@ -115,6 +116,7 @@ export function DataTable({ data, slug }: DataTableProps) {
                           (cell.column.id === "no" ||
                             cell.column.id === "actions") &&
                             "w-0 p-2.5 text-center",
+                          "h-[53px]",
                         )}
                       >
                         {flexRender(

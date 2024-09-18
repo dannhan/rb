@@ -4,8 +4,11 @@ import type { Identity } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
 import { IdentityTableRowAction } from "./identity-table-row-actions";
 
-export function getColumns(slug: string): ColumnDef<Identity>[] {
-  return [
+export function getColumns(
+  slug: string,
+  isAdmin: boolean,
+): ColumnDef<Identity>[] {
+  const column: ColumnDef<Identity>[] = [
     {
       accessorKey: "no",
       cell: ({ row }) => {
@@ -38,9 +41,13 @@ export function getColumns(slug: string): ColumnDef<Identity>[] {
         );
       },
     },
-    {
+  ];
+
+  isAdmin &&
+    column.push({
       id: "actions",
       cell: ({ row }) => <IdentityTableRowAction row={row} slug={slug} />,
-    },
-  ];
+    });
+
+  return column;
 }

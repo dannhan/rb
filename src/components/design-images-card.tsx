@@ -27,10 +27,17 @@ const DialogUploader = dynamic(() =>
 interface Props {
   designImages: (UploadedFile | StoredImage)[];
   slug: string;
+  isAdmin?: boolean;
+  // todo
   isLoading?: boolean;
 }
 
-export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
+export function DesignImagesCard({
+  designImages,
+  slug,
+  isAdmin,
+  isLoading,
+}: Props) {
   const { progresses, onUpload, uploadedFiles, isUploading, setUploadedFiles } =
     useUploadFile("designImages", {
       defaultUploadedFiles: designImages,
@@ -46,11 +53,13 @@ export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
             These are all of the images that have been uploaded.
           </CardDescription>
         </div>
-        <DialogUploader
-          progresses={progresses}
-          onUpload={onUpload}
-          isUploading={isUploading}
-        />
+        {isAdmin && (
+          <DialogUploader
+            progresses={progresses}
+            onUpload={onUpload}
+            isUploading={isUploading}
+          />
+        )}
       </CardHeader>
       <CardContent>
         {uploadedFiles.length > 0 ? (
@@ -66,6 +75,7 @@ export function DesignImagesCard({ designImages, slug, isLoading }: Props) {
                       uploadedFiles.filter((f) => f.key !== file.key),
                     );
                   }}
+                  isAdmin={isAdmin}
                 />
               ))}
             </div>

@@ -18,8 +18,8 @@ import { Badge } from "@/components/ui/badge";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableRowActions } from "./team-table-row-actions";
 
-export function getColumns(slug: string): ColumnDef<Team>[] {
-  return [
+export function getColumns(slug: string, isAdmin: boolean): ColumnDef<Team>[] {
+  const column: ColumnDef<Team>[] = [
     {
       id: "select",
       header: function TableHeaderCheckbox({ table }) {
@@ -147,9 +147,13 @@ export function getColumns(slug: string): ColumnDef<Team>[] {
         return value.includes(row.getValue(id));
       },
     },
-    {
+  ];
+
+  isAdmin &&
+    column.push({
       id: "actions",
       cell: ({ row }) => <DataTableRowActions row={row} slug={slug} />,
-    },
-  ];
+    });
+
+  return column;
 }

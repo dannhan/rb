@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import { getProjectsByTypeFirebase } from "@/firebase/firestore/project";
 
 import { Header } from "@/layouts/header";
@@ -7,10 +8,13 @@ import { ProjectListCommandDialog } from "@/components/project-list-command-dial
 import { ProjectCardsList } from "@/components/project-cards-list";
 
 export default async function Page() {
-  const [konstruksiProjects, renovasiProjects] = await Promise.all([
+  const [konstruksiProjects, renovasiProjects, session] = await Promise.all([
     getProjectsByTypeFirebase("konstruksi"),
     getProjectsByTypeFirebase("renovasi"),
+    auth(),
   ]);
+
+  const isAdmin = session?.user.isAdmin;
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -26,9 +30,9 @@ export default async function Page() {
         </div>
       </Header>
       <main className="flex flex-col items-center gap-4 p-4 md:flex-1 lg:p-6 lg:pb-10">
-        <ProjectCardsList projects={konstruksiProjects} type="konstruksi" />
+        <ProjectCardsList projects={konstruksiProjects} type="konstruksi" isAdmin={isAdmin} />
         <Separator className="my-2 w-full max-w-screen-lg 2xl:max-w-screen-xl" />
-        <ProjectCardsList projects={renovasiProjects} type="renovasi" />
+        <ProjectCardsList projects={renovasiProjects} type="renovasi" isAdmin={isAdmin} />
       </main>
     </div>
   );
