@@ -36,10 +36,15 @@ import {
   deleteIdentityBySlugAndNoFirebase,
 } from "@/firebase/firestore/identity";
 
-export async function login(_: any, formData: FormData) {
+// todo
+export async function login(_: { message: string }, formData: FormData) {
   try {
+    const email = formData.get("email");
     const password = formData.get("password");
-    await signIn("credentials", { password, redirectTo: "/home" });
+
+    console.log(email, password);
+
+    await signIn("credentials", { email, password, redirectTo: "/home" });
 
     return { message: "" };
   } catch (error: any) {

@@ -11,15 +11,23 @@ import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { SubmitButton } from "@/components/submit-button";
 
-export function LoginForm() {
+export function LoginForm({ email }: { email: string }) {
   const [state, formAction] = useFormState(login, { message: "" });
 
   return (
-    <form action={formAction} className="space-y-4">
-      <div className="relative">
+    <form action={formAction}>
+      <div className="relative pb-2">
         <Label className="sr-only" htmlFor="password">
           Password
         </Label>
+        <input
+          id="email"
+          name="email"
+          placeholder="Email"
+          value={email}
+          required
+          className="hidden"
+        />
         <Input
           id="password"
           name="password"

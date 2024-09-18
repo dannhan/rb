@@ -8,18 +8,22 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        password: {},
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials): Promise<any> {
-        const { password } = credentials;
-        return await signInWithEmailAndPassword(
-          firebaseAuth,
-          "admin@google.com",
-          password as string,
-        )
+        // todo: use firebase implementation
+        const { email, password } = credentials as Record<
+          "email" | "password",
+          string
+        >;
+        const isAdmin = email === "admin@gmail.com";
+
+        console.log(email, password, isAdmin);
+        return await signInWithEmailAndPassword(firebaseAuth, email, password)
           .then((userCredential) => {
             if (userCredential.user) {
-              return { ...userCredential.user, isAdmin: true };
+              return { ...userCredential.user, isAdmin };
             }
 
             console.log("THIS SHOULD NOT BE LOGGED");
