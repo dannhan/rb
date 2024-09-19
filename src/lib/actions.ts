@@ -216,22 +216,30 @@ export async function deleteDesignImageAction(
 // todo: error handling
 export async function deleteProjectScheduleAction(
   slug: string,
-  id: string | null,
+  file: StoredImage,
 ) {
-  if (!id) {
+  if (!file.customId) {
     throw new Error("id is required.");
   }
+  const utapi = new UTApi();
 
-  await deleteProjectScheduleBySlugAndIdFirebase(slug, id);
+  await Promise.all([
+    utapi.deleteFiles([file.key]),
+    deleteProjectScheduleBySlugAndIdFirebase(slug, file.customId),
+  ]);
 }
 
 export async function deleteCostRealizationAction(
   slug: string,
-  id: string | null,
+  file: StoredImage,
 ) {
-  if (!id) {
+  if (!file.customId) {
     throw new Error("id is required.");
   }
+  const utapi = new UTApi();
 
-  await deleteCostRealizationBySlugAndIdFirebase(slug, id);
+  await Promise.all([
+    utapi.deleteFiles([file.key]),
+    deleteCostRealizationBySlugAndIdFirebase(slug, file.customId),
+  ]);
 }

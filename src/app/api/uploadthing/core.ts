@@ -25,7 +25,7 @@ async function auth(req: Request) {
 }
 
 // FileRouter for your app, can contain multiple FileRoutes
-export const ourFileRouter = {
+export const router = {
   designImages: f({ image: { maxFileSize: "4MB", maxFileCount: 4 } })
     .input(z.object({ slug: z.string() }))
     .middleware(async ({ files, input }) => {
@@ -106,4 +106,4 @@ export const ourFileRouter = {
     }),
 } satisfies FileRouter;
 
-export type OurFileRouter = typeof ourFileRouter;
+export type OurFileRouter = typeof router;

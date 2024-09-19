@@ -15,7 +15,7 @@ type Props = {
   storedFile: StoredImage | null;
   slug: string;
   endpoint: keyof OurFileRouter;
-  isAdmin?: boolean
+  isAdmin?: boolean;
 };
 
 export function BasicUploader({ storedFile, slug, endpoint, isAdmin }: Props) {
@@ -38,11 +38,13 @@ export function BasicUploader({ storedFile, slug, endpoint, isAdmin }: Props) {
       <ImageCard
         image={uploadedFiles[0]}
         className="mt-0 h-full"
+        isAdmin={isAdmin}
         action={async () => {
+          const uploadedFile = uploadedFiles[0] as StoredImage;
           if (endpoint === "projectSchedule") {
-            await deleteProjectScheduleAction(slug, uploadedFiles[0].customId);
+            await deleteProjectScheduleAction(slug, uploadedFile);
           } else if (endpoint === "costRealization") {
-            await deleteCostRealizationAction(slug, uploadedFiles[0].customId);
+            await deleteCostRealizationAction(slug, uploadedFile);
           }
           setUploadedFiles([]);
         }}
