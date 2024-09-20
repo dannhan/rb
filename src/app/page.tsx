@@ -14,13 +14,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export default function Page() {
   return (
     <main className="flex h-svh w-full items-center justify-center">
-      <section className="hidden h-full flex-1 items-center justify-center border-r lg:flex">
-        {/* <Image
-          src="/examples/download.jpg"
+      <section className="relative hidden h-full flex-1 items-center justify-center border-r lg:flex">
+        <Image
+          src="/download.jpg"
           alt="Image"
-          className="h-[720px] w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          className="w-full object-cover dark:brightness-[0.2] dark:grayscale"
           fill
-        /> */}
+        />
       </section>
       <section className="bg-mute flex h-full flex-1 items-center justify-center">
         <Tabs defaultValue="admin" className="w-[400px] px-4">

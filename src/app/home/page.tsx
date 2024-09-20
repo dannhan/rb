@@ -28,9 +28,9 @@ export default async function Page() {
           {!isAdmin && (
             <Link
               href="/locations"
-              className="mr-4 flex items-center gap-0.5 text-sm text-foreground transition-all hover:text-foreground/70 dark:hover:text-foreground/40"
+              className="mr-4 flex items-center gap-1 text-base text-foreground transition-all hover:text-foreground/70 dark:hover:text-foreground/40"
             >
-              <MapPinIcon className="h-[15px] text-primary" /> Find A Store
+              <MapPinIcon className="h-[20px] text-primary" /> Find A Store
             </Link>
           )}
           <ProjectListCommandDialog
