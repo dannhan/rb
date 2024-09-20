@@ -1,4 +1,3 @@
-import { id } from "date-fns/locale";
 import { z } from "zod";
 
 export const taskSchema = z.object({
@@ -48,4 +47,11 @@ export const identitySchema = z.object({
 export const identityFormSchema = z.object({
   field: z.string().trim(),
   value: z.string().trim(),
+});
+
+export const storeLocationSchema = z.object({
+  address: z.string(),
+  link: z.string(),
+  lat: z.number(),
+  lng: z.number(),
 });

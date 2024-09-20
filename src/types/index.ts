@@ -3,8 +3,8 @@ import {
   taskSchema,
   projectSchema,
   teamSchema,
-  designImageSchema,
   identitySchema,
+  storeLocationSchema,
 } from "@/config/schema";
 
 import { type ClientUploadedFileData } from "uploadthing/types";
@@ -47,6 +47,11 @@ export type StoredImage = {
   url: string;
 };
 
+export type LatLng = {
+  lat: number;
+  lng: number;
+};
+
 export type Task = z.infer<typeof taskSchema>;
 
 export type Project = z.infer<typeof projectSchema>;
@@ -54,3 +59,5 @@ export type Project = z.infer<typeof projectSchema>;
 export type Team = z.infer<typeof teamSchema>;
 
 export type Identity = z.infer<typeof identitySchema>;
+
+export type StoreLocation = z.infer<typeof storeLocationSchema>;

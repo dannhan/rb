@@ -58,3 +58,18 @@
 - [ ] dashboard layout (scroll and overfow)
 
 - [x] middleware
+
+
+### MAPS:
+<!-- 1. Create map preview -->
+<!-- 2. Add feature to change location -->
+<!-- 3. Save the location add db -->
+<!-- 4. Get user current location -->
+<!-- 5. Calculate distance between user and stores location -->
+ 
+ important todos:
+ - [ ] change the input language to be indonesian
+ - [ ] instead of calculating between two latitude and longitude use the google api instead
+ - [ ] improve the ui for the lokasi
+ - [ ] add better type safety and do type checking
+ - [ ] better error handling

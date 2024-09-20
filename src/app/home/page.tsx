@@ -1,6 +1,9 @@
+import Link from "next/link";
+
 import { auth } from "@/auth";
 import { getProjectsByTypeFirebase } from "@/firebase/firestore/project";
 
+import { MapPinIcon } from "lucide-react";
 import { Header } from "@/layouts/header";
 import { Separator } from "@/components/ui/separator";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -22,6 +25,14 @@ export default async function Page() {
       <Header className="border-none bg-background text-muted-foreground shadow-md">
         <h1 className="text-lg font-semibold md:text-xl">Ria Busana</h1>
         <div className="flex items-center gap-2">
+          {!isAdmin && (
+            <Link
+              href="/locations"
+              className="mr-4 flex items-center gap-0.5 text-sm text-foreground transition-all hover:text-foreground/70 dark:hover:text-foreground/40"
+            >
+              <MapPinIcon className="h-[15px] text-primary" /> Find A Store
+            </Link>
+          )}
           <ProjectListCommandDialog
             konstruksiProjects={konstruksiProjects || []}
             renovasiProjects={renovasiProjects || []}
@@ -30,9 +41,17 @@ export default async function Page() {
         </div>
       </Header>
       <main className="flex flex-col items-center gap-4 p-4 md:flex-1 lg:p-6 lg:pb-10">
-        <ProjectCardsList projects={konstruksiProjects} type="konstruksi" isAdmin={isAdmin} />
+        <ProjectCardsList
+          projects={konstruksiProjects}
+          type="konstruksi"
+          isAdmin={isAdmin}
+        />
         <Separator className="my-2 w-full max-w-screen-lg 2xl:max-w-screen-xl" />
-        <ProjectCardsList projects={renovasiProjects} type="renovasi" isAdmin={isAdmin} />
+        <ProjectCardsList
+          projects={renovasiProjects}
+          type="renovasi"
+          isAdmin={isAdmin}
+        />
       </main>
     </div>
   );

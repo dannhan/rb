@@ -27,5 +27,10 @@ export const projectConfig: ProjectConfig = {
       href: "realisasi-biaya",
       icon: "wallet",
     },
+    {
+      title: "Lokasi",
+      href: "lokasi",
+      icon: "location",
+    },
   ],
 };

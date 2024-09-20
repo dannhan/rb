@@ -10,6 +10,7 @@ import { StoredImage } from "@/types";
 import {
   identityFormSchema,
   projectFormSchema,
+  storeLocationSchema,
   teamFormSchema,
   teamSchema,
 } from "@/config/schema";
@@ -35,6 +36,7 @@ import {
   postIdentityFirebase,
   deleteIdentityBySlugAndNoFirebase,
 } from "@/firebase/firestore/identity";
+import { updateStoreLocationBySlug } from "@/firebase/firestore/store-location";
 
 // todo
 export async function login(_: { message: string }, formData: FormData) {
@@ -173,6 +175,29 @@ export async function updateTeamAction(
     return { message: "Data has been updated." };
   } catch (error) {
     console.error("Error updating team:", error);
+    return { message: "An error occured", errors: error };
+  }
+}
+
+export async function updateStoreLocationAction(
+  slug: string,
+  store: FormData,
+  lat: number,
+  lng: number,
+) {
+  const formData = Object.fromEntries(store);
+  const parsed = storeLocationSchema.safeParse({ ...formData, lat, lng });
+
+  if (!parsed.success) {
+    return { message: "Invalid data type.", errors: "Invalid type." };
+  }
+
+  try {
+    console.log({ data: parsed.data });
+    await updateStoreLocationBySlug(slug, parsed.data);
+    return { message: "Location has been updated." };
+  } catch (error) {
+    console.error("Error updating location:", error);
     return { message: "An error occured", errors: error };
   }
 }
