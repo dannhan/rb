@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { LoginForm } from "@/components/login-form";
+
 import {
   Card,
   CardContent,
@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LoginForm } from "@/components/login-form";
 
 export default function Page() {
   return (
@@ -23,7 +24,7 @@ export default function Page() {
         />
       </section>
       <section className="bg-mute flex h-full flex-1 items-center justify-center">
-        <Tabs defaultValue="admin" className="w-[400px] px-4">
+        <Tabs defaultValue="admin" className="w-full max-w-96 px-4">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="admin">Admin</TabsTrigger>
             <TabsTrigger value="manager">Manager</TabsTrigger>
