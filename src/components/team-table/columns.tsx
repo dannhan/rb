@@ -4,7 +4,6 @@ import * as React from "react";
 
 import type { Team } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
-import { teamTableConfig } from "@/config/table";
 
 import {
   updateTeamCheckedAction,
@@ -13,11 +12,11 @@ import {
 
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Icons } from "@/components/icons";
-import { Badge } from "@/components/ui/badge";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+
 import { DataTableRowActions } from "./team-table-row-actions";
 import { DataTableFileColumns } from "./team-table-file-columns";
+import { TeamTableStatus } from "./team-table-status";
 
 export function getColumns(slug: string, isAdmin: boolean): ColumnDef<Team>[] {
   const column: ColumnDef<Team>[] = [
@@ -123,27 +122,9 @@ export function getColumns(slug: string, isAdmin: boolean): ColumnDef<Team>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
-      cell: ({ row }) => {
-        const status = teamTableConfig.statuses.find(
-          (status) => status.value === row.getValue("status"),
-        );
-
-        if (!status) {
-          return null;
-        }
-
-        const Icon = Icons[status.icon || "circle"];
-        return (
-          <div className="flex min-w-[120px] items-center">
-            <Badge
-              variant={status.value === "Finish" ? "default" : "secondary"}
-            >
-              {status.icon && <Icon className="mr-2 h-3 w-3" />}
-              <span>{status.label}</span>
-            </Badge>
-          </div>
-        );
-      },
+      cell: ({ row }) => (
+        <TeamTableStatus row={row} slug={slug} isAdmin={isAdmin} />
+      ),
       filterFn: (row, id, value) => {
         return value.includes(row.getValue(id));
       },

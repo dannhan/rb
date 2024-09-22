@@ -24,6 +24,7 @@ import {
   updateTeamCheckedBySlugAndNoFirebase,
   updateTeamBySlugAndNoFirebase,
   updateTeamCheckedBySlugBatchFirebase,
+  updateTeamStatusBySlugAndNoFirebase,
 } from "@/firebase/firestore/team";
 import {
   deleteDesignImagesIdFirebase,
@@ -124,6 +125,19 @@ export async function createIdentityAction(slug: string, identity: FormData) {
   } catch (error) {
     console.error("Error creating identity:", error);
     return { message: "An error occured", errors: error };
+  }
+}
+
+export async function updateTeamStatusAction(
+  slug: string,
+  no: number,
+  status: string,
+) {
+  try {
+    await updateTeamStatusBySlugAndNoFirebase(slug, no, status);
+  } catch (error) {
+    console.error("Error updating team:", error);
+    throw new Error("Error updating team.");
   }
 }
 

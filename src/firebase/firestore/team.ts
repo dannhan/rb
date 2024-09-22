@@ -77,6 +77,24 @@ export async function postTeamFirebase(
   await teamsRef.add(team);
 }
 
+export async function updateTeamStatusBySlugAndNoFirebase(
+  slug: string,
+  no: number,
+  status: string,
+): Promise<void> {
+  const teamsRef = db.collection("projects").doc(slug).collection("teams");
+  const snapshot = await teamsRef.where("no", "==", no).select().get();
+
+  if (snapshot.empty) {
+    console.error("No matching team found, no:", no);
+    throw new Error("No matching data found.");
+  }
+
+  snapshot.forEach((doc) => {
+    doc.ref.update({ status });
+  });
+}
+
 export async function updateTeamCheckedBySlugAndNoFirebase(
   slug: string,
   no: number,

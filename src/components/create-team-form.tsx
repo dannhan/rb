@@ -48,7 +48,7 @@ export function CreateTeamForm({ setIsDialogOpen, slug }: CreateTeamFormProps) {
       pekerjaan: "",
       pelaksana: "",
       spk: "",
-      status: "",
+      status: "On Progress",
     },
   });
 
@@ -123,7 +123,11 @@ export function CreateTeamForm({ setIsDialogOpen, slug }: CreateTeamFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select A Status" />
