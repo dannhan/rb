@@ -42,7 +42,7 @@ export function DataTableFileColumns({ row, slug }: Props) {
     <Link
       href={uploadedFiles[0].url}
       target="_blank"
-      className="flex min-w-[120px] items-center gap-2"
+      className="flex min-w-[120px] items-center gap-2 pl-3"
       onClick={() => console.log(fileId)}
     >
       {getFileIcon((uploadedFiles[0] as StoredFile).type)}

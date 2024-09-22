@@ -23,8 +23,7 @@ export function TeamFileUploader({ progresses, onUpload, isUploading }: Props) {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
-          <PlusCircle className="mr-2 h-3.5 w-3.5" />
-          <span className="hidden sm:inline">Attach a file.</span>
+          <PlusCircle className="mr-2 h-3.5 w-3.5" /> Attach a file
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-xl">
