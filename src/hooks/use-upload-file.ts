@@ -42,7 +42,7 @@ export function useUploadFile(
           setProgresses((prev) => {
             return {
               ...prev,
-              [file]: progress,
+              [file.name]: progress,
             };
           });
         },

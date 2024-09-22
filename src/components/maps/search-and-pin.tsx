@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { AdvancedMarker, Pin, useMap } from "@vis.gl/react-google-maps";
 
-import type { Store, LatLng } from "@/types";
+import type { StoreLocation, LatLng } from "@/types";
 
 import { cn } from "@/lib/utils";
 
 interface SearchAndPinProps {
-  store: Store;
-  setStore: React.Dispatch<React.SetStateAction<Store>>;
+  store: StoreLocation;
+  setStore: React.Dispatch<React.SetStateAction<StoreLocation>>;
 }
 
 export function SearchAndPin({ store, setStore }: SearchAndPinProps) {

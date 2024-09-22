@@ -1,21 +1,45 @@
 import { FieldPath } from "firebase-admin/firestore";
 import { db } from "@/firebase/init";
 
-import { Team } from "@/types";
+import { StoredFile, Team } from "@/types";
 import { z, ZodError } from "zod";
-import { teamSchema } from "@/config/schema";
+import { fileSchema, teamSchema as baseTeamSchema } from "@/config/schema";
 
 /* fetching data logic */
-export async function getTeamBySlugFirebase(slug: string): Promise<Team[]> {
+// todo: use batch for this
+export async function getTeamBySlugFirebase(
+  slug: string,
+): Promise<(Team & { file?: StoredFile })[]> {
   try {
     const teamsRef = db.collection("projects").doc(slug).collection("teams");
     const snapshot = await teamsRef.orderBy("no").get();
-    const data: FirebaseFirestore.DocumentData[] = [];
-    snapshot.forEach((doc) => {
-      data.push(doc.data());
+
+    // parse it to match the schema
+    const teamSchema = baseTeamSchema.merge(
+      z.object({ file: fileSchema.optional() }),
+    );
+
+    const teamsPromises = snapshot.docs.map(async (doc) => {
+      const data = { id: doc.id, ...doc.data() };
+      const parsedTeam = teamSchema.parse(data);
+
+      if (parsedTeam.fileId) {
+        const fileRef = db
+          .collection("projects")
+          .doc(slug)
+          .collection("files")
+          .doc(parsedTeam.fileId);
+        const fileDoc = await fileRef.get();
+        const parsedFile = fileSchema.safeParse(fileDoc.data());
+        if (parsedFile.success) {
+          parsedTeam.file = parsedFile.data;
+        }
+      }
+
+      return parsedTeam;
     });
 
-    return z.array(teamSchema).parse(data);
+    return await Promise.all(teamsPromises);
   } catch (error) {
     console.error("Error fetching team:", error);
 
@@ -69,6 +93,31 @@ export async function updateTeamCheckedBySlugAndNoFirebase(
   snapshot.forEach((doc) => {
     doc.ref.update({ checked });
   });
+}
+
+export async function postTeamFileFirebase(
+  slug: string,
+  teamId: string,
+  file: StoredFile,
+): Promise<void> {
+  if (!file.customId) {
+    throw new Error("customId is required.");
+  }
+
+  const teamRef = db
+    .collection("projects")
+    .doc(slug)
+    .collection("teams")
+    .doc(teamId);
+
+  await teamRef.update({ fileId: file.customId });
+
+  const filesRef = db
+    .collection("projects")
+    .doc(slug)
+    .collection("files")
+    .doc(file.customId);
+  await filesRef.set(file);
 }
 
 export async function updateTeamCheckedBySlugBatchFirebase(

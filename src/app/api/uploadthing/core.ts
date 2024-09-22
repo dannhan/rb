@@ -11,6 +11,7 @@ import { postProjectScheduleFirebase } from "@/firebase/firestore/project-schedu
 
 import { customAlphabet } from "nanoid";
 import { postCostRealizationFirebase } from "@/firebase/firestore/cost-realization";
+import { postTeamFileFirebase } from "@/firebase/firestore/team";
 
 const f = createUploadthing();
 
@@ -99,6 +100,45 @@ export const router = {
           name,
           url,
           customId: file.customId,
+        });
+      } catch (error) {
+        return { error: "Failed to upload the data." };
+      }
+    }),
+
+  team: f({
+    image: { maxFileSize: "8MB", maxFileCount: 1 },
+    pdf: { maxFileSize: "8MB", maxFileCount: 1 },
+    text: { maxFileSize: "8MB", maxFileCount: 1 },
+    video: { maxFileSize: "8MB", maxFileCount: 1 },
+    audio: { maxFileSize: "8MB", maxFileCount: 1 },
+    blob: { maxFileSize: "8MB", maxFileCount: 1 },
+    "application/zip": { maxFileSize: "8MB", maxFileCount: 1 },
+  })
+    .input(z.object({ slug: z.string(), teamId: z.string() }))
+    .middleware(async ({ files, input }) => {
+      const fileOverrides = files.map((file) => {
+        return { ...file, customId: nanoid() };
+      });
+
+      return {
+        slug: input.slug,
+        teamId: input.teamId,
+        [UTFiles]: fileOverrides,
+      };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Upload complete for slug:", metadata.slug);
+      const { customId, key, name, url, type } = file;
+
+      try {
+        await postTeamFileFirebase(metadata.slug, metadata.teamId, {
+          route: "team",
+          customId,
+          key,
+          name,
+          url,
+          type,
         });
       } catch (error) {
         return { error: "Failed to upload the data." };

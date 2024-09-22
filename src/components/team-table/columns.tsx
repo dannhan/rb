@@ -17,6 +17,7 @@ import { Icons } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableRowActions } from "./team-table-row-actions";
+import { DataTableFileColumns } from "./team-table-file-columns";
 
 export function getColumns(slug: string, isAdmin: boolean): ColumnDef<Team>[] {
   const column: ColumnDef<Team>[] = [
@@ -146,6 +147,18 @@ export function getColumns(slug: string, isAdmin: boolean): ColumnDef<Team>[] {
       filterFn: (row, id, value) => {
         return value.includes(row.getValue(id));
       },
+    },
+    {
+      accessorKey: "fileId",
+      id: "fileId",
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="File"
+          className="line-clamp-1"
+        />
+      ),
+      cell: ({ row }) => <DataTableFileColumns row={row} slug={slug} />,
     },
   ];
 

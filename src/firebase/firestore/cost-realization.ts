@@ -35,12 +35,12 @@ export async function postCostRealizationFirebase(
     throw new Error("customId is required.");
   }
 
-  const projectRef = db
+  const filesRef = db
     .collection("projects")
     .doc(slug)
     .collection("files")
     .doc(costRealization.customId);
-  await projectRef.set(costRealization);
+  await filesRef.set(costRealization);
 }
 
 // export async function removeCostRealizationBySlugAndIdFirebase(

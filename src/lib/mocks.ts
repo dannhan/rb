@@ -3,7 +3,7 @@ import path from "path";
 
 import { z } from "zod";
 
-import { projectSchema, taskSchema, teamSchema } from "@/config/schema";
+import { projectSchema, teamSchema } from "@/config/schema";
 
 // Simulate a database read for projects.
 export async function getProjects() {
@@ -14,17 +14,6 @@ export async function getProjects() {
   const projects = JSON.parse(data.toString());
 
   return z.array(projectSchema).parse(projects);
-}
-
-// Simulate a database read for tasks.
-export async function getTasks() {
-  const data = await fs.readFile(
-    path.join(process.cwd(), "src/data/tasks.json"),
-  );
-
-  const tasks = JSON.parse(data.toString());
-
-  return z.array(taskSchema).parse(tasks);
 }
 
 // Simulate a database read for team.

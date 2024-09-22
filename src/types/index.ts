@@ -1,6 +1,5 @@
 import { z } from "zod";
 import {
-  taskSchema,
   projectSchema,
   teamSchema,
   identitySchema,
@@ -39,6 +38,7 @@ export type ProjectProgress = {
   costProgress: number;
 };
 
+// todo: change this to just a file
 export type StoredImage = {
   route: string;
   customId: string | null;
@@ -47,12 +47,19 @@ export type StoredImage = {
   url: string;
 };
 
+export type StoredFile = {
+  route: string;
+  customId: string | null;
+  key: string;
+  name: string;
+  url: string;
+  type: string;
+};
+
 export type LatLng = {
   lat: number;
   lng: number;
 };
-
-export type Task = z.infer<typeof taskSchema>;
 
 export type Project = z.infer<typeof projectSchema>;
 

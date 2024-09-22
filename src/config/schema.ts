@@ -1,13 +1,5 @@
 import { z } from "zod";
 
-export const taskSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  status: z.string(),
-  label: z.string(),
-  priority: z.string(),
-});
-
 export const projectSchema = z.object({
   slug: z.string().trim(),
   title: z.string().trim().min(1, { message: "Project name is required" }),
@@ -20,12 +12,23 @@ export const projectFormSchema = z.object({
 });
 
 export const teamSchema = z.object({
+  id: z.string().optional(),
   no: z.number(),
   pekerjaan: z.string(),
   spk: z.string(),
   pelaksana: z.string(),
   status: z.string(),
   checked: z.boolean().optional(),
+  fileId: z.string().optional(),
+});
+
+export const fileSchema = z.object({
+  route: z.string(),
+  customId: z.string(),
+  key: z.string(),
+  name: z.string(),
+  url: z.string(),
+  type: z.string(),
 });
 
 export const teamFormSchema = z.object({
