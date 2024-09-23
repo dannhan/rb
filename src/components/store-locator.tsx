@@ -60,10 +60,9 @@ export function StoreLocator({ locations }: { locations: locationProps[] }) {
     <div className="mx-auto rounded-3xl bg-border bg-gradient-to-b from-primary to-background p-0.5 shadow-md">
       <div className="flex flex-wrap rounded-[calc(1.5rem-1px)] bg-background px-4 pb-4">
         {sortedLocations.map((location, index) => (
-          <div className="w-full px-4 md:w-1/2 2xl:w-1/3">
+          <div className="w-full px-4 md:w-1/2 2xl:w-1/3" key={location.title}>
             <Location
               className="rounded-none border-0 border-b bg-transparent"
-              key={index}
               title={location.title}
               address={location.address}
               link={location.link}

@@ -30,7 +30,8 @@ export default async function Page() {
               href="/locations"
               className="mr-4 flex items-center gap-1 text-base text-foreground transition-all hover:text-foreground/70 dark:hover:text-foreground/40"
             >
-              <MapPinIcon className="h-[20px] text-primary" /> Find A Store
+              <MapPinIcon className="h-[20px] text-primary" />
+              <span className="hidden sm:inline">Find A Store</span>
             </Link>
           )}
           <ProjectListCommandDialog
