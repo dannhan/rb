@@ -25,7 +25,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { UpdateTeamForm } from "@/components/update-team-form";
+import TeamForm from "@/components/team-form";
 
 interface DataTableRowActionsProps {
   row: Row<Team>;
@@ -86,9 +86,10 @@ export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
               Fill in the details below to update data.
             </DialogDescription>
           </DialogHeader>
-          <UpdateTeamForm
+          <TeamForm
             setIsDialogOpen={setIsDialogOpen}
             slug={slug}
+            isUpdate
             data={row.original}
           />
         </DialogContent>

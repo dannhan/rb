@@ -92,7 +92,10 @@ export async function createProjectAction(data: FormData) {
 // todo: add more error handling, invalid data, server error, etc.
 export async function createTeamAction(slug: string, team: FormData) {
   const formData = Object.fromEntries(team);
-  const parsed = teamFormSchema.safeParse(formData);
+  const parsed = teamFormSchema.safeParse({
+    ...formData,
+    status: "On Progress",
+  });
 
   if (!parsed.success) {
     return { message: "Invalid data type.", errors: "Invalid type." };
@@ -169,14 +172,12 @@ export async function updateTeamCheckedBatchAction(
 export async function updateTeamAction(
   slug: string,
   no: number,
-  checked: boolean,
   team: FormData,
 ) {
   const formData = Object.fromEntries(team);
-  const parsed = teamSchema.safeParse({
+  const parsed = teamSchema.omit({ status: true }).safeParse({
     ...formData,
     no,
-    checked,
   });
 
   if (!parsed.success) {

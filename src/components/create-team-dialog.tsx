@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { CreateTeamForm } from "@/components/create-team-form";
+import TeamForm from "@/components/team-form";
 
 type Props = {
   slug: string;
@@ -39,7 +39,7 @@ export function CreateTeamDialog({ slug, className }: Props) {
             Fill in the details below to add data.
           </DialogDescription>
         </DialogHeader>
-        <CreateTeamForm setIsDialogOpen={setIsDialogOpen} slug={slug} />
+        <TeamForm setIsDialogOpen={setIsDialogOpen} slug={slug} />
       </DialogContent>
     </Dialog>
   );

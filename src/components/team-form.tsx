@@ -3,16 +3,15 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 
+import { createTeamAction, updateTeamAction } from "@/lib/actions";
+
 import { Team } from "@/types";
 import { teamFormSchema } from "@/config/schema";
-
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { toast } from "sonner";
-import { createTeamAction, updateTeamAction } from "@/lib/actions";
-
 import {
   Form,
   FormField,
@@ -31,17 +30,21 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 
-type UpdateTeamFormProps = {
+type TeamFormPropsBase = {
   setIsDialogOpen?: (value: boolean) => void;
   slug: string;
-  data: Team;
 };
 
-export function UpdateTeamForm({
+type TeamFormProps =
+  | (TeamFormPropsBase & { isUpdate?: false; data?: undefined })
+  | (TeamFormPropsBase & { isUpdate: true; data: Team });
+
+export default function TeamForm({
   setIsDialogOpen,
-  data,
   slug,
-}: UpdateTeamFormProps) {
+  isUpdate,
+  data,
+}: TeamFormProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -49,14 +52,23 @@ export function UpdateTeamForm({
     setIsDialogOpen ? setIsDialogOpen(false) : undefined;
   };
 
+  const defaultValues = isUpdate
+    ? {
+        pekerjaan: data.pekerjaan,
+        pelaksana: data.pelaksana,
+        spk: data.spk,
+        status: data.status,
+      }
+    : {
+        pekerjaan: "",
+        pelaksana: "",
+        spk: "",
+        status: "On Progress",
+      };
+
   const form = useForm<z.infer<typeof teamFormSchema>>({
     resolver: zodResolver(teamFormSchema),
-    defaultValues: {
-      pekerjaan: data.pekerjaan,
-      pelaksana: data.pelaksana,
-      spk: data.spk,
-      status: data.status,
-    },
+    defaultValues,
   });
 
   const onSubmit = async (values: z.infer<typeof teamFormSchema>) => {
@@ -65,14 +77,10 @@ export function UpdateTeamForm({
       formData.append("pekerjaan", values.pekerjaan);
       formData.append("pelaksana", values.pelaksana);
       formData.append("spk", values.spk);
-      formData.append("status", values.status);
 
-      const res = await updateTeamAction(
-        slug,
-        data.no,
-        !!data?.checked,
-        formData,
-      );
+      const res = isUpdate
+        ? await updateTeamAction(slug, data.no, formData)
+        : await createTeamAction(slug, formData);
 
       if (res.errors) {
         toast.error(res.message, { duration: 5000 });
@@ -84,13 +92,10 @@ export function UpdateTeamForm({
     });
   };
 
-  const createTeamActionWithSlug = createTeamAction.bind(null, slug);
-
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        action={createTeamActionWithSlug}
         className="flex flex-col gap-4"
       >
         <FormField
@@ -135,7 +140,11 @@ export function UpdateTeamForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select A Status" />

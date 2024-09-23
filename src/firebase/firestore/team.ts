@@ -184,7 +184,7 @@ export async function updateTeamCheckedBySlugBatchFirebase(
 
 export async function updateTeamBySlugAndNoFirebase(
   slug: string,
-  team: Team,
+  team: Omit<Team, "status">,
 ): Promise<void> {
   const teamsRef = db.collection("projects").doc(slug).collection("teams");
   const snapshot = await teamsRef.where("no", "==", team.no).get();
