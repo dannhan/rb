@@ -4,14 +4,7 @@ import * as React from "react";
 
 import { Project } from "@/types";
 
-import {
-  CalendarIcon,
-  MailIcon,
-  SmileIcon,
-  SettingsIcon,
-  UserIcon,
-  RocketIcon,
-} from "lucide-react";
+import { SearchIcon } from "lucide-react";
 import {
   CommandDialog,
   CommandEmpty,
@@ -20,7 +13,6 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -53,12 +45,13 @@ export function ProjectListCommandDialog({
       <Button
         variant="outline"
         className={cn(
-          "relative h-10 w-fit justify-start rounded-[0.5rem] bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:w-40 sm:pr-12 md:w-64",
+          "relative h-10 w-10 rounded-[0.5rem] bg-muted/50 p-0 text-sm font-normal text-muted-foreground shadow-none sm:w-40 sm:justify-start sm:px-4 sm:pr-12 md:w-64",
         )}
         onClick={() => setOpen(true)}
       >
+        <SearchIcon className="h-[1.2rem] w-[1.2rem] sm:hidden" />
         <span className="hidden md:inline-flex">Search Projects...</span>
-        <span className="inline-flex md:hidden">Search...</span>
+        <span className="hidden sm:inline-flex md:hidden">Search...</span>
         <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-7 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
           <span className="text-xs">⌘</span>J
         </kbd>

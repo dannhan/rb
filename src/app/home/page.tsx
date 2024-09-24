@@ -1,3 +1,4 @@
+import { Open_Sans } from "next/font/google";
 import Link from "next/link";
 
 import { auth } from "@/auth";
@@ -10,6 +11,8 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { ProjectListCommandDialog } from "@/components/project-list-command-dialog";
 import { ProjectCardsList } from "@/components/project-cards-list";
 import { Logo } from "@/components/logo";
+
+const open_sans = Open_Sans({ subsets: ["latin"], weight: ["300"] });
 
 export default async function Page() {
   const [konstruksiProjects, renovasiProjects, session] = await Promise.all([
@@ -29,10 +32,15 @@ export default async function Page() {
           {!isAdmin && (
             <Link
               href="/locations"
-              className="mr-4 flex items-center gap-1 text-base text-foreground transition-all hover:text-foreground/70 dark:hover:text-foreground/40"
+              className="mr-1 flex gap-1 text-base text-foreground transition-all hover:text-foreground/70 dark:hover:text-foreground/40 sm:mr-4"
             >
               <MapPinIcon className="h-[20px] text-primary" />
-              <span className="hidden sm:inline">Find A Store</span>
+              <span
+                className="hidden tracking-widest sm:inline"
+                style={open_sans.style}
+              >
+                Find A Store
+              </span>
             </Link>
           )}
           <ProjectListCommandDialog
