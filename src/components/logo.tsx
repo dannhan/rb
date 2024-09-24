@@ -18,7 +18,7 @@ export function Logo() {
         />
       </div>
       <h1
-        className="hidden text-lg font-black text-[#004481] min-[375px]:block sm:text-xl"
+        className="hidden font-black text-[#004481] min-[315px]:block sm:text-xl"
         style={cabin.style}
       >
         RIA BUSANA
