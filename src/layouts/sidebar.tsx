@@ -3,14 +3,12 @@
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 
-import { Bell, Package, Package2, ShoppingCart } from "lucide-react";
 import { SidebarItem } from "@/types";
 import { cn } from "@/lib/utils";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { LogoutForm } from "@/components/logout-form";
 import { Icons } from "@/components/icons";
+import { Logo } from "@/components/logo";
 
 export function Sidebar({ items }: { items?: SidebarItem[] }) {
   const segment = useSelectedLayoutSegment();
@@ -25,11 +23,7 @@ export function Sidebar({ items }: { items?: SidebarItem[] }) {
             <span className="sr-only">Toggle notifications</span>
           </Button> */}
 
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <h1 className="text-lg font-semibold text-muted-foreground md:text-xl">
-              Ria Busana
-            </h1>
-          </Link>
+          <Logo />
         </div>
         <div className="flex-1">
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">

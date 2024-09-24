@@ -27,6 +27,7 @@ export function LoginForm({ email }: { email: string }) {
           value={email}
           required
           className="hidden"
+          readOnly
         />
         <Input
           id="password"

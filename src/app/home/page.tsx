@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { ModeToggle } from "@/components/mode-toggle";
 import { ProjectListCommandDialog } from "@/components/project-list-command-dialog";
 import { ProjectCardsList } from "@/components/project-cards-list";
+import { Logo } from "@/components/logo";
 
 export default async function Page() {
   const [konstruksiProjects, renovasiProjects, session] = await Promise.all([
@@ -23,7 +24,7 @@ export default async function Page() {
     <div className="flex min-h-screen w-full flex-col">
       {/* todo: <div className="absolute top-0 -z-10 h-screen w-screen bg-background bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,theme(colors.accent.DEFAULT),theme(colors.background))]"></div> */}
       <Header className="border-none bg-background text-muted-foreground shadow-md">
-        <h1 className="text-lg font-semibold md:text-xl">Ria Busana</h1>
+        <Logo />
         <div className="flex items-center gap-2">
           {!isAdmin && (
             <Link

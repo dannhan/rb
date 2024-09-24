@@ -17,7 +17,7 @@ export default function Page() {
     <main className="flex h-svh w-full items-center justify-center">
       <section className="relative hidden h-full flex-1 items-center justify-center border-r lg:flex">
         <Image
-          src="/download.jpg"
+          src="/images/hero.jpg"
           alt="Image"
           className="w-full object-cover dark:brightness-[0.2] dark:grayscale"
           fill

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { LogoutForm } from "@/components/logout-form";
 import { Icons } from "@/components/icons";
+import { Logo } from "@/components/logo";
 
 export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
   const segment = useSelectedLayoutSegment();
@@ -39,18 +40,7 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
       </SheetTrigger>
       <SheetContent side="left" className="flex flex-col">
         <nav className="grid gap-2 text-lg font-medium">
-          <Link
-            href="/home"
-            className="relative bottom-3 flex items-center gap-2 text-lg font-semibold"
-          >
-            {/* todo, important */}
-            {/* <Package2 className="h-6 w-6" />
-            <span className="sr-only">Acme Inc</span> */}
-
-            <h1 className="text-lg font-semibold text-muted-foreground md:hidden md:text-xl">
-              Ria Busana
-            </h1>
-          </Link>
+          <Logo />
 
           {items?.map((item, index) => {
             const Icon = Icons[item.icon || "arrowRight"];
@@ -59,12 +49,12 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
                 key={index}
                 href={item.href}
                 className={cn(
-                  "mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground",
+                  "mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground text-base",
                   item.href.startsWith(`${segment}`) &&
                     "bg-muted text-foreground",
                 )}
               >
-                <Icon className="h-5 w-5" />
+                <Icon className="h-4 w-4" />
                 {item.title}
               </Link>
             );
