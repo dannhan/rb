@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 
-import { getProjectBySlugFirebase } from "@/firebase/firestore/project";
-
+import { projectSchema } from "@/config/schema";
 import { projectConfig } from "@/config/project";
+import { fetchDoc } from "@/lib/firebase/firestore";
+
 import { Dashboard } from "@/layouts/dashboard";
 
 type Props = {
@@ -11,7 +12,13 @@ type Props = {
 };
 
 export default async function Layout({ children, params }: Props) {
-  const project = await getProjectBySlugFirebase(params.project);
+  const slug = params.project;
+  const project = await fetchDoc({
+    collectionName: "projects",
+    docId: slug,
+    zodSchema: projectSchema,
+    errorMessage: "Error fetching data.",
+  });
 
   if (!project) return notFound();
 

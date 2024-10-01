@@ -2,12 +2,7 @@
 
 import * as React from "react";
 
-import { Identity } from "@/types";
-
 import {
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
@@ -17,7 +12,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import { Identity } from "@/types";
 import { cn } from "@/lib/utils";
+
 import {
   Table,
   TableBody,
@@ -26,44 +23,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CreateIdentityProject } from "@/components/create-identity-project";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
-import { getColumns } from "./columns";
+
 import { IdentityTablePrint } from "./identity-table-print";
+import { CreateIdentityDialog } from "./create-identity-dialog";
+import { getColumns } from "./columns";
 
 interface DataTableProps {
   data: Identity[];
   slug: string;
-  isAdmin?: boolean;
+  admin?: boolean;
 }
 
-export function DataTable({ data, slug, isAdmin }: DataTableProps) {
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
+export function DataTable({ data, slug, admin }: DataTableProps) {
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
-  const [sorting, setSorting] = React.useState<SortingState>([]);
 
-  const columns = React.useMemo(() => getColumns(slug, !!isAdmin), []);
+  const columns = React.useMemo(() => getColumns(slug, !!admin), [slug, admin]);
 
   const table = useReactTable({
     data,
     columns,
-    state: {
-      sorting,
-      columnVisibility,
-      rowSelection,
-      columnFilters,
-      globalFilter,
-    },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
+    state: { globalFilter },
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -75,7 +55,9 @@ export function DataTable({ data, slug, isAdmin }: DataTableProps) {
   return (
     <div className="w-full max-w-screen-md flex-1 space-y-2.5 pb-16">
       <DataTableToolbar table={table}>
-        {isAdmin && <CreateIdentityProject slug={slug} />}
+        {admin && (
+          <CreateIdentityDialog className="w-full max-w-xl" slug={slug} />
+        )}
         <IdentityTablePrint table={table} />
       </DataTableToolbar>
 
@@ -113,7 +95,7 @@ export function DataTable({ data, slug, isAdmin }: DataTableProps) {
                         className={cn(
                           cell.column.id === "field" && "border-l",
                           cell.column.id === "value" && "border-x",
-                          (cell.column.id === "no" ||
+                          (cell.column.id === "order" ||
                             cell.column.id === "actions") &&
                             "w-0 p-2.5 text-center",
                           "h-[53px]",

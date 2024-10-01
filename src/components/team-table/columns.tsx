@@ -5,70 +5,20 @@ import * as React from "react";
 import type { Team } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
 
-import {
-  updateTeamCheckedAction,
-  updateTeamCheckedBatchAction,
-} from "@/lib/actions";
-
-import { toast } from "sonner";
-import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 
 import { DataTableRowActions } from "./team-table-row-actions";
 import { DataTableFileColumns } from "./team-table-file-columns";
 import { TeamTableStatus } from "./team-table-status";
 
-export function getColumns(slug: string, isAdmin: boolean): ColumnDef<Team>[] {
+export function getColumns(slug: string, admin: boolean): ColumnDef<Team>[] {
   const column: ColumnDef<Team>[] = [
     {
-      id: "select",
-      header: function TableHeaderCheckbox({ table }) {
-        const [isPending, startTransition] = React.useTransition();
-
-        return (
-          <Checkbox
-            disabled={isPending}
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
-            onCheckedChange={async (value) => {
-              startTransition(async () => {
-                try {
-                  await updateTeamCheckedBatchAction(slug, !!value);
-                } catch (error) {
-                  toast.error("Error updating team.");
-                }
-                table.toggleAllPageRowsSelected(!!value);
-              });
-            }}
-            aria-label="Select all"
-          />
-        );
-      },
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={async (value) => {
-            try {
-              await updateTeamCheckedAction(slug, row.getValue("no"), !!value);
-              row.toggleSelected(!!value);
-            } catch (error) {
-              toast.error("Error updating team.");
-            }
-          }}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
-      accessorKey: "no",
+      accessorKey: "order",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="No." />
+        <DataTableColumnHeader column={column} title="No." className="w-14" />
       ),
-      cell: ({ row }) => <div className="w-[40px]">{row.getValue("no")}</div>,
+      cell: ({ row }) => <div className="w-14">{row.getValue("order")}</div>,
       enableSorting: true,
       enableHiding: false,
     },
@@ -122,9 +72,7 @@ export function getColumns(slug: string, isAdmin: boolean): ColumnDef<Team>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
-      cell: ({ row }) => (
-        <TeamTableStatus row={row} slug={slug} isAdmin={isAdmin} />
-      ),
+      cell: ({ row }) => <TeamTableStatus row={row} admin={admin} />,
       filterFn: (row, id, value) => {
         return value.includes(row.getValue(id));
       },
@@ -143,7 +91,7 @@ export function getColumns(slug: string, isAdmin: boolean): ColumnDef<Team>[] {
     },
   ];
 
-  isAdmin &&
+  admin &&
     column.push({
       id: "actions",
       cell: ({ row }) => <DataTableRowActions row={row} slug={slug} />,

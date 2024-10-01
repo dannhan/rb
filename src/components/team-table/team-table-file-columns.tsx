@@ -6,9 +6,8 @@ import * as React from "react";
 import { useUploadFile } from "@/hooks/use-upload-file";
 
 import type { Row } from "@tanstack/react-table";
-import type { Team, StoredFile } from "@/types";
+import type { Team, File } from "@/types";
 
-import { TeamFileUploader } from "./team-file-uploader";
 import {
   FileTextIcon,
   ImageIcon,
@@ -17,24 +16,29 @@ import {
   PlusIcon,
   FileIcon,
   FileArchiveIcon,
+  PlusCircle,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { FileUploader } from "@/components/file-uploader";
+import { WithDialog } from "@/components/with-dialog";
 
 interface Props {
-  row: Row<Team & { file?: StoredFile }>;
+  row: Row<Team & { file?: File }>;
   slug: string;
 }
 
 export function DataTableFileColumns({ row, slug }: Props) {
   const teamId = row.original.id;
-  const fileId = row.getValue("fileId") as string | undefined;
 
-  const { progresses, onUpload, uploadedFiles, isUploading, setUploadedFiles } =
-    useUploadFile("team", {
+  const { progresses, onUpload, uploadedFiles, isUploading } = useUploadFile(
+    "projectTeam",
+    {
       defaultUploadedFiles: row.original.file
         ? [row.original.file && row.original.file]
         : [],
       input: { slug, teamId },
-    });
+    },
+  );
 
   const hasUploadedFiles = uploadedFiles.length > 0;
 
@@ -42,18 +46,34 @@ export function DataTableFileColumns({ row, slug }: Props) {
     <Link
       href={uploadedFiles[0].url}
       target="_blank"
-      className="flex min-w-[120px] items-center gap-2 pl-3"
-      onClick={() => console.log(fileId)}
+      className="flex w-full max-w-[200px] items-center overflow-hidden"
     >
-      {getFileIcon((uploadedFiles[0] as StoredFile).type)}
-      {uploadedFiles[0].name}
+      <span className="w-4">
+        {getFileIcon((uploadedFiles[0] as File).type)}
+      </span>
+      <span className="line-clamp-1 overflow-hidden overflow-ellipsis pl-3">
+        {uploadedFiles[0].name}
+      </span>
     </Link>
   ) : (
-    <TeamFileUploader
-      progresses={progresses}
-      onUpload={onUpload}
-      isUploading={isUploading}
-    />
+    <WithDialog
+      trigger={
+        <Button variant="outline" size="sm" className="h-full">
+          <PlusCircle className="mr-2 h-3.5 w-3.5" /> Attach a file
+        </Button>
+      }
+      title="Upload Files"
+      description="Drag and drop your files here or click to browse."
+    >
+      <FileUploader
+        accept={{ "*/*": [] }}
+        multiple={false}
+        maxSize={16 * 1024 * 1024}
+        progresses={progresses}
+        onUpload={onUpload}
+        disabled={isUploading}
+      />
+    </WithDialog>
   );
 }
 

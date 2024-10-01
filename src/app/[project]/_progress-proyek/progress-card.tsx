@@ -14,8 +14,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { ProgressContent } from "@/components/progress-content";
-import { ProgressForm } from "@/components/progress-form";
+import { ProgressContent } from "@/app/[project]/.progress-proyek/progress-content";
+import { ProgressForm } from "@/app/[project]/.progress-proyek/progress-form";
 
 export const ProgressCard: React.FC = () => {
   const [isEditing, setIsEditing] = React.useState(false);

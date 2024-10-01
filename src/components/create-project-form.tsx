@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useTransition } from "react";
-import { useRouter, usePathname } from "next/navigation";
-
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { projectFormSchema } from "@/config/schema";
+import * as React from "react";
+import { usePathname } from "next/navigation";
 
 import NProgress from "nprogress";
 import { toast } from "sonner";
-import { createProjectAction } from "@/lib/actions";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+import { projectSchema } from "@/config/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { createProjectAction } from "@/actions/create";
+import { getErrorMessage } from "@/lib/handle-error";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -36,14 +38,13 @@ type CreateProjectFormProps = {
 };
 
 export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
-  const [isPending, startTransition] = useTransition();
-
-  const router = useRouter();
+  const [isPending, startTransition] = React.useTransition();
   const pathname = usePathname();
-  useEffect(() => {
+  React.useEffect(() => {
     NProgress.done();
   }, [pathname]);
 
+  const projectFormSchema = projectSchema.pick({ title: true, type: true });
   const form = useForm<z.infer<typeof projectFormSchema>>({
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
@@ -54,18 +55,13 @@ export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
 
   const onSubmit = async (values: z.infer<typeof projectFormSchema>) => {
     startTransition(async () => {
-      const formData = new FormData();
-      formData.append("title", values.title);
-      formData.append("type", values.type);
-
-      const res = await createProjectAction(formData);
-
-      if (res.errors) {
-        toast.error(res.message, { duration: 5000 });
-      } else {
-        toast.success(res.message, { duration: 5000 });
+      try {
+        await createProjectAction(values);
         NProgress.start();
-        router.push(`${res.slug}/identitas-proyek`);
+        toast.success("Project has been created.");
+      } catch (error) {
+        const message = getErrorMessage(error);
+        toast.error(message);
       }
     });
   };
@@ -74,7 +70,6 @@ export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        action={createProjectAction}
         className="flex max-w-screen-md flex-col gap-8 sm:px-10"
       >
         <FormField

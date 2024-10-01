@@ -1,17 +1,20 @@
 "use client";
 
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
-
-import { createTeamAction, updateTeamAction } from "@/lib/actions";
-
-import { Team } from "@/types";
-import { teamFormSchema } from "@/config/schema";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import * as React from "react";
 
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import type { Team } from "@/types";
+import { teamSchema } from "@/config/schema";
+
+import { getErrorMessage } from "@/lib/handle-error";
+import { createTeamAction } from "@/actions/create";
+import { updateTeamAction } from "@/actions/update";
+
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormField,
@@ -19,6 +22,7 @@ import {
   FormLabel,
   FormControl,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -26,8 +30,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 
 type TeamFormPropsBase = {
@@ -39,14 +41,13 @@ type TeamFormProps =
   | (TeamFormPropsBase & { isUpdate?: false; data?: undefined })
   | (TeamFormPropsBase & { isUpdate: true; data: Team });
 
-export default function TeamForm({
+export function TeamForm({
   setIsDialogOpen,
   slug,
   isUpdate,
   data,
 }: TeamFormProps) {
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
+  const [isPending, startTransition] = React.useTransition();
 
   const closeDialog = () => {
     setIsDialogOpen ? setIsDialogOpen(false) : undefined;
@@ -66,6 +67,11 @@ export default function TeamForm({
         status: "On Progress",
       };
 
+  const teamFormSchema = teamSchema.pick({
+    pekerjaan: true,
+    spk: true,
+    pelaksana: true,
+  });
   const form = useForm<z.infer<typeof teamFormSchema>>({
     resolver: zodResolver(teamFormSchema),
     defaultValues,
@@ -73,21 +79,18 @@ export default function TeamForm({
 
   const onSubmit = async (values: z.infer<typeof teamFormSchema>) => {
     startTransition(async () => {
-      const formData = new FormData();
-      formData.append("pekerjaan", values.pekerjaan);
-      formData.append("pelaksana", values.pelaksana);
-      formData.append("spk", values.spk);
-
-      const res = isUpdate
-        ? await updateTeamAction(slug, data.no, formData)
-        : await createTeamAction(slug, formData);
-
-      if (res.errors) {
-        toast.error(res.message, { duration: 5000 });
-      } else {
-        toast.success(res.message, { duration: 5000 });
-        router.refresh();
+      try {
+        if (!isUpdate) {
+          await createTeamAction({ ...values, slug: slug });
+          toast.success("New data has been added.");
+        } else {
+          await updateTeamAction({ ...values, id: data.id, slug: slug });
+          toast.success("Data has been updated.");
+        }
         closeDialog();
+      } catch (error) {
+        const message = getErrorMessage(error);
+        toast.error(message);
       }
     });
   };
@@ -134,30 +137,20 @@ export default function TeamForm({
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                disabled
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select A Status" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="On Progress">On Progress</SelectItem>
-                  <SelectItem value="Finish">Finish</SelectItem>
-                </SelectContent>
-              </Select>
-            </FormItem>
-          )}
-        />
+        <FormItem>
+          <FormLabel>Status</FormLabel>
+          <Select disabled>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Select A Status" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectItem value="On Progress">On Progress</SelectItem>
+              <SelectItem value="Finish">Finish</SelectItem>
+            </SelectContent>
+          </Select>
+        </FormItem>
 
         <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="outline" onClick={closeDialog}>

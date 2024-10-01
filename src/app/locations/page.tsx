@@ -2,7 +2,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { auth } from "@/auth";
-import { getStoreLocations } from "@/firebase/firestore/store-location";
 
 import { ChevronLeft } from "lucide-react";
 import { Header } from "@/layouts/header";
@@ -10,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/mode-toggle";
 import { StoreLocator } from "@/components/store-locator";
 import { Logo } from "@/components/logo";
+
+const getStoreLocations = () => [];
 
 export default async function Page() {
   const [storeLocations, session] = await Promise.all([

@@ -23,7 +23,6 @@ type Props = {
   table: TanstackTable<Team>;
 };
 
-/* todo: */
 export function DataTablePrint({ table }: Props) {
   const componentRef = React.useRef(null);
   const handlePrint = useReactToPrint({
@@ -50,23 +49,23 @@ export function DataTablePrint({ table }: Props) {
               <TableHead className="w-[50px] border border-black text-center text-lg font-bold text-white">
                 NO.
               </TableHead>
-              <TableHead className="text-center text-lg font-bold text-white">
+              <TableHead className="border border-black text-center text-lg font-bold text-white">
                 PEKERJAAN
               </TableHead>
-              <TableHead className="text-center text-lg font-bold text-white">
+              <TableHead className="border-black text-center text-lg font-bold text-white">
                 PELAKSANA
               </TableHead>
-              <TableHead className="text-center text-lg font-bold text-white">
+              <TableHead className="border border-black text-center text-lg font-bold text-white">
                 STATUS
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map(({ no, pekerjaan, spk, pelaksana, status }) => (
-              <React.Fragment key={no}>
+            {data.map(({ pekerjaan, spk, pelaksana, status }, index) => (
+              <React.Fragment key={index}>
                 <TableRow className="border-none">
                   <TableCell className="border-t border-black text-center font-bold">
-                    {no}.
+                    {index + 1}.
                   </TableCell>
                   <TableCell className="border border-black font-bold">
                     {pekerjaan}

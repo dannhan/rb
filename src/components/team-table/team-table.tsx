@@ -28,31 +28,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
-import { CreateTeamDialog } from "@/components/create-team-dialog";
+
 import { getColumns } from "./columns";
 import { DataTablePrint } from "./team-table-print";
+import { CreateTeamDialog } from "./create-team-dialog";
 
-interface DataTableProps {
+// todos:
+// 1. might change the name
+// 2. better skeleton
+
+type DataTableProps = {
   data: Team[];
   slug: string;
-  isAdmin?: boolean;
-  // todo
-  isLoading?: boolean;
-}
+  admin?: boolean;
+};
 
-export function DataTable({ data, slug, isAdmin, isLoading }: DataTableProps) {
-  const initialRowSelection: Record<string, boolean> = {};
-  data.forEach((team, index) => {
-    if (team.checked === true) {
-      initialRowSelection[index.toString()] = true;
-    }
-  });
-
-  const [rowSelection, setRowSelection] = React.useState(initialRowSelection);
+export function DataTable({ data, slug, admin }: DataTableProps) {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -61,20 +55,12 @@ export function DataTable({ data, slug, isAdmin, isLoading }: DataTableProps) {
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
-  const columns = React.useMemo(() => getColumns(slug, !!isAdmin), []);
+  const columns = React.useMemo(() => getColumns(slug, !!admin), [slug, admin]);
 
   const table = useReactTable({
     data,
     columns,
-    state: {
-      sorting,
-      columnVisibility,
-      rowSelection,
-      columnFilters,
-      globalFilter,
-    },
-    enableRowSelection: true,
-    onRowSelectionChange: setRowSelection,
+    state: { sorting, columnVisibility, columnFilters, globalFilter },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
@@ -90,7 +76,7 @@ export function DataTable({ data, slug, isAdmin, isLoading }: DataTableProps) {
   return (
     <div className="space-y-4 pb-16">
       <DataTableToolbar table={table}>
-        {isAdmin && <CreateTeamDialog slug={slug} />}
+        {admin && <CreateTeamDialog slug={slug} />}
         <DataTablePrint table={table} />
         <DataTableViewOptions table={table} />
       </DataTableToolbar>
@@ -119,20 +105,13 @@ export function DataTable({ data, slug, isAdmin, isLoading }: DataTableProps) {
             {table.getRowModel().rows?.length ? (
               <>
                 {table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                    className={cn("data-[state=selected]:bg-background")}
-                  >
+                  <TableRow key={row.original.id}>
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
                         className={cn(
-                          cell.column.id === "select" && "",
-                          cell.column.id === "actions" && "w-0 p-2.5",
-                          cell.column.id === "pekerjaan" &&
-                            row.getIsSelected() &&
-                            "text-primary",
+                          cell.column.id === "order" && "w-[60px] p-2.5",
+                          cell.column.id === "actions" && "w-[60px] p-2.5",
                           "h-[53px]",
                         )}
                       >
@@ -153,13 +132,6 @@ export function DataTable({ data, slug, isAdmin, isLoading }: DataTableProps) {
                   <tr key={i} className="h-[53px]"></tr>
                 ))}
               </>
-            ) : isLoading ? (
-              // todo: improve skeleton loading
-              <TableRow>
-                <TableCell colSpan={columns.length} className="p-0">
-                  <Skeleton className="h-96 w-full rounded-none"></Skeleton>
-                </TableCell>
-              </TableRow>
             ) : (
               <TableRow>
                 <TableCell

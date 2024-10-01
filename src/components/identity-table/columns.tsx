@@ -1,7 +1,7 @@
 "use client";
 
-import type { Identity } from "@/types";
 import type { ColumnDef } from "@tanstack/react-table";
+import type { Identity } from "@/types";
 import { IdentityTableRowAction } from "./identity-table-row-actions";
 
 export function getColumns(
@@ -10,11 +10,11 @@ export function getColumns(
 ): ColumnDef<Identity>[] {
   const column: ColumnDef<Identity>[] = [
     {
-      accessorKey: "no",
+      accessorKey: "order",
       cell: ({ row }) => {
         return (
           <span className="w-full truncate text-center">
-            {row.getValue("no")}.
+            {row.getValue("order")}.
           </span>
         );
       },

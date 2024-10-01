@@ -1,4 +1,3 @@
-import { getStoreLocationBySlug } from "@/firebase/firestore/store-location";
 import { StoreManagementUI } from "@/components/maps";
 import { auth } from "@/auth";
 
@@ -7,16 +6,19 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
-  const [store, session] = await Promise.all([
-    getStoreLocationBySlug(params.project),
-    auth(),
-  ]);
+  const [session] = await Promise.all([auth()]);
   const isAdmin = session?.user.isAdmin;
 
   return (
     <StoreManagementUI
       slug={params.project}
-      store={store}
+      store={{
+        link: "",
+        title: "",
+        address: "",
+        lat: 0,
+        lng: 0,
+      }}
       isAdmin={!!isAdmin}
     />
   );

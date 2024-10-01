@@ -1,5 +1,7 @@
+import { projectSchema, fileSchema } from "@/config/schema";
 import { auth } from "@/auth";
-import { getCostRealizationBySlugFirebase } from "@/firebase/firestore/cost-realization";
+import { fetchDoc } from "@/lib/firebase/firestore";
+
 import { BasicUploader } from "@/components/basic-uploader";
 
 type Props = {
@@ -7,19 +9,31 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
-  const costRealization = await getCostRealizationBySlugFirebase(
-    params.project,
-  );
+  const slug = params.project;
+  const project = await fetchDoc({
+    collectionName: "projects",
+    docId: slug,
+    zodSchema: projectSchema,
+    errorMessage: "Error fetching the data.",
+  });
+  const costRealization = project?.costRealization
+    ? await fetchDoc({
+        collectionName: "project-files",
+        docId: project?.costRealization,
+        zodSchema: fileSchema,
+        errorMessage: "Error fetching the data.",
+      })
+    : null;
 
   const session = await auth();
-  const isAdmin = session?.user.isAdmin;
+  const admin = session?.user.isAdmin;
 
   return (
     <BasicUploader
       storedFile={costRealization}
       slug={params.project}
-      endpoint="costRealization"
-      isAdmin={isAdmin}
+      route="costRealization"
+      admin={admin}
     />
   );
 }

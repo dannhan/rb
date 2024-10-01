@@ -1,14 +1,19 @@
+import type { ClientUploadedFileData } from "uploadthing/types";
+
 import { z } from "zod";
 import {
   projectSchema,
-  teamSchema,
   identitySchema,
+  teamSchema,
+  fileSchema,
   storeLocationSchema,
 } from "@/config/schema";
 
-import { type ClientUploadedFileData } from "uploadthing/types";
-
 import { Icons } from "@/components/icons";
+
+// todo:
+// 1. might remove non-schema type or move schema type to another file
+// 2. change store locatoin to project location
 
 export type SidebarItem = {
   title: string;
@@ -38,24 +43,6 @@ export type ProjectProgress = {
   costProgress: number;
 };
 
-// todo: change this to just a file
-export type StoredImage = {
-  route: string;
-  customId: string | null;
-  key: string;
-  name: string;
-  url: string;
-};
-
-export type StoredFile = {
-  route: string;
-  customId: string | null;
-  key: string;
-  name: string;
-  url: string;
-  type: string;
-};
-
 export type LatLng = {
   lat: number;
   lng: number;
@@ -63,8 +50,10 @@ export type LatLng = {
 
 export type Project = z.infer<typeof projectSchema>;
 
+export type Identity = z.infer<typeof identitySchema>;
+
 export type Team = z.infer<typeof teamSchema>;
 
-export type Identity = z.infer<typeof identitySchema>;
+export type File = z.infer<typeof fileSchema>;
 
 export type StoreLocation = z.infer<typeof storeLocationSchema>;

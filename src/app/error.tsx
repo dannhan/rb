@@ -1,9 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
-
 import { TriangleAlert } from "lucide-react";
-import { toast } from "sonner";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -15,14 +12,6 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    setTimeout(() => {
-      toast.error("An error occurred. Please contact the administrator.", {
-        duration: 5000,
-      });
-    });
-  }, []);
-
   return (
     <div className="container flex h-dvh max-w-md flex-col items-center justify-center">
       <Card

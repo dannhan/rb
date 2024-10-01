@@ -1,112 +1,26 @@
-// todo: what is this
-// todo: rate limit
-// todo: set permissions and file types for this FileRoute
-
+import { UTFiles, UTApi } from "uploadthing/server";
+import { createUploadthing, type FileRouter } from "uploadthing/next";
+import { FieldValue } from "firebase-admin/firestore";
 import { z } from "zod";
 
-import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UTFiles } from "uploadthing/server";
-import { postDesignImageFirebase } from "@/firebase/firestore/design-image";
-import { postProjectScheduleFirebase } from "@/firebase/firestore/project-schedule";
+import { fileSchema } from "@/config/schema";
+import { createDoc, updateDoc } from "@/lib/firebase/firestore";
+import { getErrorMessage } from "@/lib/handle-error";
 
-import { customAlphabet } from "nanoid";
-import { postCostRealizationFirebase } from "@/firebase/firestore/cost-realization";
-import { postTeamFileFirebase } from "@/firebase/firestore/team";
+// todo, important:
+// 1. auth
+// 2. is rate limit necessary
+// 3. better error handling
+// 4. match the maxFileSize with the front-end
+// 5. store the width and height for better ui
+
+const utapi = new UTApi();
 
 const f = createUploadthing();
 
-const alphabet =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-const nanoid = customAlphabet(alphabet);
-
-// todo: Fake auth function
-async function auth(req: Request) {
-  await new Promise((resolve) => setTimeout(resolve, 100));
-  return { id: "fakeId" };
-}
-
 // FileRouter for your app, can contain multiple FileRoutes
 export const router = {
-  designImages: f({ image: { maxFileSize: "4MB", maxFileCount: 4 } })
-    .input(z.object({ slug: z.string() }))
-    .middleware(async ({ files, input }) => {
-      const fileOverrides = files.map((file) => {
-        return { ...file, customId: nanoid() };
-      });
-
-      return { slug: input.slug, [UTFiles]: fileOverrides };
-    })
-    .onUploadComplete(async ({ metadata, file }) => {
-      // todo: try to throw an error here
-      console.log("Upload complete for slug:", metadata.slug);
-      const { key, name, url } = file;
-
-      try {
-        await postDesignImageFirebase(metadata.slug, {
-          route: "designImages",
-          key,
-          name,
-          url,
-          customId: file.customId,
-        });
-      } catch (error) {
-        return { error: "Failed to upload the data." };
-      }
-    }),
-
-  projectSchedule: f({ image: { maxFileSize: "8MB", maxFileCount: 1 } })
-    .input(z.object({ slug: z.string() }))
-    .middleware(async ({ files, input }) => {
-      const fileOverrides = files.map((file) => {
-        return { ...file, customId: nanoid() };
-      });
-
-      return { slug: input.slug, [UTFiles]: fileOverrides };
-    })
-    .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for slug:", metadata.slug);
-      const { key, name, url } = file;
-
-      try {
-        await postProjectScheduleFirebase(metadata.slug, {
-          route: "projectSchedule",
-          key,
-          name,
-          url,
-          customId: file.customId,
-        });
-      } catch (error) {
-        return { error: "Failed to upload the data." };
-      }
-    }),
-
-  costRealization: f({ image: { maxFileSize: "8MB", maxFileCount: 1 } })
-    .input(z.object({ slug: z.string() }))
-    .middleware(async ({ files, input }) => {
-      const fileOverrides = files.map((file) => {
-        return { ...file, customId: nanoid() };
-      });
-
-      return { slug: input.slug, [UTFiles]: fileOverrides };
-    })
-    .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for slug:", metadata.slug);
-      const { key, name, url } = file;
-
-      try {
-        await postCostRealizationFirebase(metadata.slug, {
-          route: "costRealization",
-          key,
-          name,
-          url,
-          customId: file.customId,
-        });
-      } catch (error) {
-        return { error: "Failed to upload the data." };
-      }
-    }),
-
-  team: f({
+  projectTeam: f({
     image: { maxFileSize: "8MB", maxFileCount: 1 },
     pdf: { maxFileSize: "8MB", maxFileCount: 1 },
     text: { maxFileSize: "8MB", maxFileCount: 1 },
@@ -117,9 +31,7 @@ export const router = {
   })
     .input(z.object({ slug: z.string(), teamId: z.string() }))
     .middleware(async ({ files, input }) => {
-      const fileOverrides = files.map((file) => {
-        return { ...file, customId: nanoid() };
-      });
+      const fileOverrides = files.map((f) => f);
 
       return {
         slug: input.slug,
@@ -128,20 +40,159 @@ export const router = {
       };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for slug:", metadata.slug);
-      const { customId, key, name, url, type } = file;
+      const route = "projectTeam";
 
       try {
-        await postTeamFileFirebase(metadata.slug, metadata.teamId, {
-          route: "team",
-          customId,
-          key,
-          name,
-          url,
-          type,
+        const parsed = fileSchema.parse({
+          route,
+          key: file.key,
+          name: file.name,
+          url: file.url,
+          type: file.type,
         });
+
+        await Promise.all([
+          updateDoc({
+            docId: metadata.teamId,
+            collectionName: "project-teams",
+            errorMessage: "Error uploading image.",
+            data: { file: file.key },
+          }),
+          createDoc({
+            docId: file.key,
+            collectionName: "project-files",
+            errorMessage: "Error uploading image.",
+            data: parsed,
+          }),
+        ]);
       } catch (error) {
-        return { error: "Failed to upload the data." };
+        await utapi.deleteFiles(file.key);
+        console.error(getErrorMessage(error));
+
+        throw new Error("Failed to upload the image.");
+      }
+    }),
+
+  designImages: f({ image: { maxFileSize: "8MB", maxFileCount: 4 } })
+    .input(z.object({ slug: z.string() }))
+    .middleware(async ({ files, input }) => {
+      const fileOverrides = files.map((f) => f);
+
+      return { slug: input.slug, [UTFiles]: fileOverrides };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      const route = "designImages";
+
+      try {
+        const parsed = fileSchema.parse({
+          route,
+          key: file.key,
+          name: file.name,
+          url: file.url,
+          type: file.type,
+        });
+
+        await Promise.allSettled([
+          updateDoc({
+            docId: metadata.slug,
+            collectionName: "projects",
+            errorMessage: "Error uploading image.",
+            data: { [route]: FieldValue.arrayUnion(file.key) },
+          }),
+          createDoc({
+            docId: file.key,
+            collectionName: "project-files",
+            errorMessage: "Error uploading image.",
+            data: parsed,
+          }),
+        ]);
+      } catch (error) {
+        await utapi.deleteFiles(file.key);
+        console.error(getErrorMessage(error));
+
+        throw new Error("Failed to upload the image.");
+      }
+    }),
+
+  projectSchedule: f({ image: { maxFileSize: "8MB", maxFileCount: 1 } })
+    .input(z.object({ slug: z.string() }))
+    .middleware(async ({ files, input }) => {
+      const fileOverrides = files.map((f) => f);
+
+      return { slug: input.slug, [UTFiles]: fileOverrides };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      const route = "projectSchedule";
+
+      try {
+        const parsed = fileSchema.parse({
+          route,
+          key: file.key,
+          name: file.name,
+          url: file.url,
+          type: file.type,
+        });
+
+        await Promise.all([
+          updateDoc({
+            docId: metadata.slug,
+            collectionName: "projects",
+            errorMessage: "Error uploading image.",
+            data: { [route]: file.key },
+          }),
+          createDoc({
+            docId: file.key,
+            collectionName: "project-files",
+            errorMessage: "Error uploading image.",
+            data: parsed,
+          }),
+        ]);
+      } catch (error) {
+        await utapi.deleteFiles(file.key);
+        console.error(getErrorMessage(error));
+
+        throw new Error("Failed to upload the image.");
+      }
+    }),
+
+  costRealization: f({ image: { maxFileSize: "8MB", maxFileCount: 1 } })
+    .input(z.object({ slug: z.string() }))
+    .middleware(async ({ files, input }) => {
+      const fileOverrides = files.map((f) => f);
+
+      return { slug: input.slug, [UTFiles]: fileOverrides };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      const route = "costRealization";
+
+      try {
+        const parsed = fileSchema.parse({
+          route,
+          key: file.key,
+          name: file.name,
+          url: file.url,
+          type: file.type,
+        });
+
+        await Promise.all([
+          updateDoc({
+            docId: metadata.slug,
+            collectionName: "projects",
+            errorMessage: "Error uploading image.",
+            data: { [route]: file.key },
+          }),
+          createDoc({
+            docId: file.key,
+            collectionName: "project-files",
+            errorMessage: "Error uploading image.",
+            data: parsed,
+          }),
+        ]);
+      } catch (error) {
+        await utapi.deleteFiles(file.key);
+        console.error(getErrorMessage(error));
+
+        throw new Error("Failed to upload the image.");
       }
     }),
 } satisfies FileRouter;

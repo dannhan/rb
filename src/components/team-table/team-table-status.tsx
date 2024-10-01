@@ -2,15 +2,16 @@
 
 import * as React from "react";
 
-import { updateTeamStatusAction } from "@/lib/actions";
+import { updateTeamStatusAction } from "@/actions/update";
 
 import type { Row } from "@tanstack/react-table";
 import type { Team } from "@/types";
 import { teamTableConfig } from "@/config/table";
 
-import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import { Check } from "lucide-react";
+import { PopoverClose } from "@radix-ui/react-popover";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,58 +29,51 @@ import { Icons } from "@/components/icons";
 
 type Props = {
   row: Row<Team>;
-  slug: string;
-  isAdmin: boolean;
+  admin: boolean;
 };
 
-export function TeamTableStatus({ row, slug, isAdmin }: Props) {
-  const initialStatus = teamTableConfig.statuses.find(
-    (status) => status.value === row.getValue("status"),
+export function TeamTableStatus({ row, admin }: Props) {
+  const [isPending, startTransition] = React.useTransition();
+  const status = teamTableConfig.statuses.find(
+    (status) => status.value === row.original.status,
   );
-  if (!initialStatus) return null;
-  const Icon = Icons[initialStatus.icon || "circle"];
 
-  if (isAdmin) {
+  if (!status) return null;
+  const Icon = Icons[status.icon || "circle"];
+
+  if (admin) {
     return (
-      <Badge
-        variant={initialStatus.value === "Finish" ? "default" : "secondary"}
-      >
-        {initialStatus.icon && <Icon className="mr-2 h-3 w-3" />}
-        <span>{initialStatus.label}</span>
-      </Badge>
+      <div className="min-w-[120px]">
+        <Badge variant={status.value === "Finish" ? "default" : "secondary"}>
+          {status.icon && <Icon className="mr-2 h-3 w-3" />}
+          <span>{status.label}</span>
+        </Badge>
+      </div>
     );
   }
 
-  const [status, setStatus] = React.useState(initialStatus);
-
-  const [isPending, startTransition] = React.useTransition();
   const handleSelect = async (selectedValue: string) => {
-    setOpen(false);
-
     startTransition(async () => {
       try {
-        await updateTeamStatusAction(slug, row.getValue("no"), selectedValue);
-        toast.success("Status updated.");
+        await updateTeamStatusAction({
+          id: row.original.id,
+          slug: row.original.slug,
+          status: selectedValue,
+        });
 
-        const newStatus = teamTableConfig.statuses.find(
-          (status) => status.value === selectedValue,
-        );
-        setStatus(newStatus || initialStatus);
+        toast.success("Status updated.");
       } catch (error) {
         toast.error("Error updating status.");
       }
     });
   };
-
-  const [open, setOpen] = React.useState(false);
   return (
     <div className="relative flex min-w-[120px] items-center">
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover>
         <PopoverTrigger asChild>
           <Button
             variant="ghost"
             role="combobox"
-            aria-expanded={open}
             className="h-fit justify-between p-0 font-normal"
             disabled={isPending}
           >
@@ -97,20 +91,21 @@ export function TeamTableStatus({ row, slug, isAdmin }: Props) {
             <CommandList>
               <CommandGroup>
                 {["On Progress", "Finish"].map((value) => (
-                  <CommandItem
-                    key={value}
-                    value={value}
-                    onSelect={handleSelect}
-                    disabled={status.value === value}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4 opacity-0",
-                        status.value === value && "opacity-100",
-                      )}
-                    />
-                    {value}
-                  </CommandItem>
+                  <PopoverClose key={value} className="w-full">
+                    <CommandItem
+                      value={value}
+                      onSelect={handleSelect}
+                      disabled={status.value === value}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4 opacity-0",
+                          status.value === value && "opacity-100",
+                        )}
+                      />
+                      {value}
+                    </CommandItem>
+                  </PopoverClose>
                 ))}
               </CommandGroup>
             </CommandList>

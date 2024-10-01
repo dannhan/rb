@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import * as React from "react";
 import { useRouter } from "next/navigation";
-
-import { Team } from "@/types";
-import { Row } from "@tanstack/react-table";
-import { teamSchema } from "@/config/schema";
-
-import { deleteTeamAction } from "@/lib/actions";
 
 import { toast } from "sonner";
 import { EditIcon, EllipsisIcon, Trash2 } from "lucide-react";
+
+import type { Team } from "@/types";
+import type { Row } from "@tanstack/react-table";
+import { teamSchema } from "@/config/schema";
+
+import { deleteTeamAction } from "@/actions/delete";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -25,15 +26,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import TeamForm from "@/components/team-form";
+import { TeamForm } from "./team-form";
 
-interface DataTableRowActionsProps {
+// todo:
+// 1. might create a confirmation dialog
+// 2. why use router.refresh?
+
+type DataTableRowActionsProps = {
   row: Row<Team>;
   slug: string;
-}
+};
 
 export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const router = useRouter();
   teamSchema.parse(row.original);
 
@@ -59,15 +64,20 @@ export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
             Edit
           </DropdownMenuItem>
           <DropdownMenuItem
-            // todo: might create a confirmation dialog
             onClick={() => {
-              const no = row.getValue("no") as number;
-              toast.promise(deleteTeamAction(slug, no), {
-                loading: "Deleting data.",
-                success: "Data deleted successfully.",
-                error: "Failed to to delete data.",
-                duration: 1000,
-              });
+              toast.promise(
+                deleteTeamAction({
+                  slug,
+                  id: row.original.id,
+                  fileKey: row.original.file?.key,
+                }),
+                {
+                  loading: "Deleting data.",
+                  success: "Data deleted successfully.",
+                  error: "Failed to to delete data.",
+                  duration: 1000,
+                },
+              );
 
               router.refresh();
             }}

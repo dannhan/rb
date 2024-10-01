@@ -2,73 +2,104 @@
 
 import * as React from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 
+import { MoreHorizontalIcon } from "lucide-react";
 import { toast } from "sonner";
 
-import { StoredImage, UploadedFile } from "@/types";
-import { cn } from "@/lib/utils";
+import type { File, UploadedFile } from "@/types";
+import { useDownload } from "@/hooks/use-download";
 
-const ConfirmationDialog = dynamic(() => import("@/components/confirmation-dialog").then(mod => mod.ConfirmationDialog))
-const XIcon = dynamic(() => import("lucide-react").then(mod => mod.XIcon));
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type Props = {
-  action?: () => Promise<void>;
-  image: UploadedFile | StoredImage;
-  isAdmin?: boolean;
+  image: UploadedFile | File;
   className?: string;
+  admin?: boolean;
+  onDelete: (() => Promise<void>) | (() => void);
 };
+export function ImageCard({ image, className, admin, onDelete }: Props) {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+  const cardRef = React.useRef<HTMLDivElement>(null);
 
-export function ImageCard({ action, image, isAdmin, className }: Props) {
-  const [isPending, startTransition] = React.useTransition();
+  const { error, downloadFile } = useDownload();
+
+  const handleDownload = () => {
+    const fileName = image.name;
+    const fileUrl = image.url;
+    downloadFile(fileName, fileUrl);
+
+    if (error) {
+      toast.error("Error downloading the image.");
+      return;
+    }
+    toast.success("Image downloaded.");
+  };
+
+  const handleDelete = async () => await onDelete();
 
   return (
-    <div className={cn("group relative transition-transform", className)}>
-      {isAdmin && (
-        <ConfirmationDialog
-          title="Delete Image"
-          description="Are you sure you want to delete this image?"
-          confirmText="Delete"
-          cancelText="Cancel"
-          size="icon"
-          variant="outline"
-          className={cn(
-            "absolute -right-0.5 -top-2.5 z-10 h-fit w-fit translate-x-1/2 rounded-full p-1.5",
-            "bg-gray-900/50 text-white hover:bg-gray-900/60 hover:text-white dark:bg-gray-900/80  dark:hover:bg-gray-900/95",
-            "transition-all group-hover:opacity-100 md:opacity-0",
-          )}
-          onConfirm={() => {
-            if (action === undefined) {
-              toast.error("Function not implemented yet");
-              return;
-            }
-
-            startTransition(async () => {
-              toast.promise(action(), {
-                loading: "Deleting image.",
-                success: "Image deleted successfully.",
-                error: "Failed to to delete image.",
-              });
-            });
-          }}
-        >
-          <XIcon className="h-5 w-5" />
-        </ConfirmationDialog>
+    <div
+      ref={cardRef}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={cn(
+        "group relative overflow-hidden rounded-lg shadow-lg",
+        className,
       )}
-      <Link
-        href={isPending ? "" : image.url}
-        target={isPending ? "_self" : "_blank"}
-        className={cn(isPending && "cursor-default")}
+    >
+      {/* eslint-disable @next/next/no-img-element */}
+      <img
+        src={image.url}
+        alt={image.name}
+        className="h-full max-h-[calc(100svh-220px)] min-h-[400px] w-full bg-muted object-cover text-transparent"
+      />
+      <div
+        className={cn(
+          "absolute inset-0 flex flex-col justify-between bg-black p-4 transition-all duration-300 ease-in-out",
+          isHovered || isDropdownOpen
+            ? "bg-opacity-25 opacity-100"
+            : "pointer-events-none bg-opacity-0 opacity-0",
+        )}
       >
-        <img
-          src={image.url}
-          alt={image.name}
-          className={cn(
-            "h-full max-h-[calc(100svh-220px)] min-h-[400px] rounded-md  bg-muted object-contain transition-all",
-            isPending && "opacity-50",
-          )}
-        />
-      </Link>
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <span className="text-2xl font-bold text-white">Open</span>
+        </div>
+        <div className="absolute right-4 top-4 z-50">
+          <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" className="rounded-full" size="icon">
+                <MoreHorizontalIcon className="h-6 w-6" />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent className="z-50 w-40 rounded-xl border-none px-1.5 py-1 shadow-xl">
+              <DropdownMenuItem
+                className="rounded-md font-medium"
+                onClick={() => handleDownload()}
+              >
+                Download Image
+              </DropdownMenuItem>
+              {admin && (
+                <DropdownMenuItem
+                  className="rounded-md font-medium"
+                  onClick={() => handleDelete()}
+                >
+                  Delete Image
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+      <Link href={image.url} target="_blank" className="absolute inset-0" />
     </div>
   );
 }

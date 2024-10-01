@@ -1,4 +1,4 @@
-import { logout } from "@/lib/actions";
+import { logout } from "@/actions/auth";
 import { SubmitButton } from "@/components/submit-button";
 
 export function LogoutForm({ className }: { className?: string }) {

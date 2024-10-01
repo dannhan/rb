@@ -1,23 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import * as React from "react";
+
+import type { Row } from "@tanstack/react-table";
+import { toast } from "sonner";
+import { EditIcon, EllipsisIcon, Trash2 } from "lucide-react";
 
 import { Identity } from "@/types";
 import { identitySchema } from "@/config/schema";
-import { Row } from "@tanstack/react-table";
+import { deleteIdentityAction } from "@/actions/delete";
 
-import { deleteIdentityAction } from "@/lib/actions";
-
-import { toast } from "sonner";
-import { EditIcon, EllipsisIcon, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +18,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { IdentityForm } from "./identity-form";
 
 interface IdentityTableRowActionProps {
   row: Row<Identity>;
@@ -35,8 +35,7 @@ export function IdentityTableRowAction({
   row,
   slug,
 }: IdentityTableRowActionProps) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const router = useRouter();
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   identitySchema.parse(row.original);
 
   return (
@@ -53,22 +52,24 @@ export function IdentityTableRowAction({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
           {/* todo:  */}
-          {/* <DropdownMenuItem onSelect={() => setIsDialogOpen(true)}>
+          <DropdownMenuItem onSelect={() => setIsDialogOpen(true)}>
             <EditIcon className="mr-2.5 h-4 w-4" />
             Edit
-          </DropdownMenuItem> */}
+          </DropdownMenuItem>
           <DropdownMenuItem
-            // todo: might create a confirmation dialog
             onClick={() => {
-              const no = row.getValue("no") as number;
-              toast.promise(deleteIdentityAction(slug, no), {
-                loading: "Deleting data.",
-                success: "Data deleted successfully.",
-                error: "Failed to to delete data.",
-                duration: 1000,
-              });
-
-              router.refresh();
+              toast.promise(
+                deleteIdentityAction({
+                  slug,
+                  id: row.original.id,
+                }),
+                {
+                  loading: "Deleting data.",
+                  success: "Data deleted successfully.",
+                  error: "Failed to to delete data.",
+                  duration: 1000,
+                },
+              );
             }}
           >
             <Trash2 className="mr-2.5 h-4 w-4" />
@@ -77,7 +78,7 @@ export function IdentityTableRowAction({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Data</DialogTitle>
@@ -85,13 +86,14 @@ export function IdentityTableRowAction({
               Fill in the details below to update data.
             </DialogDescription>
           </DialogHeader>
-          <UpdateTeamForm
+          <IdentityForm
             setIsDialogOpen={setIsDialogOpen}
             slug={slug}
+            isUpdate
             data={row.original}
           />
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
     </>
   );
 }

@@ -1,13 +1,22 @@
 "use client";
 
 import * as React from "react";
-import dynamic from "next/dynamic";
 
-import { deleteDesignImageAction } from "@/lib/actions";
+import { toast } from "sonner";
+import { ImageIcon, UploadCloudIcon } from "lucide-react";
 
-import { StoredImage, UploadedFile } from "@/types";
+import { UploadedFile, File } from "@/types";
+import { deleteDesignImageAction } from "@/actions/delete";
 import { useUploadFile } from "@/hooks/use-upload-file";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Card,
   CardContent,
@@ -15,34 +24,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ImageCard } from "@/components/image-card";
-import { EmptyCard } from "@/components/empty-card";
+import { FileUploader } from "@/components/file-uploader";
 
-const DialogUploader = dynamic(() =>
-  import("@/components/dialog-uploader").then((mod) => mod.DialogUploader),
-);
+// todo:
+// 1. change scroll area to use carousel
+// 2. use Image instead of img
 
 interface Props {
-  designImages: (UploadedFile | StoredImage)[];
+  designImages: (UploadedFile | File)[];
   slug: string;
-  isAdmin?: boolean;
-  // todo
-  isLoading?: boolean;
+  admin?: boolean;
 }
 
-export function DesignImagesCard({
-  designImages,
-  slug,
-  isAdmin,
-  isLoading,
-}: Props) {
-  const { progresses, onUpload, uploadedFiles, isUploading, setUploadedFiles } =
-    useUploadFile("designImages", {
-      defaultUploadedFiles: designImages,
-      input: { slug },
-    });
+export function DesignImagesCard({ designImages, slug, admin }: Props) {
+  const { progresses, onUpload, isUploading } = useUploadFile("designImages", {
+    input: { slug },
+  });
 
   return (
     <Card>
@@ -53,42 +53,79 @@ export function DesignImagesCard({
             These are all of the images that have been uploaded.
           </CardDescription>
         </div>
-        {isAdmin && (
-          <DialogUploader
-            progresses={progresses}
-            onUpload={onUpload}
-            isUploading={isUploading}
-          />
+
+        {admin && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>
+                <UploadCloudIcon className="h-5 w-5 sm:mr-2" />
+                <span className="hidden sm:inline">Upload</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-xl">
+              <DialogHeader>
+                <DialogTitle>Upload Files</DialogTitle>
+                <DialogDescription>
+                  Drag and drop your files here or click to browse.
+                </DialogDescription>
+              </DialogHeader>
+              <FileUploader
+                accept={{ "image/*": [] }}
+                maxFileCount={4}
+                maxSize={8 * 1024 * 1024}
+                progresses={progresses}
+                onUpload={onUpload}
+                disabled={isUploading}
+              />
+            </DialogContent>
+          </Dialog>
         )}
       </CardHeader>
       <CardContent>
-        {uploadedFiles.length > 0 ? (
+        {designImages.length > 0 ? (
           <ScrollArea>
-            <div className="my-4 flex w-max gap-8">
-              {uploadedFiles.map((file) => (
+            <div className="my-4 flex w-max flex-row gap-6">
+              {designImages.map((file) => (
                 <ImageCard
                   key={file.key}
                   image={file}
-                  action={async () => {
-                    await deleteDesignImageAction(slug, file as StoredImage);
-                    setUploadedFiles(
-                      uploadedFiles.filter((f) => f.key !== file.key),
+                  admin={admin}
+                  onDelete={() => {
+                    toast.promise(
+                      deleteDesignImageAction({
+                        slug,
+                        fileKey: file.key,
+                      }),
+                      {
+                        loading: "Deleting image.",
+                        success: "Image deleted successfully.",
+                        error: "Failed to to delete image.",
+                        duration: 1000,
+                      },
                     );
                   }}
-                  isAdmin={isAdmin}
                 />
               ))}
             </div>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
-        ) : !isLoading ? (
-          <EmptyCard
-            title="No files uploaded"
-            description="Upload some files to see them here"
-            className="mt-6 h-[425px] w-full"
-          />
         ) : (
-          <Skeleton className="mt-6 h-[425px] w-full" />
+          <Card className="mt-6 flex h-[425px] w-full flex-col items-center justify-center space-y-6 bg-transparent p-4">
+            <CardHeader className="flex flex-col items-center p-0 text-center md:gap-1.5">
+              <div className="mr-4 shrink-0 rounded-full border border-dashed p-4">
+                <ImageIcon
+                  className="size-8 text-muted-foreground "
+                  aria-hidden="true"
+                />
+              </div>
+              <CardTitle className="text-lg md:text-2xl md:leading-none">
+                No files uploaded
+              </CardTitle>
+              <CardDescription className="text-xs md:text-sm">
+                Upload some files to see them here
+              </CardDescription>
+            </CardHeader>
+          </Card>
         )}
       </CardContent>
     </Card>

@@ -1,10 +1,17 @@
 import { Open_Sans } from "next/font/google";
 import Link from "next/link";
 
-import { auth } from "@/auth";
-import { getProjectsByTypeFirebase } from "@/firebase/firestore/project";
-
 import { MapPinIcon } from "lucide-react";
+import { auth } from "@/auth";
+
+import { Project } from "@/types";
+import { projectSchema } from "@/config/schema";
+
+import {
+  type FetchCollectionOptions,
+  fetchCollection,
+} from "@/lib/firebase/firestore";
+
 import { Header } from "@/layouts/header";
 import { Separator } from "@/components/ui/separator";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -15,13 +22,21 @@ import { Logo } from "@/components/logo";
 const open_sans = Open_Sans({ subsets: ["latin"], weight: ["300"] });
 
 export default async function Page() {
-  const [konstruksiProjects, renovasiProjects, session] = await Promise.all([
-    getProjectsByTypeFirebase("konstruksi"),
-    getProjectsByTypeFirebase("renovasi"),
-    auth(),
-  ]);
+  const session = await auth();
+  const admin = session?.user.isAdmin;
 
-  const isAdmin = session?.user.isAdmin;
+  const fetchOptions = (type: string): FetchCollectionOptions<Project> => ({
+    collectionName: "projects",
+    zodSchema: projectSchema,
+    errorMessage: "Error fetching data.",
+    queryBuilder: (collection) =>
+      collection.where("type", "==", type).select("title", "type", "slug"),
+  });
+
+  const [konstruksiProjects, renovasiProjects] = await Promise.all([
+    fetchCollection(fetchOptions("konstruksi")),
+    fetchCollection(fetchOptions("renovasi")),
+  ]);
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -29,7 +44,7 @@ export default async function Page() {
       <Header className="border-none bg-background text-muted-foreground shadow-md">
         <Logo />
         <div className="flex items-center gap-2">
-          {!isAdmin && (
+          {!admin && (
             <Link
               href="/locations"
               className="mr-1 flex gap-1 text-base text-foreground transition-all hover:text-foreground/70 dark:hover:text-foreground/40 sm:mr-4"
@@ -54,13 +69,13 @@ export default async function Page() {
         <ProjectCardsList
           projects={konstruksiProjects}
           type="konstruksi"
-          isAdmin={isAdmin}
+          admin={admin}
         />
         <Separator className="my-2 w-full max-w-screen-lg 2xl:max-w-screen-xl" />
         <ProjectCardsList
           projects={renovasiProjects}
           type="renovasi"
-          isAdmin={isAdmin}
+          admin={admin}
         />
       </main>
     </div>

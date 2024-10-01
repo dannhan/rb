@@ -1,10 +1,10 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { signInWithCustomToken } from "firebase/auth";
-import { firebaseAuth } from "@/firebase/client";
+import { firebaseAuth } from "@/lib/firebase/client";
 
 async function syncFirebaseAuth(session: Session | null) {
   if (session && session.firebaseToken) {

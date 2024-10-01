@@ -1,4 +1,5 @@
-import { cn } from "@/lib/utils";
+import type { HTMLAttributes } from "react";
+
 import {
   CalendarCheck2,
   Images,
@@ -10,7 +11,6 @@ import {
   InfoIcon,
   MapPinned,
 } from "lucide-react";
-import { HTMLAttributes } from "react";
 
 export const Icons = {
   circle: Circle,

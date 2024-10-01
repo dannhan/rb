@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 
 import type { StoreLocation } from "@/types";
-import { updateStoreLocationAction } from "@/lib/actions";
 
 import { toast } from "sonner";
 import { Loader, SaveIcon } from "lucide-react";
@@ -12,6 +11,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SearchAndPin } from "./search-and-pin";
 
+// todo:
+const updateStoreLocationAction = () => null;
 const GOOGLE_MAPS_API_KEY = "AIzaSyC8k7UCtleSbU0JHAVACuLUp-2rfMUHXsE";
 
 type Props = {
@@ -62,19 +63,7 @@ export function StoreManagementUI({
     formData.append("address", store.address);
     formData.append("link", store.link);
 
-    const res = await updateStoreLocationAction(
-      slug,
-      formData,
-      store.lat,
-      store.lng,
-    );
-
-    if (res.errors) {
-      toast.error("Failed to save location.");
-      return;
-    }
-
-    toast.success("Location saved successfully.");
+    toast.error("Not Implemented");
   };
 
   return (

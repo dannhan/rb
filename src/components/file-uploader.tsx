@@ -2,14 +2,14 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { UploadCloudIcon, FileTextIcon, X } from "lucide-react";
-import Dropzone, {
-  type DropzoneProps,
-  type FileRejection,
-} from "react-dropzone";
+
+import type { DropzoneProps, FileRejection } from "react-dropzone";
+import Dropzone from "react-dropzone";
+import { UploadCloudIcon, FileTextIcon, XIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import { cn, formatBytes } from "@/lib/utils";
+
 import { useControllableState } from "@/hooks/use-controllable-state";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -98,9 +98,7 @@ export function FileUploader(props: FileUploaderProps) {
     onValueChange,
     onUpload,
     progresses,
-    accept = {
-      "image/*": [],
-    },
+    accept = { "*/*": [] },
     maxSize = 1024 * 1024 * 2,
     maxFileCount = 1,
     multiple = false,
@@ -164,12 +162,16 @@ export function FileUploader(props: FileUploaderProps) {
     [files, maxFileCount, multiple, onUpload, setFiles],
   );
 
-  function onRemove(index: number) {
-    if (!files) return;
-    const newFiles = files.filter((_, i) => i !== index);
-    setFiles(newFiles);
-    onValueChange?.(newFiles);
-  }
+  const onRemove = React.useCallback(
+    (index: number) => {
+      if (!files) return;
+
+      const newFiles = files.filter((_, i) => i !== index);
+      setFiles(newFiles);
+      onValueChange?.(newFiles);
+    },
+    [files, onValueChange, setFiles],
+  );
 
   // Revoke preview url when component unmounts
   React.useEffect(() => {
@@ -238,7 +240,7 @@ export function FileUploader(props: FileUploaderProps) {
                     You can upload
                     {maxFileCount > 1
                       ? ` ${maxFileCount === Infinity ? "multiple" : maxFileCount}
-                      files (MAX. ${formatBytes(maxSize)})`
+                      files (MAXIcon. ${formatBytes(maxSize)})`
                       : ` a file with ${formatBytes(maxSize)}`}
                   </p>
                 </div>
@@ -296,7 +298,7 @@ function FileCard({ file, progress, onRemove }: FileCardProps) {
           className="size-7"
           onClick={onRemove}
         >
-          <X className="size-4" aria-hidden="true" />
+          <XIcon className="size-4" aria-hidden="true" />
           <span className="sr-only">Remove file</span>
         </Button>
       </div>

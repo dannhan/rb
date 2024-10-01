@@ -3,6 +3,8 @@
 import Link from "next/link";
 import * as React from "react";
 
+import type { StoreLocation } from "@/types";
+
 import { useGeolocation } from "@uidotdev/usehooks";
 import haversine from "haversine-distance";
 
@@ -18,16 +20,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-type LocationProps = {
-  title: string;
-  address?: string;
-  link?: string;
-  lat?: number;
-  lng?: number;
-  className?: string;
-};
-
-export function StoreLocator({ locations }: { locations: LocationProps[] }) {
+export function StoreLocator({
+  locations,
+}: {
+  locations: ( { title: string } & StoreLocation )[];
+}) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [geoError, setGeoError] =
     React.useState<GeolocationPositionError | null>(null);
@@ -121,58 +118,44 @@ export function StoreLocator({ locations }: { locations: LocationProps[] }) {
       <div className="flex flex-wrap rounded-[calc(1.5rem-1px)] bg-background px-4 pb-4">
         {sortedLocations.map((location) => (
           <div className="w-full px-4 md:w-1/2 2xl:w-1/3" key={location.title}>
-            <Location
-              className="rounded-none border-0 border-b bg-transparent shadow-none"
-              title={location.title}
-              address={location.address}
-              link={location.link}
-              distance={location.distance}
-            />
+            <Card className="rounded-none border-0 border-b bg-transparent shadow-none">
+              <CardHeader className="px-0 pb-2">
+                <CardTitle className="text-xl text-primary">
+                  {location.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex min-h-[72px] items-start justify-between gap-8 px-0">
+                <p className="line-clamp-2 w-full max-w-full overflow-hidden overflow-ellipsis">
+                  {location.address || (
+                    <span className="text-muted-foreground/60">
+                      Alamat tidak tersedia.
+                    </span>
+                  )}
+                </p>
+
+                {location.link ? (
+                  <Link
+                    href={location.link}
+                    target="_blank"
+                    className="flex flex-col items-center gap-2.5"
+                  >
+                    <div className="rotate-45 rounded-sm bg-primary p-1">
+                      <CornerUpRightIcon className="h-4 w-4 -translate-y-[1px] -rotate-45 text-primary-foreground" />
+                    </div>
+                    <p className="text-xs font-semibold">
+                      {location.distance !== null
+                        ? `${location.distance.toFixed(1)}Km`
+                        : "N/A"}
+                    </p>
+                  </Link>
+                ) : (
+                  <div className="h-4 w-4" />
+                )}
+              </CardContent>
+            </Card>
           </div>
         ))}
       </div>
     </div>
-  );
-}
-
-function Location({
-  title,
-  address,
-  link,
-  distance,
-  className,
-}: LocationProps & { distance: number | null }) {
-  return (
-    <Card className={className}>
-      <CardHeader className="px-0 pb-2">
-        <CardTitle className="text-xl text-primary">{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="flex min-h-[72px] items-start justify-between gap-8 px-0">
-        <p className="line-clamp-2 w-full max-w-full overflow-hidden overflow-ellipsis">
-          {address || (
-            <span className="text-muted-foreground/60">
-              Alamat tidak tersedia.
-            </span>
-          )}
-        </p>
-
-        {link ? (
-          <Link
-            href={link}
-            target="_blank"
-            className="flex flex-col items-center gap-2.5"
-          >
-            <div className="rotate-45 rounded-sm bg-primary p-1">
-              <CornerUpRightIcon className="h-4 w-4 -translate-y-[1px] -rotate-45 text-primary-foreground" />
-            </div>
-            <p className="text-xs font-semibold">
-              {distance !== null ? `${distance.toFixed(1)}Km` : "N/A"}
-            </p>
-          </Link>
-        ) : (
-          <div className="h-4 w-4" />
-        )}
-      </CardContent>
-    </Card>
   );
 }
