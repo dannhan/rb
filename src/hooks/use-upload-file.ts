@@ -52,12 +52,6 @@ export function useUploadFile(
         },
       });
 
-      res.forEach((file) => {
-        if ((file?.serverData as { error: string })?.error) {
-          toast.error("Failed to store the images.");
-        }
-      });
-
       // update local state
       setUploadedFiles((prev) => (prev ? [...prev, ...res] : res));
     } catch (err) {
