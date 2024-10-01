@@ -80,13 +80,7 @@ export function getColumns(slug: string, admin: boolean): ColumnDef<Team>[] {
     {
       accessorKey: "fileId",
       id: "fileId",
-      header: ({ column }) => (
-        <DataTableColumnHeader
-          column={column}
-          title="File"
-          className="line-clamp-1"
-        />
-      ),
+      header: () => <span>File</span>,
       cell: ({ row }) => <DataTableFileColumns row={row} slug={slug} />,
     },
   ];
