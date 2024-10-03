@@ -18,6 +18,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { ProjectListCommandDialog } from "@/components/project-list-command-dialog";
 import { ProjectCardsList } from "@/components/project-cards-list";
 import { Logo } from "@/components/logo";
+import { HomeLogoutForm } from "@/components/logout-form";
 
 const open_sans = Open_Sans({ subsets: ["latin"], weight: ["300"] });
 
@@ -63,6 +64,7 @@ export default async function Page() {
             renovasiProjects={renovasiProjects || []}
           />
           <ModeToggle />
+          <HomeLogoutForm />
         </div>
       </Header>
       <main className="flex flex-col items-center gap-4 p-4 md:flex-1 lg:p-6 lg:pb-10">

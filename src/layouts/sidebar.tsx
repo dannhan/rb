@@ -6,7 +6,6 @@ import { useSelectedLayoutSegment } from "next/navigation";
 import { SidebarItem } from "@/types";
 import { cn } from "@/lib/utils";
 
-import { LogoutForm } from "@/components/logout-form";
 import { Icons } from "@/components/icons";
 import { Logo } from "@/components/logo";
 
@@ -64,10 +63,6 @@ export function Sidebar({ items }: { items?: SidebarItem[] }) {
               Products
             </Link> */}
           </nav>
-        </div>
-
-        <div className="mt-auto p-4">
-          <LogoutForm className="w-full" />
         </div>
       </div>
     </div>

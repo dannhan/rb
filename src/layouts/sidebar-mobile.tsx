@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { LogoutForm } from "@/components/logout-form";
 import { Icons } from "@/components/icons";
 import { Logo } from "@/components/logo";
 
@@ -79,10 +78,6 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
             Products
           </Link> */}
         </nav>
-
-        <div className="mt-auto">
-          <LogoutForm className="w-full" />
-        </div>
       </SheetContent>
     </Sheet>
   );
