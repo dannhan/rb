@@ -102,4 +102,5 @@ import { MyCustomComponent } from "@/components/MyCustomComponent";
 import { someFunction } from "@/lib/someFunction";
 ```
 
-to be continued: refactor the actions, the reason image data is not refetch might because state is preserved
+to be continued: improve the image styles, and also log-out button on home page
+to be continued: refactor on login and logout button form component
