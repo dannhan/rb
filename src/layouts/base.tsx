@@ -26,7 +26,7 @@ export function BaseLayout({ children }: Props) {
             crawlSpeed={200}
           />
           {children}
-          <Toaster richColors closeButton visibleToasts={6} />
+          <Toaster expand richColors closeButton visibleToasts={6} />
           <TailwindIndicator />
         </ThemeProvider>
       </FirebaseAuthProvider>

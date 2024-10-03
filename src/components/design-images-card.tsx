@@ -1,13 +1,16 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 import { ImageIcon, UploadCloudIcon } from "lucide-react";
 
-import { UploadedFile, File } from "@/types";
+import type { File as StoredFile } from "@/types";
 import { deleteDesignImageAction } from "@/actions/delete";
-import { useUploadFile } from "@/hooks/use-upload-file";
+import { getErrorMessage } from "@/lib/handle-error";
+import { nanoid } from "@/lib/nanoid";
+import { uploadFiles } from "@/lib/uploadthing";
 
 import {
   Dialog,
@@ -28,21 +31,81 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { ImageCard } from "@/components/image-card";
 import { FileUploader } from "@/components/file-uploader";
+import { customToast } from "./file-uploader-toast";
 
 // todo:
 // 1. change scroll area to use carousel
 // 2. use Image instead of img
+// 3. confusion in types
+// 4. might improve the custom hooks instead?
 
 interface Props {
-  designImages: (UploadedFile | File)[];
+  designImages: StoredFile[];
   slug: string;
   admin?: boolean;
 }
 
 export function DesignImagesCard({ designImages, slug, admin }: Props) {
-  const { progresses, onUpload, isUploading } = useUploadFile("designImages", {
-    input: { slug },
-  });
+  // prettier-ignore
+  const [progresses, setProgresses] = React.useState<Record<string, number>>({});
+  const [isUploading, setIsUploading] = React.useState(false);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const progressesRef = React.useRef<Record<string, number>>({});
+  const router = useRouter();
+
+  // Keep ref in sync with state
+  React.useEffect(() => {
+    progressesRef.current = progresses;
+  }, [progresses]);
+
+  const onUpload = async (files: File[]) => {
+    setIsDialogOpen(false);
+    setIsUploading(true);
+
+    const id = nanoid();
+    customToast({ id, files });
+
+    try {
+      await uploadFiles("designImages", {
+        files,
+        input: { slug },
+        onUploadProgress: ({ file, progress }) => {
+          const newProgresses = {
+            ...progressesRef.current,
+            [file.name]: progress,
+          };
+
+          setProgresses(newProgresses);
+          customToast({
+            id,
+            files,
+            progresses: newProgresses,
+          });
+        },
+      });
+
+      // Show completed state briefly before cleanup
+      customToast({
+        id,
+        files,
+        progresses: progressesRef.current, // Use ref to get latest progress
+        duration: 3000,
+        isUploading: false,
+      });
+    } catch (err) {
+      toast.dismiss(id);
+      toast.error(getErrorMessage(err));
+    } finally {
+      // Cleanup after small delay to ensure completion toast is seen
+      setTimeout(() => {
+        setIsUploading(false);
+        setProgresses({});
+      }, 3000);
+
+      console.log("refresh happen here");
+      router.refresh();
+    }
+  };
 
   return (
     <Card>
@@ -55,7 +118,7 @@ export function DesignImagesCard({ designImages, slug, admin }: Props) {
         </div>
 
         {admin && (
-          <Dialog>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <UploadCloudIcon className="h-5 w-5 sm:mr-2" />
@@ -73,9 +136,10 @@ export function DesignImagesCard({ designImages, slug, admin }: Props) {
                 accept={{ "image/*": [] }}
                 maxFileCount={4}
                 maxSize={8 * 1024 * 1024}
-                progresses={progresses}
                 onUpload={onUpload}
+                progresses={progresses}
                 disabled={isUploading}
+                withToast={false}
               />
             </DialogContent>
           </Dialog>
@@ -131,3 +195,16 @@ export function DesignImagesCard({ designImages, slug, admin }: Props) {
     </Card>
   );
 }
+
+const getImageDimensions = (
+  file: File,
+): Promise<{ width: number; height: number }> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      resolve({ width: img.width, height: img.height });
+    };
+    img.onerror = reject;
+    img.src = URL.createObjectURL(file);
+  });
+};

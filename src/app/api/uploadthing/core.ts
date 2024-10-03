@@ -21,13 +21,13 @@ const f = createUploadthing();
 // FileRouter for your app, can contain multiple FileRoutes
 export const router = {
   projectTeam: f({
-    image: { maxFileSize: "8MB", maxFileCount: 1 },
-    pdf: { maxFileSize: "8MB", maxFileCount: 1 },
-    text: { maxFileSize: "8MB", maxFileCount: 1 },
-    video: { maxFileSize: "8MB", maxFileCount: 1 },
-    audio: { maxFileSize: "8MB", maxFileCount: 1 },
-    blob: { maxFileSize: "8MB", maxFileCount: 1 },
-    "application/zip": { maxFileSize: "8MB", maxFileCount: 1 },
+    image: { maxFileSize: "16MB", maxFileCount: 1 },
+    pdf: { maxFileSize: "16MB", maxFileCount: 1 },
+    text: { maxFileSize: "16MB", maxFileCount: 1 },
+    video: { maxFileSize: "16MB", maxFileCount: 1 },
+    audio: { maxFileSize: "16MB", maxFileCount: 1 },
+    blob: { maxFileSize: "16MB", maxFileCount: 1 },
+    "application/zip": { maxFileSize: "16MB", maxFileCount: 1 },
   })
     .input(z.object({ slug: z.string(), teamId: z.string() }))
     .middleware(async ({ files, input }) => {
@@ -188,6 +188,24 @@ export const router = {
             data: parsed,
           }),
         ]);
+      } catch (error) {
+        await utapi.deleteFiles(file.key);
+        console.error(getErrorMessage(error));
+
+        throw new Error("Failed to upload the image.");
+      }
+    }),
+
+  testUpload: f({ image: { maxFileSize: "32MB", maxFileCount: 8 } })
+    .input(z.object({ slug: z.string() }))
+    .middleware(async ({ files, input }) => {
+      const fileOverrides = files.map((f) => f);
+
+      return { slug: input.slug, [UTFiles]: fileOverrides };
+    })
+    .onUploadComplete(async ({ file }) => {
+      try {
+        await utapi.deleteFiles(file.key);
       } catch (error) {
         await utapi.deleteFiles(file.key);
         console.error(getErrorMessage(error));

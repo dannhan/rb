@@ -15,6 +15,10 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+// todos:
+// 1. tells the user how many files are the Maximum
+// 2. tells the user maximum size of a file
+
 interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Value of the uploader.
@@ -84,6 +88,14 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
   multiple?: boolean;
 
   /**
+   * Whether the uploader should using toast.
+   * @type boolean
+   * @default false
+   * @example multiple
+   */
+  withToast?: boolean;
+
+  /**
    * Whether the uploader is disabled.
    * @type boolean
    * @default false
@@ -102,6 +114,7 @@ export function FileUploader(props: FileUploaderProps) {
     maxSize = 1024 * 1024 * 2,
     maxFileCount = 1,
     multiple = false,
+    withToast = true,
     disabled = false,
     className,
     ...dropzoneProps
@@ -113,7 +126,7 @@ export function FileUploader(props: FileUploaderProps) {
   });
 
   const onDrop = React.useCallback(
-    (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
+    async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
       if (!multiple && maxFileCount === 1 && acceptedFiles.length > 1) {
         toast.error("Cannot upload more than 1 file at a time");
         return;
@@ -135,9 +148,22 @@ export function FileUploader(props: FileUploaderProps) {
       setFiles(updatedFiles);
 
       if (rejectedFiles.length > 0) {
-        rejectedFiles.forEach(({ file }) => {
+        for (const { file, errors } of rejectedFiles) {
+          const errorMessage = errors[0].message;
+
+          if (errorMessage.includes("Too many files")) {
+            toast.dismiss();
+            toast.error("Too many files");
+            break;
+          }
+
+          if (errorMessage.includes("File is larger than")) {
+            toast.error(`File ${file.name} was too large`);
+            continue;
+          }
+
           toast.error(`File ${file.name} was rejected`);
-        });
+        }
       }
 
       if (
@@ -148,18 +174,22 @@ export function FileUploader(props: FileUploaderProps) {
         const target =
           updatedFiles.length > 0 ? `${updatedFiles.length} files` : `file`;
 
-        toast.promise(onUpload(updatedFiles), {
-          loading: `Uploading ${target}...`,
-          success: () => {
-            setFiles([]);
-            return `${target} uploaded`;
-          },
-          error: `Failed to upload ${target}`,
-        });
+        if (withToast) {
+          toast.promise(onUpload(updatedFiles), {
+            loading: `Uploading ${target}...`,
+            success: () => {
+              setFiles([]);
+              return `${target} uploaded`;
+            },
+            error: `Failed to upload ${target}`,
+          });
+          return;
+        }
+
+        await onUpload(updatedFiles);
       }
     },
-
-    [files, maxFileCount, multiple, onUpload, setFiles],
+    [files, maxFileCount, multiple, withToast, onUpload, setFiles],
   );
 
   const onRemove = React.useCallback(

@@ -72,7 +72,7 @@ export function ImageCard({ image, className, admin, onDelete }: Props) {
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <span className="text-2xl font-bold text-white">Open</span>
         </div>
-        <div className="absolute right-4 top-4 z-50">
+        <div className="absolute right-2 top-2 z-50">
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" className="rounded-full" size="icon">
