@@ -1,28 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname, useSelectedLayoutSegment } from "next/navigation";
+import { useSelectedLayoutSegment } from "next/navigation";
 import Link from "next/link";
 
-import { Menu, Package, Package2, ShoppingCart } from "lucide-react";
-import { SidebarItem } from "@/types";
+import { Menu } from "lucide-react";
+
+import type { SidebarItem } from "@/types";
 import { cn } from "@/lib/utils";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Icons } from "@/components/icons";
 import { Logo } from "@/components/logo";
 
 export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
   const segment = useSelectedLayoutSegment();
-  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
 
   // automatically close sidebar when navigation loading is completed
   useEffect(() => {
     setIsOpen(false);
-  }, [pathname]);
+  }, [segment]);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -30,7 +36,7 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
         <Button
           variant="outline"
           size="icon"
-          className="shrink-0 md:hidden"
+          className="shrink-0 bg-muted/50 md:hidden"
           onClick={() => setIsOpen(true)}
         >
           <Menu className="h-5 w-5" />
@@ -38,9 +44,12 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="flex flex-col">
-        <nav className="grid gap-2 text-lg font-medium">
+        <SheetHeader className="sr-only">
+          <SheetTitle>Sidebar Navigation</SheetTitle>
+          <SheetDescription>Sidebar Navigation for mobile.</SheetDescription>
+        </SheetHeader>
+        <nav className="relative bottom-5 grid gap-2 text-lg font-medium">
           <Logo />
-
           {items?.map((item, index) => {
             const Icon = Icons[item.icon || "arrowRight"];
             return (
@@ -48,7 +57,7 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
                 key={index}
                 href={item.href}
                 className={cn(
-                  "mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground text-base",
+                  "mx-[-0.65rem] flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted-foreground hover:text-foreground",
                   item.href.startsWith(`${segment}`) &&
                     "bg-muted text-foreground",
                 )}
@@ -58,25 +67,6 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
               </Link>
             );
           })}
-
-          {/* todo, important */}
-          {/* <Link
-            href="#"
-            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-          >
-            <ShoppingCart className="h-5 w-5" />
-            Orders
-            <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-              6
-            </Badge>
-          </Link>
-          <Link
-            href="#"
-            className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
-          >
-            <Package className="h-5 w-5" />
-            Products
-          </Link> */}
         </nav>
       </SheetContent>
     </Sheet>
