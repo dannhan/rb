@@ -23,11 +23,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 
 import { IdentityTablePrint } from "./identity-table-print";
 import { CreateIdentityDialog } from "./create-identity-dialog";
 import { getColumns } from "./columns";
+import { IdentityTableToolbar } from "./identity-table-toolbar";
 
 interface DataTableProps {
   data: Identity[];
@@ -54,12 +54,7 @@ export function DataTable({ data, slug, admin }: DataTableProps) {
 
   return (
     <div className="w-full max-w-screen-md flex-1 space-y-2.5 pb-16">
-      <DataTableToolbar table={table}>
-        {admin && (
-          <CreateIdentityDialog className="w-full max-w-xl" slug={slug} />
-        )}
-        <IdentityTablePrint table={table} />
-      </DataTableToolbar>
+      <IdentityTableToolbar table={table} slug={slug} admin={admin} />
 
       <div className="rounded-md border">
         <Table>

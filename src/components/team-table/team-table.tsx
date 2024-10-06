@@ -29,12 +29,9 @@ import {
 } from "@/components/ui/table";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
-import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 
 import { getColumns } from "./columns";
-import { DataTablePrint } from "./team-table-print";
-import { CreateTeamDialog } from "./create-team-dialog";
+import { TeamTableToolbar } from "./team-table-toolbar";
 
 // todos:
 // 1. might change the name
@@ -75,11 +72,7 @@ export function DataTable({ data, slug, admin }: DataTableProps) {
 
   return (
     <div className="space-y-4 pb-16">
-      <DataTableToolbar table={table}>
-        {admin && <CreateTeamDialog slug={slug} />}
-        <DataTablePrint table={table} />
-        <DataTableViewOptions table={table} />
-      </DataTableToolbar>
+      <TeamTableToolbar table={table} slug={slug} admin={admin} />
 
       <ScrollArea className="overflow-hidden rounded-md border">
         <Table>

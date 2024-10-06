@@ -23,7 +23,7 @@ type Props = {
   table: TanstackTable<Team>;
 };
 
-export function DataTablePrint({ table }: Props) {
+export function TeamTablePrint({ table }: Props) {
   const componentRef = React.useRef(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -37,9 +37,9 @@ export function DataTablePrint({ table }: Props) {
         onClick={handlePrint}
         size="sm"
         variant="secondary"
-        className="flex h-8 items-center border"
+        className="h-8 border"
       >
-        <PrinterIcon className="mr-2 h-4 w-4" />
+        <PrinterIcon className="mr-2 size-4" />
         Print
       </Button>
       <div ref={componentRef} className="m-10 hidden print:block">

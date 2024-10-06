@@ -17,21 +17,20 @@ import { TeamForm } from "./team-form";
 
 type Props = {
   slug: string;
-  className?: string;
 };
 
-export function CreateTeamDialog({ slug, className }: Props) {
+export function CreateTeamDialog({ slug }: Props) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" size="sm" className="h-8">
+        <Button variant="default" size="sm" className="col-span-2 h-8 w-full">
           <PlusIcon className="mr-2 size-4" aria-hidden="true" />
           Add Data
         </Button>
       </DialogTrigger>
-      <DialogContent className={className}>
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>Add Data</DialogTitle>
           <DialogDescription>

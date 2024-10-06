@@ -17,10 +17,9 @@ import { IdentityForm } from "./identity-form";
 
 type Props = {
   slug: string;
-  className?: string;
 };
 
-export function CreateIdentityDialog({ slug, className }: Props) {
+export function CreateIdentityDialog({ slug }: Props) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   return (
@@ -31,7 +30,7 @@ export function CreateIdentityDialog({ slug, className }: Props) {
           Add Data
         </Button>
       </DialogTrigger>
-      <DialogContent className={className}>
+      <DialogContent className="w-full max-w-xl">
         <DialogHeader>
           <DialogTitle>Add Data</DialogTitle>
           <DialogDescription>
