@@ -12,32 +12,31 @@ import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 export default function Loading() {
   return (
     <div className="flex flex-1 flex-col space-y-4">
-      <div className="flex flex-col-reverse items-center justify-between gap-2 md:flex-row md:gap-0">
-        <div className="flex w-full flex-1 items-center space-x-2">
+      <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
+        <div className="flex w-full flex-1 items-center space-x-2 sm:max-w-[500px]">
           <Input
-            className="h-8 flex-1 md:w-[125px] md:flex-initial lg:w-[250px]"
+            className="h-8 flex-1 sm:max-w-[150px] sm:flex-initial lg:max-w-[225px]"
             placeholder="Search"
           />
-
           <Button variant="outline" size="sm" className="h-8 border-dashed">
             <CirclePlusIcon className="mr-2 h-4 w-4" /> Status
           </Button>
         </div>
-        <div className="flex w-full justify-between gap-2 md:w-fit">
-          <Button variant="default" size="sm" className="h-8">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-fit">
+          <Button variant="default" size="sm" className="col-span-2 h-8 w-full">
             <PlusIcon className="mr-2 size-4" aria-hidden="true" />
             Add Data
           </Button>
-          <Button variant="secondary" size="sm" className="h-8 border">
+          <Button size="sm" variant="secondary" className="h-8 border">
             <PrinterIcon className="mr-2 h-4 w-4" />
             Print
           </Button>
-          <Button variant="outline" size="sm" className="ml-auto flex h-8">
-            <SlidersHorizontalIcon className="h-4 w-4" />
+          <Button variant="outline" size="sm" className="h-8">
+            <SlidersHorizontalIcon className="mr-2 h-4 w-4 sm:mr-0" />
+            <span className="sm:hidden">Toggle</span>
           </Button>
         </div>
       </div>
-
       <div className="h-full rounded-md border">
         <Table>
           <TableHeader className="h-12">
@@ -51,7 +50,6 @@ export default function Loading() {
             </TableRow>
           </TableHeader>
         </Table>
-
         <Skeleton className="h-[530px] w-full rounded-t-none" />
       </div>
     </div>
