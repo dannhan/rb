@@ -3,20 +3,13 @@
 import * as React from "react";
 import Link from "next/link";
 
-import { MoreHorizontalIcon } from "lucide-react";
 import { toast } from "sonner";
 
 import type { File, UploadedFile } from "@/types";
 import { useDownload } from "@/hooks/use-download";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { ImageCardAction } from "./image-card-action";
 
 type Props = {
   image: UploadedFile | File;
@@ -24,6 +17,7 @@ type Props = {
   admin?: boolean;
   onDelete: (() => Promise<void>) | (() => void);
 };
+
 export function ImageCard({ image, className, admin, onDelete }: Props) {
   const [isHovered, setIsHovered] = React.useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
@@ -31,10 +25,10 @@ export function ImageCard({ image, className, admin, onDelete }: Props) {
 
   const { error, downloadFile } = useDownload();
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     const fileName = image.name;
     const fileUrl = image.url;
-    downloadFile(fileName, fileUrl);
+    await downloadFile(fileName, fileUrl);
 
     if (error) {
       toast.error("Error downloading the image.");
@@ -43,13 +37,11 @@ export function ImageCard({ image, className, admin, onDelete }: Props) {
     toast.success("Image downloaded.");
   };
 
-  const handleDelete = async () => await onDelete();
-
   return (
     <div
       ref={cardRef}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseOver={() => setIsHovered(true)}
+      onMouseOut={() => setIsHovered(false)}
       className={cn(
         "group relative overflow-hidden rounded-lg shadow-lg",
         className,
@@ -59,7 +51,7 @@ export function ImageCard({ image, className, admin, onDelete }: Props) {
       <img
         src={image.url}
         alt={image.name}
-        className="h-full max-h-[calc(100svh-220px)] min-h-[400px] w-full bg-muted object-cover text-transparent"
+        className="h-full max-h-[calc(100svh-220px)] min-h-[400px] w-full bg-muted object-contain text-transparent"
       />
       <div
         className={cn(
@@ -72,31 +64,16 @@ export function ImageCard({ image, className, admin, onDelete }: Props) {
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <span className="text-2xl font-bold text-white">Open</span>
         </div>
-        <div className="absolute right-2 top-2 z-50">
-          <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" className="rounded-full" size="icon">
-                <MoreHorizontalIcon className="h-6 w-6" />
-              </Button>
-            </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="z-50 w-40 rounded-xl border-none px-1.5 py-1 shadow-xl">
-              <DropdownMenuItem
-                className="rounded-md font-medium"
-                onClick={() => handleDownload()}
-              >
-                Download Image
-              </DropdownMenuItem>
-              {admin && (
-                <DropdownMenuItem
-                  className="rounded-md font-medium"
-                  onClick={() => handleDelete()}
-                >
-                  Delete Image
-                </DropdownMenuItem>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="absolute right-2 top-2 z-50">
+          <ImageCardAction
+            admin={admin}
+            handleDownload={handleDownload}
+            onCancel={() => setIsHovered(false)}
+            onDelete={onDelete}
+            open={isDropdownOpen}
+            onOpenChange={setIsDropdownOpen}
+          />
         </div>
       </div>
       <Link href={image.url} target="_blank" className="absolute inset-0" />
