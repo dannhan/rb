@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 import { EditIcon, EllipsisIcon, Trash2 } from "lucide-react";
@@ -12,6 +11,16 @@ import { teamSchema } from "@/config/schema";
 
 import { deleteTeamAction } from "@/actions/delete";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -38,9 +47,26 @@ type DataTableRowActionsProps = {
 };
 
 export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
-  const router = useRouter();
   teamSchema.parse(row.original);
+
+  const [isFormDialogOpen, setIsFormDialogOpen] = React.useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+
+  const handleDelete = () => {
+    toast.promise(
+      deleteTeamAction({
+        slug,
+        id: row.original.id,
+        fileKey: row.original.file?.key,
+      }),
+      {
+        loading: "Deleting data.",
+        success: "Data deleted successfully.",
+        error: "Failed to to delete data.",
+        duration: 2000,
+      },
+    );
+  };
 
   return (
     <>
@@ -59,36 +85,18 @@ export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
           align="end"
           className="w-[160px]"
         >
-          <DropdownMenuItem onSelect={() => setIsDialogOpen(true)}>
+          <DropdownMenuItem onSelect={() => setIsFormDialogOpen(true)}>
             <EditIcon className="mr-2.5 h-4 w-4" />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              toast.promise(
-                deleteTeamAction({
-                  slug,
-                  id: row.original.id,
-                  fileKey: row.original.file?.key,
-                }),
-                {
-                  loading: "Deleting data.",
-                  success: "Data deleted successfully.",
-                  error: "Failed to to delete data.",
-                  duration: 1000,
-                },
-              );
-
-              router.refresh();
-            }}
-          >
+          <DropdownMenuItem onClick={() => setIsDeleteDialogOpen(true)}>
             <Trash2 className="mr-2.5 h-4 w-4" />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isFormDialogOpen} onOpenChange={setIsFormDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Data</DialogTitle>
@@ -97,13 +105,33 @@ export function DataTableRowActions({ row, slug }: DataTableRowActionsProps) {
             </DialogDescription>
           </DialogHeader>
           <TeamForm
-            setIsDialogOpen={setIsDialogOpen}
+            setIsDialogOpen={setIsFormDialogOpen}
             slug={slug}
             isUpdate
             data={row.original}
           />
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

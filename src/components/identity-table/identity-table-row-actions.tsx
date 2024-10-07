@@ -10,6 +10,16 @@ import { Identity } from "@/types";
 import { identitySchema } from "@/config/schema";
 import { deleteIdentityAction } from "@/actions/delete";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -35,8 +45,25 @@ export function IdentityTableRowAction({
   row,
   slug,
 }: IdentityTableRowActionProps) {
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   identitySchema.parse(row.original);
+
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+
+  const handleDelete = () => {
+    toast.promise(
+      deleteIdentityAction({
+        slug,
+        id: row.original.id,
+      }),
+      {
+        loading: "Deleting data.",
+        success: "Data deleted successfully.",
+        error: "Failed to to delete data.",
+        duration: 1000,
+      },
+    );
+  };
 
   return (
     <>
@@ -56,22 +83,7 @@ export function IdentityTableRowAction({
             <EditIcon className="mr-2.5 h-4 w-4" />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => {
-              toast.promise(
-                deleteIdentityAction({
-                  slug,
-                  id: row.original.id,
-                }),
-                {
-                  loading: "Deleting data.",
-                  success: "Data deleted successfully.",
-                  error: "Failed to to delete data.",
-                  duration: 1000,
-                },
-              );
-            }}
-          >
+          <DropdownMenuItem onClick={() => setIsDeleteDialogOpen(true)}>
             <Trash2 className="mr-2.5 h-4 w-4" />
             Delete
           </DropdownMenuItem>
@@ -94,6 +106,26 @@ export function IdentityTableRowAction({
           />
         </DialogContent>
       </Dialog>
+
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
