@@ -26,7 +26,7 @@ export function FileUploaderToast({
 }) {
   return (
     <>
-      <div className="w-[356px] rounded-lg border-2 transition-all">
+      <div className="transition-all">
         <div className="flex items-center justify-between bg-accent/40 px-4 py-3.5">
           {isUploading ? (
             <span className="font-medium">Uploading {files.length} files.</span>
@@ -110,6 +110,8 @@ export const customToast = ({
     {
       id,
       duration,
-      classNames: { toast: "rounded-lg" },
+      classNames: {
+        toast: "rounded-lg w-full sm:w-[356px] rounded-lg",
+      },
     },
   );
