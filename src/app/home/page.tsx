@@ -4,13 +4,8 @@ import Link from "next/link";
 import { MapPinIcon } from "lucide-react";
 import { auth } from "@/auth";
 
-import { Project } from "@/types";
 import { projectSchema } from "@/config/schema";
-
-import {
-  type FetchCollectionOptions,
-  fetchCollection,
-} from "@/lib/firebase/firestore";
+import { fetchCollection } from "@/lib/firebase/firestore";
 
 import { Header } from "@/layouts/header";
 import { Separator } from "@/components/ui/separator";
@@ -26,17 +21,9 @@ export default async function Page() {
   const session = await auth();
   const admin = session?.user.isAdmin;
 
-  const fetchOptions = (type: string): FetchCollectionOptions<Project> => ({
-    collectionName: "projects",
-    zodSchema: projectSchema,
-    errorMessage: "Error fetching data.",
-    queryBuilder: (collection) =>
-      collection.where("type", "==", type).select("title", "type", "slug"),
-  });
-
   const [konstruksiProjects, renovasiProjects] = await Promise.all([
-    fetchCollection(fetchOptions("konstruksi")),
-    fetchCollection(fetchOptions("renovasi")),
+    fetchProject("konstruksi"),
+    fetchProject("renovasi"),
   ]);
 
   return (
@@ -73,7 +60,7 @@ export default async function Page() {
           type="konstruksi"
           admin={admin}
         />
-        <Separator className="my-2 w-full max-w-screen-lg 2xl:max-w-screen-xl" />
+        <Separator className="my-2 w-full max-w-screen-lg xl:max-w-screen-xl" />
         <ProjectCardsList
           projects={renovasiProjects}
           type="renovasi"
@@ -82,4 +69,31 @@ export default async function Page() {
       </main>
     </div>
   );
+}
+
+async function fetchProject(type: "konstruksi" | "renovasi") {
+  const data = await fetchCollection({
+    collectionName: "projects",
+    zodSchema: projectSchema,
+    errorMessage: "Error fetching data.",
+    // TODO: order by createdAt
+    queryBuilder: (collection) =>
+      collection
+        .where("type", "==", type)
+        .select("title", "type", "slug", "createdAt"),
+  });
+
+  return data.map((datum) => ({
+    ...datum,
+    createdAt: new Date(datum.createdAt?.seconds * 1000).toLocaleDateString(
+      "en-US",
+      {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      },
+    ),
+  }));
 }

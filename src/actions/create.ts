@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 
 import type { Project, Identity, Team } from "@/types";
 import { projectSchema, identitySchema, teamSchema } from "@/config/schema";
@@ -16,11 +16,12 @@ export async function createProjectAction(
 ) {
   const parsed = projectSchema.pick({ title: true, type: true }).parse(values);
   const slug = encodeURI(parsed.title.split(" ").join("-").toLowerCase());
+  const createdAt = Timestamp.now();
 
   await createDoc({
     collectionName: "projects",
     errorMessage: "Error adding new project.",
-    data: { ...parsed, slug },
+    data: { ...parsed, slug, createdAt },
     docId: slug,
   });
 

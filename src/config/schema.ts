@@ -4,6 +4,8 @@ export const projectSchema = z.object({
   slug: z.string().trim(),
   title: z.string().trim().min(1, { message: "Project name is required" }),
   type: z.string().trim().min(1, { message: "Project type is required" }),
+  // TODO: remove the optional
+  createdAt: z.any().optional(),
   teams: z.array(z.string()).optional(),
   identities: z.array(z.string()).optional(),
   designImages: z.array(z.string()).optional(),
