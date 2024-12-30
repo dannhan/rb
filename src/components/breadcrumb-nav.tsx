@@ -29,7 +29,7 @@ export function BreadcrumbNav({ projectTitle }: Props) {
   const segment = useSelectedLayoutSegment();
 
   return (
-    <Breadcrumb className="hidden flex-1 md:flex">
+    <Breadcrumb className="hidden flex-1 sm:flex">
       <BreadcrumbList>
         <BreadcrumbItem>
           <Link

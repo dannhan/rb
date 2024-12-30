@@ -14,7 +14,7 @@ export async function ProjectCardsList({ projects, type, admin }: Props) {
   const displayedProjects = projects.slice(0, 3);
 
   return (
-    <section className="flex w-full max-w-screen-lg flex-1 flex-col gap-4 md:flex-initial lg:max-h-64 lg:flex-1 xl:max-h-72 2xl:max-w-screen-xl">
+    <section className="flex w-full max-w-screen-lg flex-1 flex-col gap-4 md:flex-initial lg:max-h-64 lg:flex-1 xl:max-h-72 xl:max-w-screen-xl">
       <h2 className="text-lg font-medium capitalize">{type}</h2>
       <div className="grid flex-1 gap-2 md:grid-cols-2 md:gap-4 lg:grid-cols-4">
         {admin && <CreateProjectSheet defaultType={type} />}

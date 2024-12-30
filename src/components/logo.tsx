@@ -17,7 +17,7 @@ export function Logo() {
         />
       </div>
       <h1
-        className="hidden font-black text-[#004481] min-[300px]:block sm:text-xl uppercase"
+        className="hidden font-black uppercase text-[#004481] min-[300px]:block sm:text-xl"
         style={cabin.style}
       >
         Ria Busana
