@@ -24,8 +24,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { IdentityTablePrint } from "./identity-table-print";
-import { CreateIdentityDialog } from "./create-identity-dialog";
 import { getColumns } from "./columns";
 import { IdentityTableToolbar } from "./identity-table-toolbar";
 
@@ -78,33 +76,31 @@ export function DataTable({ data, slug, admin }: DataTableProps) {
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              <>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        key={cell.id}
-                        className={cn(
-                          cell.column.id === "field" && "border-l",
-                          cell.column.id === "value" && "border-x",
-                          (cell.column.id === "order" ||
-                            cell.column.id === "actions") &&
-                            "w-0 p-2.5 text-center",
-                          "h-[53px]",
-                        )}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </>
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        cell.column.id === "field" && "border-l",
+                        cell.column.id === "value" && "border-x",
+                        (cell.column.id === "order" ||
+                          cell.column.id === "actions") &&
+                          "w-0 p-2.5 text-center",
+                        "h-[53px]",
+                      )}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
             ) : (
               <TableRow>
                 <TableCell

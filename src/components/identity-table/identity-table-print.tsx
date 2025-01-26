@@ -40,10 +40,12 @@ export function IdentityTablePrint({ table }: Props) {
             {data.map(({ field, value }, index) => (
               <React.Fragment key={index + 1}>
                 <TableRow className="border-none">
-                  <TableCell className="w-10 border-t border-black text-center">
+                  <TableCell className="w-10 border-t border-black text-center font-bold">
                     {index + 1}.
                   </TableCell>
-                  <TableCell className="border border-black">{field}</TableCell>
+                  <TableCell className="border border-black font-bold">
+                    {field}
+                  </TableCell>
                   <TableCell className="border border-black">{value}</TableCell>
                 </TableRow>
               </React.Fragment>
