@@ -28,11 +28,11 @@ export default async function Page() {
 
   return (
     <div className="flex min-h-screen w-full flex-col">
-      {/* todo: <div className="absolute top-0 -z-10 h-screen w-screen bg-background bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,theme(colors.accent.DEFAULT),theme(colors.background))]"></div> */}
       <Header className="border-none bg-background text-muted-foreground shadow-md">
         <Logo />
         <div className="flex items-center gap-2">
-          {!admin && (
+          {/* TODO: is this still relevant?? */}
+          {false && !admin && (
             <Link
               href="/locations"
               className="mr-1 flex gap-1 text-base text-foreground transition-all hover:text-foreground/70 dark:hover:text-foreground/40 sm:mr-4"
