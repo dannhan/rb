@@ -11,6 +11,7 @@ export const projectSchema = z.object({
   designImages: z.array(z.string()).optional(),
   projectSchedule: z.string().optional(),
   costRealization: z.string().optional(),
+  isTest: z.boolean(),
 });
 
 export const identitySchema = z.object({

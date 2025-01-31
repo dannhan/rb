@@ -17,11 +17,12 @@ export async function createProjectAction(
   const parsed = projectSchema.pick({ title: true, type: true }).parse(values);
   const slug = encodeURI(parsed.title.split(" ").join("-").toLowerCase());
   const createdAt = Timestamp.now();
+  const isTest = process.env.NODE_ENV === "development";
 
   await createDoc({
     collectionName: "projects",
     errorMessage: "Error adding new project.",
-    data: { ...parsed, slug, createdAt },
+    data: { ...parsed, slug, createdAt, isTest },
     docId: slug,
   });
 

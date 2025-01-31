@@ -17,6 +17,37 @@ import { HomeLogoutForm } from "@/components/logout-form";
 
 const open_sans = Open_Sans({ subsets: ["latin"], weight: ["300"] });
 
+async function fetchProject(type: "konstruksi" | "renovasi") {
+  // TODO:
+  // - use different firebase project on test and on deployment
+  // - Order by createdAt
+  const data = await fetchCollection({
+    collectionName: "projects",
+    zodSchema: projectSchema,
+    errorMessage: "Error fetching data.",
+    queryBuilder: (collection) =>
+      collection
+        // only fetch data that have test field on dev mode
+        .where("isTest", "==", process.env.NODE_ENV === "development")
+        .where("type", "==", type)
+        .select("title", "type", "slug", "createdAt", "isTest"),
+  });
+
+  return data.map((datum) => ({
+    ...datum,
+    createdAt: new Date(datum.createdAt?.seconds * 1000).toLocaleDateString(
+      "en-US",
+      {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      },
+    ),
+  }));
+}
+
 export default async function Page() {
   const session = await auth();
   const admin = session?.user.isAdmin;
@@ -69,31 +100,4 @@ export default async function Page() {
       </main>
     </div>
   );
-}
-
-async function fetchProject(type: "konstruksi" | "renovasi") {
-  const data = await fetchCollection({
-    collectionName: "projects",
-    zodSchema: projectSchema,
-    errorMessage: "Error fetching data.",
-    // TODO: order by createdAt
-    queryBuilder: (collection) =>
-      collection
-        .where("type", "==", type)
-        .select("title", "type", "slug", "createdAt"),
-  });
-
-  return data.map((datum) => ({
-    ...datum,
-    createdAt: new Date(datum.createdAt?.seconds * 1000).toLocaleDateString(
-      "en-US",
-      {
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      },
-    ),
-  }));
 }
