@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { Plus, X } from "lucide-react";
@@ -13,14 +13,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { CreateProjectForm } from "@/components/create-project-form";
+import CreateProjectForm from "@/components/Form/CreateProjectForm";
 
-type CreateProjectSheetProps = {
+type Props = {
   defaultType?: string;
 };
 
-export function CreateProjectSheet({ defaultType }: CreateProjectSheetProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const CreateProjectSheet: React.FC<Props> = ({ defaultType }) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   return (
     <Sheet open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -41,7 +41,7 @@ export function CreateProjectSheet({ defaultType }: CreateProjectSheetProps) {
       </SheetTrigger>
       <SheetContent
         hideCloseButton
-        className="min-w-full border-none pt-12 focus-visible:outline-none focus-visible:ring-0 data-[state=closed]:duration-200 data-[state=open]:duration-300 md:p-12 lg:p-20"
+        className="min-w-full border-none pt-12 focus-visible:outline-none focus-visible:ring-0 md:p-12 lg:p-20"
       >
         <SheetHeader className="pb-16">
           <SheetTitle className="flex flex-row-reverse items-center gap-4 text-2xl font-normal sm:flex-row">
@@ -56,4 +56,6 @@ export function CreateProjectSheet({ defaultType }: CreateProjectSheetProps) {
       </SheetContent>
     </Sheet>
   );
-}
+};
+
+export default CreateProjectSheet;

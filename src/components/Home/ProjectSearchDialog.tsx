@@ -1,10 +1,13 @@
 "use client";
 
 import * as React from "react";
-
-import { Project } from "@/types";
+import { useRouter } from "next/navigation";
 
 import { SearchIcon } from "lucide-react";
+
+import type { ProjectData } from "@/types";
+import { cn } from "@/lib/utils";
+
 import {
   CommandDialog,
   CommandEmpty,
@@ -14,19 +17,12 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
-type Props = {
-  konstruksiProjects: Project[];
-  renovasiProjects: Project[];
-};
+type Props = { projects: ProjectData };
 
-// TODO: make this work!!!
-export function ProjectListCommandDialog({
-  konstruksiProjects,
-  renovasiProjects,
-}: Props) {
+const ProjectSearchDialog: React.FC<Props> = ({ projects }) => {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -39,6 +35,11 @@ export function ProjectListCommandDialog({
 
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
+  }, []);
+
+  const runCommand = React.useCallback((command: () => unknown) => {
+    setOpen(false);
+    command();
   }, []);
 
   return (
@@ -62,16 +63,30 @@ export function ProjectListCommandDialog({
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Konstruksi">
-            {konstruksiProjects.map((project, index) => (
-              <CommandItem key={index}>
+            {projects.konstruksi.map((project) => (
+              <CommandItem
+                key={project.id}
+                onSelect={() => {
+                  runCommand(() =>
+                    router.push(`${project.id}/identitas-proyek`),
+                  );
+                }}
+              >
                 <span>{project.title}</span>
               </CommandItem>
             ))}
           </CommandGroup>
           <CommandSeparator />
           <CommandGroup heading="Renovasi">
-            {renovasiProjects.map((project, index) => (
-              <CommandItem key={index}>
+            {projects.renovasi.map((project) => (
+              <CommandItem
+                key={project.id}
+                onSelect={() => {
+                  runCommand(() =>
+                    router.push(`${project.id}/identitas-proyek`),
+                  );
+                }}
+              >
                 <span>{project.title}</span>
               </CommandItem>
             ))}
@@ -80,4 +95,6 @@ export function ProjectListCommandDialog({
       </CommandDialog>
     </>
   );
-}
+};
+
+export default ProjectSearchDialog;

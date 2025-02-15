@@ -6,13 +6,14 @@ import { usePathname } from "next/navigation";
 import NProgress from "nprogress";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { projectSchema } from "@/config/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-
-import { createProjectAction } from "@/actions/create";
 import { getErrorMessage } from "@/lib/handle-error";
+
+import { createProjectAction } from "@/actions/actions";
+import { createProjectFormSchema } from "@/config/formSchema";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -33,37 +34,37 @@ import {
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 
-type CreateProjectFormProps = {
-  defaultType?: string;
-};
+type Props = { defaultType?: string };
 
-export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
-  const [isPending, startTransition] = React.useTransition();
+const CreateProjectForm: React.FC<Props> = ({ defaultType }) => {
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const pathname = usePathname();
+
   React.useEffect(() => {
     NProgress.done();
   }, [pathname]);
 
-  const projectFormSchema = projectSchema.pick({ title: true, type: true });
-  const form = useForm<z.infer<typeof projectFormSchema>>({
-    resolver: zodResolver(projectFormSchema),
-    defaultValues: {
-      title: "",
-      type: defaultType || "",
-    },
+  const form = useForm<z.infer<typeof createProjectFormSchema>>({
+    resolver: zodResolver(createProjectFormSchema),
+    defaultValues: { title: "", type: defaultType || "" },
   });
 
-  const onSubmit = async (values: z.infer<typeof projectFormSchema>) => {
-    startTransition(async () => {
-      try {
-        await createProjectAction(values);
-        NProgress.start();
-        toast.success("Project has been created.");
-      } catch (error) {
-        const message = getErrorMessage(error);
-        toast.error(message);
-      }
-    });
+  const onSubmit = async (values: z.infer<typeof createProjectFormSchema>) => {
+    setIsSubmitting(true);
+    try {
+
+      const response = await createProjectAction(values);
+      if (response?.error) throw new Error(response.error);
+
+      // Redirect will handle navigation, so no need for manual navigation
+      NProgress.start();
+      toast.success("Project has been created.");
+    } catch (error) {
+      const message = getErrorMessage(error);
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -117,9 +118,9 @@ export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
         <Button
           className="sm:ml-auto sm:h-11 sm:px-8"
           size="sm"
-          disabled={isPending}
+          disabled={isSubmitting}
         >
-          {isPending && (
+          {isSubmitting && (
             <Icons.spinnerIcon className="mr-2 h-4 w-4 animate-spin [animation-duration:1250ms]" />
           )}
           Continue
@@ -127,4 +128,6 @@ export function CreateProjectForm({ defaultType }: CreateProjectFormProps) {
       </form>
     </Form>
   );
-}
+};
+
+export default CreateProjectForm;

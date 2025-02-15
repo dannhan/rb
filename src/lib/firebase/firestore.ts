@@ -9,12 +9,14 @@ type QueryBuilder = (collection: FirestoreQuery) => FirestoreQuery;
 
 export interface FirestoreOptions<T> {
   collectionName:
+    | "design-image-categories"
     | "projects"
     | "project-teams"
     | "project-identities"
     | "project-locations"
     | "project-files"
-    | "tests";
+    | "project-progresses"
+    | "test-projects";
   zodSchema: z.ZodType<T>;
   errorMessage: string;
 }

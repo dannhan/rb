@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import * as React from "react";
 
-import { Project } from "@/types";
+import type { WithId, Project } from "@/types";
 
-import { cn } from "@/lib/utils";
-import { ChevronsRight, Plus, X } from "lucide-react";
+import { ChevronsRight, X } from "lucide-react";
 import {
   Sheet,
   SheetClose,
@@ -15,18 +14,15 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { ProjectCard } from "./project-card";
+import ProjectCard from "./ProjectCard";
 
-type ProjectSeeMoreSheetProps = {
-  projects: Project[];
+type Props = {
+  projects: WithId<Project>[];
   type: string;
 };
 
-export function ProjectSeeMoreSheet({
-  projects,
-  type,
-}: ProjectSeeMoreSheetProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const ProjectsViewMore: React.FC<Props> = ({ projects, type }) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   return (
     <Sheet open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -57,14 +53,12 @@ export function ProjectSeeMoreSheet({
         </SheetHeader>
         <div className="grid flex-1 gap-2 px-10 md:grid-cols-1 md:gap-4 lg:grid-cols-4">
           {projects.map((project, index) => (
-            <ProjectCard
-              key={index}
-              project={project}
-              className="min-h-[125px]"
-            />
+            <ProjectCard key={index} project={project}/>
           ))}
         </div>
       </SheetContent>
     </Sheet>
   );
 }
+
+export default ProjectsViewMore;
