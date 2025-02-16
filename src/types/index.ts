@@ -5,9 +5,7 @@ import {
   teamSchema,
   fileSchema,
   storeLocationSchema,
-  projectProgressItemSchema,
-  projectProgressWeekSchema,
-  projectProgress,
+  progressItemSchema,
 } from "@/config/schema";
 
 import { Icons } from "@/components/icons";
@@ -21,9 +19,8 @@ export type Identity = z.infer<typeof identitySchema>;
 export type Team = z.infer<typeof teamSchema>;
 export type File = z.infer<typeof fileSchema>;
 export type StoreLocation = z.infer<typeof storeLocationSchema>;
-export type Progress = z.infer<typeof projectProgress>;
-export type Item = z.infer<typeof projectProgressItemSchema>;
-export type Week = z.infer<typeof projectProgressWeekSchema>;
+export type ProgressItem = z.infer<typeof progressItemSchema>;
+export type Item = z.infer<typeof progressItemSchema>;
 
 // Utility type for firebase
 export type WithId<T> = T & { id: string };
@@ -49,15 +46,6 @@ export type TeamTableConfig = {
     label: string;
     icon: keyof typeof Icons;
   }[];
-};
-
-// TODO:
-export type ProjectProgress = {
-  id: number;
-  week: number;
-  date: Date;
-  physicalProgress: number;
-  costProgress: number;
 };
 
 export type LatLng = {

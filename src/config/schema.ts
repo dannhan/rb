@@ -47,45 +47,17 @@ export const teamSchema = z.object({
   file: fileSchema.optional(),
 });
 
+// WARN: the position accept integer not float
+export const progressItemSchema = z.object({
+  position: z.number().int().positive(),
+  description: z.string().min(1),
+  progress: z.record(z.string(), z.number().min(0).max(100)), // Maps week identifiers to percentage values (0-100)
+});
+
 export const storeLocationSchema = z.object({
   title: z.string(),
   address: z.string(),
   link: z.string(),
   lat: z.number(),
   lng: z.number(),
-});
-
-export const projectProgress = z.object({
-  id: z.string(),
-  weeks: z.array(
-    z.object({
-      id: z.string(),
-      weekNumber: z.number(),
-      date: z.any(),
-    }),
-  ),
-  items: z.array(
-    z.object({
-      id: z.string(),
-      no: z.number(),
-      description: z.string(),
-      progress: z.record(z.string(), z.number()),
-    }),
-  ),
-  project: z.string(),
-});
-
-export const projectProgressItemSchema = z.object({
-  id: z.string(),
-  no: z.number(),
-  description: z.string(),
-  progress: z.record(z.string(), z.number()),
-  project: z.string(),
-});
-
-export const projectProgressWeekSchema = z.object({
-  id: z.string(),
-  weekNumber: z.number(),
-  date: z.any(),
-  project: z.string(),
 });
