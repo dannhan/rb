@@ -1,41 +1,40 @@
-import { identitySchema, projectSchema } from "@/config/schema";
 import { auth } from "@/auth";
-import { fetchDoc, fetchMultipleDocs } from "@/lib/firebase/firestore";
 
-import { DataTable } from "@/components/identity-table/identity-table";
+import { db } from "@/lib/firebase/admin";
+import { PROJECT_COLLECTION } from "@/lib/utils";
 
-//todo:
-//1. add loading.tsx
+import type { WithId, Identity } from "@/types";
+import { identitySchema } from "@/config/schema";
 
-type Props = {
-  params: { project: string };
-};
+import IdentityTable from "@/components/IdentityTable/IdentityTable";
 
+// TODO: add loading.tsx
+type Props = { params: { project: string } };
 export default async function Page({ params }: Props) {
+  const identities: WithId<Identity>[] = [];
+
+  const ref = db
+    .collection(PROJECT_COLLECTION)
+    .doc(params.project)
+    .collection("identities")
+    .orderBy("no");
+  const snapshot = await ref.get();
+  snapshot.docs.map((doc) => {
+    const parsed = identitySchema.safeParse(doc.data());
+    if (!parsed.success) return;
+
+    identities.push({
+      id: doc.id,
+      ...parsed.data,
+    });
+  });
+
   const session = await auth();
-  const admin = session?.user.isAdmin;
-
-  const slug = params.project;
-
-  // Fetch project
-  const project = await fetchDoc({
-    collectionName: "projects",
-    docId: slug,
-    zodSchema: projectSchema,
-    errorMessage: "Error fetching data.",
-  });
-
-  // Fetch identity
-  const identities = await fetchMultipleDocs({
-    collectionName: "project-identities",
-    ids: project?.identities || [],
-    zodSchema: identitySchema,
-    errorMessage: "Error fetching data.",
-  });
+  const admin = session?.user.isAdmin || false;
 
   return (
-    <div className="flex h-full min-h-screen flex-1 flex-col items-center space-y-8">
-      <DataTable data={identities} slug={params.project} admin={admin} />
-    </div>
+    <main className="flex h-full min-h-screen flex-1 flex-col items-center space-y-8">
+      <IdentityTable data={identities} admin={admin} />
+    </main>
   );
 }

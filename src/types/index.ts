@@ -1,5 +1,3 @@
-import type { ClientUploadedFileData } from "uploadthing/types";
-
 import { z } from "zod";
 import {
   projectSchema,
@@ -7,6 +5,9 @@ import {
   teamSchema,
   fileSchema,
   storeLocationSchema,
+  projectProgressItemSchema,
+  projectProgressWeekSchema,
+  projectProgress,
 } from "@/config/schema";
 
 import { Icons } from "@/components/icons";
@@ -14,6 +15,23 @@ import { Icons } from "@/components/icons";
 // todo:
 // 1. might remove non-schema type or move schema type to another file
 // 2. change store locatoin to project location
+
+export type Project = z.infer<typeof projectSchema>;
+export type Identity = z.infer<typeof identitySchema>;
+export type Team = z.infer<typeof teamSchema>;
+export type File = z.infer<typeof fileSchema>;
+export type StoreLocation = z.infer<typeof storeLocationSchema>;
+export type Progress = z.infer<typeof projectProgress>;
+export type Item = z.infer<typeof projectProgressItemSchema>;
+export type Week = z.infer<typeof projectProgressWeekSchema>;
+
+// Utility type for firebase
+export type WithId<T> = T & { id: string };
+
+export type ProjectData = {
+  konstruksi: WithId<Project>[];
+  renovasi: WithId<Project>[];
+};
 
 export type SidebarItem = {
   title: string;
@@ -33,8 +51,7 @@ export type TeamTableConfig = {
   }[];
 };
 
-export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> {}
-
+// TODO:
 export type ProjectProgress = {
   id: number;
   week: number;
@@ -47,13 +64,3 @@ export type LatLng = {
   lat: number;
   lng: number;
 };
-
-export type Project = z.infer<typeof projectSchema>;
-
-export type Identity = z.infer<typeof identitySchema>;
-
-export type Team = z.infer<typeof teamSchema>;
-
-export type File = z.infer<typeof fileSchema>;
-
-export type StoreLocation = z.infer<typeof storeLocationSchema>;

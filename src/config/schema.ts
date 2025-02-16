@@ -14,10 +14,9 @@ export const projectSchema = z.object({
 });
 
 export const identitySchema = z.object({
-  id: z.string(),
-  field: z.string().trim(),
-  value: z.string().trim(),
-  slug: z.string(),
+  no: z.number(),
+  field: z.string(),
+  value: z.string(),
 });
 
 export const fileSchema = z.union([

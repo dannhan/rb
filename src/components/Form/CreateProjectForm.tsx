@@ -12,7 +12,7 @@ import { z } from "zod";
 
 import { getErrorMessage } from "@/lib/handle-error";
 
-import { createProjectAction } from "@/actions/actions";
+import { createProjectAction } from "@/actions/action-create";
 import { createProjectFormSchema } from "@/config/formSchema";
 
 import { Input } from "@/components/ui/input";
@@ -52,7 +52,6 @@ const CreateProjectForm: React.FC<Props> = ({ defaultType }) => {
   const onSubmit = async (values: z.infer<typeof createProjectFormSchema>) => {
     setIsSubmitting(true);
     try {
-
       const response = await createProjectAction(values);
       if (response?.error) throw new Error(response.error);
 
