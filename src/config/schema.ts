@@ -1,3 +1,5 @@
+// might change the name to dataSchema.ts
+
 import { z } from "zod";
 // import { Timestamp } from "firebase/firestore";
 
@@ -14,6 +16,7 @@ export const projectSchema = z.object({
 });
 
 export const identitySchema = z.object({
+  // TODO: might change no to position instead
   no: z.number(),
   field: z.string(),
   value: z.string(),
@@ -37,20 +40,20 @@ export const fileSchema = z.union([
   }),
 ]);
 
-export const teamSchema = z.object({
-  id: z.string(),
-  pekerjaan: z.string().trim(),
-  spk: z.string().trim(),
-  pelaksana: z.string().trim(),
+export const teamMemberSchema = z.object({
+  position: z.number().int().positive(),
+  pekerjaan: z.string(),
+  spk: z.string(),
+  pelaksana: z.string(),
   status: z.string(),
-  slug: z.string(),
-  file: fileSchema.optional(),
+
+  // TODO: implement file for team table
+  // file: fileSchema.optional(),
 });
 
-// WARN: the position accept integer not float
 export const progressItemSchema = z.object({
   position: z.number().int().positive(),
-  description: z.string().min(1),
+  description: z.string(),
   progress: z.record(z.string(), z.number().min(0).max(100)), // Maps week identifiers to percentage values (0-100)
 });
 

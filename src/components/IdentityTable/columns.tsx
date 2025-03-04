@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import { useParams } from "next/navigation";
 
@@ -88,11 +86,12 @@ export function getColumns(admin: boolean): ColumnDef<WithId<Identity>>[] {
         const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
 
         const { id: identityId, field, value } = row.original;
+
         const handleDelete = async () => {
           const toastId = toast.loading("Deleting data.");
           try {
             const result = await deleteIdentityAction(
-              row.original.id,
+              identityId,
               params.project as string,
             );
 

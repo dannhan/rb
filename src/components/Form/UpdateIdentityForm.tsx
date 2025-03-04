@@ -51,6 +51,7 @@ const UpdateIdentityForm: React.FC<Props> = ({
       if (typeof params?.project !== "string")
         throw new Error("Invalid form data. Please check your inputs.");
 
+      // TODO: there is bug here, when the path is not exist it just return success
       await updateIdentityAction({
         projectId: params.project,
         identityId,

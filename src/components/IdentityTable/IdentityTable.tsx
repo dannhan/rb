@@ -29,6 +29,7 @@ import IdentityTableToolbar from "./IdentityTableToolbar";
 
 type Props = { data: WithId<Identity>[]; admin: boolean };
 
+// WARN: uneven style each column width
 const IdentityTable: React.FC<Props> = ({ data, admin }) => {
   const [globalFilter, setGlobalFilter] = React.useState<string>("");
 

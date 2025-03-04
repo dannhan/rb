@@ -1,5 +1,7 @@
 import { db } from "@/lib/firebase/admin";
 
+import { ProgressItem } from "@/types";
+
 export async function seedProjectProgress() {
   const ref = db
     .collection("test-projects")
@@ -7,7 +9,7 @@ export async function seedProjectProgress() {
     .collection("progress");
 
   // prettier-ignore
-  const progressItems = [
+  const progressItems: Omit<ProgressItem, "position">[] = [
     { description: "Pondasi tapak", progress: { "W11_18-08-23": 100, "W12_25-08-23": 100 } },
     { description: "Struktur lantai 1", progress: { "W11_18-08-23": 20, "W12_25-08-23": 35 } },
     { description: "Struktur lantai 2", progress: {} },
@@ -33,10 +35,9 @@ export async function seedProjectProgress() {
   progressItems.forEach((item, index) => {
     const docRef = ref.doc(); // Auto-generate Firestore document ID
     batch.set(docRef, {
-      position: (index + 1) * 10, // Sparse ordering for future flexibility
-      description: item.description,
-      progress: item.progress, // Weekly progress mapping
-    });
+      position: (index + 1) * 1000, // Sparse ordering for future flexibility
+      ...item,
+    } satisfies ProgressItem);
   });
 
   await batch.commit();

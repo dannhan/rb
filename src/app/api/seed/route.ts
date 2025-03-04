@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { seedProjects } from "@/lib/seed/seedProjects";
 import { seedProjectIdentities } from "@/lib/seed/seedProjectIdentities";
+import { seedProjectTeams } from "@/lib/seed/seedProjectTeams";
 import { seedProjectProgress } from "@/lib/seed/seedProjectProgress";
 
 export async function GET() {
@@ -12,6 +13,7 @@ export async function GET() {
   try {
     await seedProjects();
     await seedProjectIdentities();
+    await seedProjectTeams();
     await seedProjectProgress();
     return NextResponse.json({ message: "Seed succeeded" });
   } catch (error) {

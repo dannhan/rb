@@ -23,10 +23,7 @@ export default async function Page({ params }: Props) {
     const parsed = identitySchema.safeParse(doc.data());
     if (!parsed.success) return;
 
-    identities.push({
-      id: doc.id,
-      ...parsed.data,
-    });
+    identities.push({ id: doc.id, ...parsed.data });
   });
 
   const session = await auth();

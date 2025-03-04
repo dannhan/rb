@@ -10,6 +10,13 @@ export const addIdentityFormSchema = z.object({
   value: z.string().min(0, "Required").trim(),
 });
 
+export const addTeamMemberFormSchema = z.object({
+  pekerjaan: z.string().min(0, "Required").trim(),
+  spk: z.string().min(0, "Required".trim()),
+  pelaksana: z.string().min(0, "Required".trim()),
+  // TODO: might add file schema here
+});
+
 export const addProgressWeekFormSchema = z.object({
   weekNumber: z.string().min(2, "Required").trim(),
   date: z.string().min(0, " Required").trim(),
@@ -18,5 +25,7 @@ export const addProgressWeekFormSchema = z.object({
 export const updateProjectTitleFormSchema = createProjectFormSchema.omit({
   type: true,
 });
+
+export const updateTeamMemberFormSchema = addTeamMemberFormSchema;
 
 export const updateIdentityFormSchema = addIdentityFormSchema;

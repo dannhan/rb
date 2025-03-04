@@ -1,3 +1,5 @@
+// TODO: why i still need this?
+
 import { TeamTableConfig } from "@/types";
 
 export const teamTableConfig: TeamTableConfig = {

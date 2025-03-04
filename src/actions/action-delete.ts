@@ -21,6 +21,24 @@ export async function deleteProjectAction(id: string) {
   }
 }
 
+export async function deleteTeamMemberAction(id: string, projectId: string) {
+  if (!id || !projectId) return { success: false, error: "Invalid." };
+
+  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+  const teamsRef = projectRef.collection("teams");
+  const targetRef = teamsRef.doc(id);
+
+  try {
+    await targetRef.delete();
+
+    revalidatePath(`${projectId}/gambar-desain`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: (error as Error).message };
+  }
+}
+
 // NOTE: track error inside catch block
 export async function deleteIdentityAction(id: string, projectId: string) {
   if (!id || !projectId) return { success: false, error: "Invalid." };

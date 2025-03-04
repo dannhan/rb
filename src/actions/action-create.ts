@@ -6,7 +6,8 @@ import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
 import { z } from "zod";
 
-import type { Project } from "@/types";
+import type { Project, TeamMember, Identity } from "@/types";
+
 import { auth } from "@/auth";
 import { db } from "@/lib/firebase/admin";
 import { PROJECT_COLLECTION } from "@/lib/utils";
@@ -14,6 +15,7 @@ import { nanoid } from "@/lib/nanoid";
 
 import {
   createProjectFormSchema,
+  addTeamMemberFormSchema,
   addIdentityFormSchema,
 } from "@/config/formSchema";
 
@@ -64,6 +66,52 @@ export async function createProjectAction(
   redirect(`/${id}/identitas-proyek`);
 }
 
+export async function addTeamMemberAction(
+  values: z.infer<typeof addTeamMemberFormSchema>,
+  projectId: string,
+) {
+  // Check user authentication
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unauthorized" };
+
+  // Validate the data
+  const { success, data } = addTeamMemberFormSchema.safeParse(values);
+  if (!success) {
+    return {
+      success: false,
+      error: "Invalid form data. Please check your inputs.",
+    };
+  }
+
+  const teamsCollection = db
+    .collection(PROJECT_COLLECTION)
+    .doc(projectId)
+    .collection("teams");
+
+  return db.runTransaction(async (transaction) => {
+    // 🔥 Get the last item's position
+    const lastItemSnapshot = await transaction.get(
+      teamsCollection.orderBy("position", "desc").limit(1),
+    );
+
+    // ✅ Add new team member
+    const newProgress = {
+      position: lastItemSnapshot.empty
+        ? 1000
+        : lastItemSnapshot.docs[0].data().position + 1000,
+      status: "On Progress",
+      ...data,
+    } satisfies TeamMember;
+
+    const ref = teamsCollection.doc();
+    transaction.set(ref, newProgress);
+
+    revalidatePath(`${projectId}/gambar-desain`);
+    return { success: true };
+  });
+}
+
 export async function addIdentityAction(
   values: z.infer<typeof addIdentityFormSchema>,
   projectId: string,
@@ -91,7 +139,7 @@ export async function addIdentityAction(
       transaction.set(newDocRef, {
         no: count + 1, // Assign number based on existing count
         ...data,
-      });
+      } satisfies Identity);
     });
   } catch (error) {
     return { success: false, error: (error as Error).message };
@@ -100,3 +148,35 @@ export async function addIdentityAction(
   revalidatePath(`${projectId}/gambar-desain`);
 }
 
+export async function addProgressItemAction({
+  projectId,
+}: {
+  projectId: string;
+}): Promise<
+  | { success: false; error: string }
+  | { success: true; progressId: string; position: number }
+> {
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unauthorized" };
+
+  const progressCollection = db
+    .collection(PROJECT_COLLECTION)
+    .doc(projectId)
+    .collection("progress");
+
+  return db.runTransaction(async (transaction) => {
+    // 🔥 Get the last item's position
+    const lastItemSnapshot = await transaction.get(
+      progressCollection.orderBy("position", "desc").limit(1),
+    );
+
+    let newPosition = 1000; // Default position if no items exist
+    if (!lastItemSnapshot.empty) {
+      newPosition = lastItemSnapshot.docs[0].data().position + 1000;
+    }
+
+    // ✅ Add new progress item
+    const newProgress = {
+      description: "",
+      progress: {},

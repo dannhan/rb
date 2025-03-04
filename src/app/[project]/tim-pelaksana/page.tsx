@@ -1,67 +1,39 @@
-import { z } from "zod";
-
-import { Team } from "@/types";
-import { teamSchema, projectSchema, fileSchema } from "@/config/schema";
-
 import { auth } from "@/auth";
-import { fetchDoc, fetchMultipleDocs } from "@/lib/firebase/firestore";
 
-import { DataTable } from "@/components/team-table/team-table";
+import { db } from "@/lib/firebase/admin";
+import { PROJECT_COLLECTION } from "@/lib/utils";
+
+import type { WithId, TeamMember } from "@/types";
+import { teamMemberSchema } from "@/config/schema";
+
+import TeamTable from "@/components/TeamTable/TeamTable";
 
 type Props = {
   params: { project: string };
 };
 
 export default async function Page({ params }: Props) {
-  const session = await auth();
-  const admin = session?.user.isAdmin;
+  const team: WithId<TeamMember>[] = [];
 
-  const slug = params.project;
-  const team = await fetchProjectData(slug);
+  const ref = db
+    .collection(PROJECT_COLLECTION)
+    .doc(params.project)
+    .collection("teams")
+    .orderBy("position");
+  const snapshot = await ref.get();
+  snapshot.docs.map((doc) => {
+    const parsed = teamMemberSchema.safeParse(doc.data());
+    if (!parsed.success) return;
+
+    team.push({ id: doc.id, ...parsed.data });
+  });
+
+  const session = await auth();
+  const admin = session?.user.isAdmin || false;
 
   return (
     <div className="flex h-full flex-1 flex-col space-y-8">
-      <DataTable data={team} slug={params.project} admin={admin} />
+      <TeamTable data={team} admin={admin} />
     </div>
   );
-}
-
-async function fetchProjectData(slug: string): Promise<Team[]> {
-  // Fetch project
-  const project = await fetchDoc({
-    collectionName: "projects",
-    docId: slug,
-    zodSchema: projectSchema,
-    errorMessage: "Error fetching project data.",
-  });
-
-  // Fetch teams
-  const teams = await fetchMultipleDocs({
-    collectionName: "project-teams",
-    ids: project?.teams || [],
-    zodSchema: teamSchema.merge(z.object({ file: z.string().optional() })),
-    errorMessage: "Error fetching team data.",
-  });
-
-  // Extract file IDs and fetch files
-  const fileIds = teams.map((team) => team.file).filter((f) => f !== undefined);
-  const files = await fetchMultipleDocs({
-    collectionName: "project-files",
-    ids: fileIds,
-    zodSchema: fileSchema,
-    errorMessage: "Error fetching file data.",
-  });
-
-  // Create a map of file IDs to file data
-  const fileMap = new Map(files.map((file) => [file.key, file]));
-
-  // Combine teams with their corresponding files
-  const teamsWithFiles = teams.map((team) => {
-    return {
-      ...team,
-      file: team.file ? fileMap.get(team.file) : undefined,
-    };
-  });
-
-  return teamsWithFiles;
 }
