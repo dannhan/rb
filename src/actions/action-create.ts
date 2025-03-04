@@ -7,8 +7,10 @@ import { Timestamp } from "firebase-admin/firestore";
 import { z } from "zod";
 
 import type { Project } from "@/types";
+import { auth } from "@/auth";
 import { db } from "@/lib/firebase/admin";
 import { PROJECT_COLLECTION } from "@/lib/utils";
+import { nanoid } from "@/lib/nanoid";
 
 import {
   createProjectFormSchema,
@@ -30,27 +32,29 @@ export async function createProjectAction(
     };
   }
 
-  const id = data.title.trim().toLowerCase().replace(/\s+/g, "-");
+  // Check if a project with the same title already exists
+  const existingProjectQuery = await db
+    .collection(PROJECT_COLLECTION)
+    .where("title", "==", data.title)
+    .get();
 
-  // Write the new project if the id not exist yet
+  if (!existingProjectQuery.empty) {
+    return {
+      success: false,
+      error: `A project with the name "${data.title}" already exists. Please choose a different name.`,
+    };
+  }
+
+  // Generate a unique ID for the new project
+  const id = nanoid();
   const ref = db.collection(PROJECT_COLLECTION).doc(id);
+
   try {
-    await db.runTransaction(async (transaction) => {
-      const doc = await transaction.get(ref);
-
-      // TODO: this soulnd not use the id for fetch but instead use title
-      if (doc.exists) {
-        throw new Error(
-          `A project with the name "${data.title}" already exists. Please choose a different name.`,
-        );
-      }
-
-      // Add new project
-      transaction.set(ref, {
-        ...data,
-        createdAt: Timestamp.now(),
-      } satisfies Project);
-    });
+    // Add new project
+    await ref.set({
+      ...data,
+      createdAt: Timestamp.now(),
+    } satisfies Project);
   } catch (error) {
     return { success: false, error: (error as Error).message };
   }
@@ -95,3 +99,4 @@ export async function addIdentityAction(
 
   revalidatePath(`${projectId}/gambar-desain`);
 }
+

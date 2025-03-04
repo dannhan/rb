@@ -10,4 +10,13 @@ export const addIdentityFormSchema = z.object({
   value: z.string().min(0, "Required").trim(),
 });
 
+export const addProgressWeekFormSchema = z.object({
+  weekNumber: z.string().min(2, "Required").trim(),
+  date: z.string().min(0, " Required").trim(),
+});
+
+export const updateProjectTitleFormSchema = createProjectFormSchema.omit({
+  type: true,
+});
+
 export const updateIdentityFormSchema = addIdentityFormSchema;

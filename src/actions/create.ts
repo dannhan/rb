@@ -10,6 +10,7 @@ import { projectSchema, identitySchema, teamSchema } from "@/config/schema";
 
 import { createDoc, updateDoc } from "@/lib/firebase/firestore";
 import { nanoid } from "@/lib/nanoid";
+import { PROJECT_COLLECTION } from "@/lib/utils";
 
 export async function createProjectAction(
   values: Pick<Project, "title" | "type">,
@@ -42,7 +43,7 @@ export async function createIdentityAction(
   await Promise.all([
     createDoc({
       docId: id,
-      collectionName: "project-identities",
+      collectionName: PROJECT_COLLECTION,
       errorMessage: "Error adding new data.",
       data: parsed,
     }),
@@ -89,3 +90,21 @@ export async function createTeamAction(
 
   revalidatePath(`${values.slug}/tim-pelaksana`);
 }
+
+export async function createDesignImageCategoryAction(values: {
+  name: string;
+  slug: string;
+}) {
+  const id = nanoid();
+
+  await createDoc({
+    docId: id,
+    collectionName: "design-image-categories",
+    errorMessage: "Error adding new category.",
+    data: { ...values, createdAt: Timestamp.now() },
+  });
+
+  revalidatePath(`${values.slug}/gambar-desain`);
+}
+
+export async function addProgressProjectDescription() {}

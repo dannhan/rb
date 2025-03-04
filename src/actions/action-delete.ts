@@ -3,7 +3,23 @@
 import { revalidatePath } from "next/cache";
 
 import { db } from "@/lib/firebase/admin";
+import { deleteDocumentWithSubcollections } from "@/lib/firebase/utils";
+
 import { PROJECT_COLLECTION } from "@/lib/utils";
+
+export async function deleteProjectAction(id: string) {
+  if (!id) return { success: false, error: "Invalid." };
+
+  try {
+    await deleteDocumentWithSubcollections(PROJECT_COLLECTION, id);
+
+    revalidatePath("home");
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: (error as Error).message };
+  }
+}
 
 // NOTE: track error inside catch block
 export async function deleteIdentityAction(id: string, projectId: string) {
@@ -23,6 +39,7 @@ export async function deleteIdentityAction(id: string, projectId: string) {
 
       const targetNo = targetSnapshot.data()?.no;
 
+      // TODO: this should not necessary, can use high number position instead
       // Read all documents with 'no' greater than the deleted one
       const snapshot = await transaction.get(
         identitiesRef.where("no", ">", targetNo),

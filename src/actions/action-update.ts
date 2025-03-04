@@ -4,10 +4,29 @@ import { revalidatePath } from "next/cache";
 
 import { z } from "zod";
 
+import { auth } from "@/auth";
 import { db } from "@/lib/firebase/admin";
 import { PROJECT_COLLECTION } from "@/lib/utils";
 
 import { updateIdentityFormSchema } from "@/config/formSchema";
+
+export async function updateProjectTitleAction({
+  id,
+  title,
+}: {
+  id: string;
+  title: string;
+}) {
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unautorhized" };
+
+  const ref = db.collection(PROJECT_COLLECTION).doc(id);
+  await ref.update({ title });
+
+  revalidatePath("home");
+  return { success: true };
+}
 
 export async function updateIdentityAction({
   projectId,
