@@ -8,7 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import type { Identity } from "@/types";
-import { identitySchema } from "@/config/schema";
+import { identitySchema } from "@/config/dataSchema";
 
 import { getErrorMessage } from "@/lib/handle-error";
 import { createIdentityAction } from "@/actions/create";

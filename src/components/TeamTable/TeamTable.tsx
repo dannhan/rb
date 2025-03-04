@@ -28,10 +28,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-
+import TablePagination from "@/components/Common/TablePagination";
 import getColumns from "./columns";
 import TeamTableToolbar from "./TeamTableToolbar";
-import TeamTablePagination from "./TeamTablePagination";
 
 type Props = { data: WithId<TeamMember>[]; admin: boolean };
 
@@ -131,7 +130,7 @@ const TeamTable: React.FC<Props> = ({ data, admin }) => {
         </Table>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-      <TeamTablePagination table={table} />
+      <TablePagination table={table} />
     </div>
   );
 };

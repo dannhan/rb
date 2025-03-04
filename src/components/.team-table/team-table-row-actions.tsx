@@ -7,7 +7,7 @@ import { EditIcon, EllipsisIcon, Trash2 } from "lucide-react";
 
 import type { Team } from "@/types";
 import type { Row } from "@tanstack/react-table";
-import { teamSchema } from "@/config/schema";
+import { teamSchema } from "@/config/dataSchema";
 
 import { deleteTeamAction } from "@/actions/delete";
 

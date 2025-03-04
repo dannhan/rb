@@ -19,11 +19,10 @@ import {
 
 import { DebouncedInput } from "@/components/debounced-input";
 import AddTeamMemberFormSchema from "@/components/Form/AddTeamMemberForm";
-import TeamTablePrint from "./TeamTablePrint";
 
-// TODO:
-import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
+import TableFacetedFilter from "@/components/Common/TableFacetedFilter";
+import TableViewOptions from "@/components/Common/TableViewOptions";
+import TeamTablePrint from "./TeamTablePrint";
 
 type Props = {
   table: Table<WithId<TeamMember>>;
@@ -44,7 +43,7 @@ const TeamTableToolbar: React.FC<Props> = ({ table, admin }) => {
           onChange={(value) => table.setGlobalFilter(String(value))}
           className="h-8 flex-1 sm:max-w-[150px] sm:flex-initial lg:max-w-[225px]"
         />
-        <DataTableFacetedFilter
+        <TableFacetedFilter
           column={table.getColumn("status")}
           title="Status"
           options={teamTableConfig.statuses}
@@ -86,7 +85,7 @@ const TeamTableToolbar: React.FC<Props> = ({ table, admin }) => {
           </Dialog>
         )}
         <TeamTablePrint table={table} />
-        <DataTableViewOptions table={table} />
+        <TableViewOptions table={table} />
       </div>
     </div>
   );

@@ -18,6 +18,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import DocumentHeader from "@/components/Common/DocumentHeader";
+
 type Props = {
   table: TanstackTable<WithId<TeamMember>>;
 };
@@ -42,6 +44,7 @@ const TeamTablePrint: React.FC<Props> = ({ table }) => {
         Print
       </Button>
       <div ref={componentRef} className="m-10 hidden print:block">
+        <DocumentHeader title="Tim Pelaksana" />
         <Table className="border-collapse border border-black">
           <TableHeader>
             <TableRow className="bg-[#7030A0]">

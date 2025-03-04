@@ -1,14 +1,10 @@
-import * as React from "react";
-
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
 } from "lucide-react";
-
-import type { Table } from "@tanstack/react-table";
-import type { TeamMember, WithId } from "@/types";
+import { Table } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,11 +15,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-type Props = {
-  table: Table<WithId<TeamMember>>;
-};
+interface TablePaginationProps<TData> {
+  table: Table<TData>;
+}
 
-const TeamTablePagination: React.FC<Props> = ({ table }) => (
+const TablePagination = <TData,>({ table }: TablePaginationProps<TData>) => (
   <div className="flex flex-col items-center justify-between gap-2 md:flex-row">
     <div className="flex-1 text-sm text-muted-foreground md:block">
       {table.getFilteredSelectedRowModel().rows.length} of{" "}
@@ -50,6 +46,12 @@ const TeamTablePagination: React.FC<Props> = ({ table }) => (
           </SelectContent>
         </Select>
       </div>
+
+      {/* <div className="hidden w-[100px] items-center justify-center text-sm font-medium lg:flex">
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
+        </div> */}
+
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
@@ -67,10 +69,12 @@ const TeamTablePagination: React.FC<Props> = ({ table }) => (
         >
           <ChevronLeftIcon className="h-4 w-4" />
         </Button>
+
         <div className="flex w-[80px] items-center justify-center text-sm font-medium md:order-first">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
         </div>
+
         <Button
           variant="outline"
           className="h-8 w-8 p-0"
@@ -92,4 +96,4 @@ const TeamTablePagination: React.FC<Props> = ({ table }) => (
   </div>
 );
 
-export default TeamTablePagination;
+export default TablePagination;

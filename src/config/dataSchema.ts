@@ -1,7 +1,4 @@
-// might change the name to dataSchema.ts
-
 import { z } from "zod";
-// import { Timestamp } from "firebase/firestore";
 
 export const projectSchema = z.object({
   title: z.string(),

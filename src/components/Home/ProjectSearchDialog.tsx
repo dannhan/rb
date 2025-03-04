@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { SearchIcon } from "lucide-react";
 
-import type { ProjectData } from "@/types";
+import type { WithId, Project } from "@/types";
 import { cn } from "@/lib/utils";
 
 import {
@@ -19,7 +19,9 @@ import {
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 
-type Props = { projects: ProjectData };
+type Props = {
+  projects: { konstruksi: WithId<Project>[]; renovasi: WithId<Project>[] };
+};
 
 const ProjectSearchDialog: React.FC<Props> = ({ projects }) => {
   const router = useRouter();

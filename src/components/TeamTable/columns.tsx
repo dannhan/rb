@@ -7,6 +7,7 @@ import { CheckIcon, EllipsisIcon, EditIcon, Trash2Icon } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { WithId, TeamMember } from "@/types";
 
+import { updateTeamMemberStatusAction } from "@/actions/action-update";
 import { deleteTeamMemberAction } from "@/actions/action-delete";
 
 import { teamTableConfig } from "@/config/table";
@@ -52,9 +53,8 @@ import {
 } from "@/components/ui/popover";
 
 import { Icons } from "@/components/icons";
-import TeamTableColumnHeader from "./TeamTableColumnHeader";
-import UpdateTeamMemberForm from "../Form/UpdateTeamMemberForm";
-import { updateTeamMemberStatusAction } from "@/actions/action-update";
+import UpdateTeamMemberForm from "@/components/Form/UpdateTeamMemberForm";
+import TableColumnHeader from "@/components/Common/TableColumnHeader";
 
 // TODO: use size for width if possible
 const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
@@ -65,7 +65,7 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
         enableSorting: true,
         enableHiding: false,
         header: ({ column }) => (
-          <TeamTableColumnHeader column={column} title="No." />
+          <TableColumnHeader column={column} title="No." />
         ),
         cell: ({ row }) => (
           <span className="text-muted-foreground">{`${row.index + 1}`}</span>
@@ -74,7 +74,7 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
       {
         accessorKey: "pekerjaan",
         header: ({ column }) => (
-          <TeamTableColumnHeader column={column} title="Pekerjaan" />
+          <TableColumnHeader column={column} title="Pekerjaan" />
         ),
         cell: ({ row }) => (
           <span className="max-w-[500px] truncate font-medium">
@@ -85,7 +85,7 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
       {
         accessorKey: "spk",
         header: ({ column }) => (
-          <TeamTableColumnHeader column={column} title="SPK" />
+          <TableColumnHeader column={column} title="SPK" />
         ),
         cell: ({ row }) => (
           <span className="max-w-[500px] truncate font-medium">
@@ -96,7 +96,7 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
       {
         accessorKey: "pelaksana",
         header: ({ column }) => (
-          <TeamTableColumnHeader column={column} title="Pelaksana" />
+          <TableColumnHeader column={column} title="Pelaksana" />
         ),
         cell: ({ row }) => (
           <span className="max-w-[500px] truncate font-medium">
@@ -108,7 +108,7 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
         accessorKey: "status",
         filterFn: (row, id, value) => value.includes(row.getValue(id)),
         header: ({ column }) => (
-          <TeamTableColumnHeader column={column} title="Status" />
+          <TableColumnHeader column={column} title="Status" />
         ),
         cell: ({ row }) => {
           const params = useParams();
