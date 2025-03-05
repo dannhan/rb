@@ -54,7 +54,7 @@ import {
 
 import { Icons } from "@/components/icons";
 import UpdateTeamMemberForm from "@/components/Form/UpdateTeamMemberForm";
-import TableColumnHeader from "@/components/Common/TableColumnHeader";
+import TableColumnHeader from "@/components/TableFeatures/TableColumnHeader";
 
 // TODO: use size for width if possible
 const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>

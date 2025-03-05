@@ -28,7 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import TablePagination from "@/components/Common/TablePagination";
+import TablePagination from "@/components/TableFeatures/TablePagination";
 import getColumns from "./columns";
 import TeamTableToolbar from "./TeamTableToolbar";
 

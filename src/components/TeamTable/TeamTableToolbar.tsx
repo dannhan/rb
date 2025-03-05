@@ -20,8 +20,8 @@ import {
 import { DebouncedInput } from "@/components/debounced-input";
 import AddTeamMemberFormSchema from "@/components/Form/AddTeamMemberForm";
 
-import TableFacetedFilter from "@/components/Common/TableFacetedFilter";
-import TableViewOptions from "@/components/Common/TableViewOptions";
+import TableFacetedFilter from "@/components/TableFeatures/TableFacetedFilter";
+import TableViewOptions from "@/components/TableFeatures/TableViewOptions";
 import TeamTablePrint from "./TeamTablePrint";
 
 type Props = {
