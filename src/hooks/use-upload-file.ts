@@ -7,7 +7,7 @@ import { uploadFiles } from "@/lib/uploadthing";
 import { type ClientUploadedFileData } from "uploadthing/types";
 
 // Define clear types
-export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> { }
+export interface UploadedFile<T = unknown> extends ClientUploadedFileData<T> {}
 
 export type UploadEndpoint = keyof OurFileRouter;
 
@@ -48,8 +48,8 @@ type PropsWithoutInput<T extends UploadEndpoint> = BaseUploadFileProps & {
 // Complete props with conditional input requirement
 export type UseUploadFileProps<T extends UploadEndpoint> =
   IsNever<InputForEndpoint<T>> extends true
-  ? PropsWithoutInput<T>
-  : PropsWithInput<T> & { input?: InputForEndpoint<T> | undefined };
+    ? PropsWithoutInput<T>
+    : PropsWithInput<T> & { input?: InputForEndpoint<T> | undefined };
 
 export interface UseUploadFileReturn {
   onUpload: (files: File[]) => Promise<void>;

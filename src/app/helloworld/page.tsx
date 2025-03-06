@@ -1,171 +1,169 @@
 "use client";
 
-// import { useState } from "react";
-// import { toast, Toaster } from "sonner";
+import type React from "react";
+import { useState, useRef, useEffect } from "react";
 import {
-  FileIcon,
-  CheckCircle2,
-  ImageIcon,
-  XIcon,
-  ChevronDownIcon,
-  CheckIcon,
-} from "lucide-react";
-
-// import { ModeToggle } from "@/components/mode-toggle";
-//
-//
-// export default function Component() {
-//   const showUploadToast = () => {
-//     const uploads: UploadItem[] = [
-//       { name: "image4.jpg", status: "complete" },
-//       // { name: "image2.jpg", status: "complete" },
-//       // { name: "image3.png", status: "complete" },
-//       // { name: "image6.png", status: "complete" },
-//     ];
-//
-//     // toast.custom((t) => <CustomToast uploads={uploads} />);
-//     toast.custom((t) => <div>Hello World</div>);
-//   };
-//
-//   return (
-//     <div>
-//       <ModeToggle />
-//       {/* <CustomToast uploads={uploads} /> */}
-//       <button
-//         onClick={showUploadToast}
-//         className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-//       >
-//         Show Upload Toast
-//       </button>
-//       <Toaster />
-//     </div>
-//   );
-// }
-
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { nanoid } from "nanoid";
-import React from "react";
-import { cn } from "@/lib/utils";
-import AnimatedCircularProgressBar from "@/components/ui/animated-circular-progress-bar";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface UploadItem {
-  name: string;
-  status: "complete" | "pending";
-}
-
-export default function Page() {
-  const uploads: UploadItem[] = [
-    { name: "image4.jpg", status: "complete" },
-    { name: "image2.jpg", status: "complete" },
-    { name: "image3.png", status: "complete" },
-    { name: "image6.png", status: "complete" },
+export default function ProgressTable() {
+  const weeks = [
+    { week: "W11", physical: 30, cost: 30 },
+    { week: "W12", physical: 30, cost: 30 },
+    { week: "W13", physical: 35, cost: 35 },
+    { week: "W14", physical: 55, cost: 45 },
+    { week: "W15", physical: 60, cost: 50 },
+    { week: "W16", physical: 65, cost: 55 },
+    { week: "W17", physical: 70, cost: 60 },
+    { week: "W18", physical: 75, cost: 65 },
   ];
 
+  const [startIndex, setStartIndex] = useState(Math.max(weeks.length - 4, 0));
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  const canGoBack = startIndex > 0;
+  const canGoForward = startIndex < weeks.length - 4;
+
+  const handlePrevious = () => {
+    if (canGoBack) {
+      setStartIndex((prevIndex) => prevIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (canGoForward) {
+      setStartIndex((prevIndex) => prevIndex + 1);
+    }
+  };
+
+  useEffect(() => {
+    if (tableRef.current) {
+      tableRef.current.style.transition = "transform 0.3s ease-in-out";
+      tableRef.current.style.transform = `translateX(-${startIndex * 150}px)`;
+    }
+  }, [startIndex]);
+
   return (
-    <div className="flex gap-4">
-      <Button
-        variant="default"
-        onClick={async () => {
-          const id = toast.loading("image2.png", {
-            description: "Uploading...",
-            position: "top-right",
-            closeButton: false,
-          });
-
-          await new Promise((resolve) => setTimeout(resolve, 3000));
-
-          toast.success("image2.png", {
-            id,
-            description: "Uploaded",
-            position: "top-right",
-            closeButton: true,
-          });
-        }}
-      >
-        Toast
-      </Button>
-      <Button
-        variant="secondary"
-        onClick={() =>
-          toast.custom(() => (
-            <div className="h-[53px] w-[356px] rounded-md border p-4 text-sm">
-              <h1>Custom toast</h1>
-            </div>
-          ))
-        }
-      >
-        Toast
-      </Button>
-      <Button
-        onClick={() => {
-          const id = nanoid();
-          toast.custom(() => <CustomToast id={id} uploads={uploads} />, { id });
-        }}
-      >
-        Upload Custom Arrow Toast
-      </Button>
-      <Button onClick={() => toast.dismiss()} variant={"destructive"}>
-        Dismiss
-      </Button>
-
-      <div className="flex flex-row ">
-        <div>
-          <div className="h-wit w-fit rounded-full bg-green-700 p-0.5">
-            <CheckIcon className="h-4 w-4 text-white" strokeWidth={3.123} />
-          </div>
-        </div>
-
-        <AnimatedCircularProgressBar
-          min={0}
-          max={100}
-          value={45}
-          gaugePrimaryColor="#4D7C0F"
-          gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
-          className="size-20 overflow-visible"
-        />
+    <div className="mx-auto max-w-[750px] space-y-4">
+      <Card>
+        <CardContent className="relative p-0">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="sticky left-0 z-20 w-[150px] bg-muted/50">
+                  Minggu Ke
+                </TableHead>
+                <TableHead className="w-[600px] p-0" colSpan={4}>
+                  <div className="relative">
+                    <div className="overflow-hidden" style={{ width: "600px" }}>
+                      <div
+                        ref={tableRef}
+                        className="flex"
+                        style={{ width: `${weeks.length * 150}px` }}
+                      >
+                        {weeks.map((week) => (
+                          <div key={week.week} className="w-[150px] shrink-0">
+                            <div className="bg-muted/50 p-2 text-center">
+                              {week.week}
+                              <div className="text-xs text-muted-foreground">
+                                TGL
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    {canGoBack && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute left-0 top-1/2 h-full -translate-y-1/2"
+                        onClick={handlePrevious}
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {canGoForward && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-0 top-1/2 h-full -translate-y-1/2"
+                        onClick={handleNext}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell className="sticky left-0 z-10 bg-muted/30 font-medium">
+                  Progress Fisik
+                </TableCell>
+                <TableCell className="p-0" colSpan={4}>
+                  <div className="overflow-hidden" style={{ width: "600px" }}>
+                    <div
+                      className="flex"
+                      style={{
+                        width: `${weeks.length * 150}px`,
+                        transform: `translateX(-${startIndex * 150}px)`,
+                        transition: "transform 0.3s ease-in-out",
+                      }}
+                    >
+                      {weeks.map((week) => (
+                        <div key={week.week} className="w-[150px] shrink-0">
+                          <div className="p-2 text-center">
+                            <span className="font-medium">
+                              {week.physical}%
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell className="">Progress Biaya</TableCell>
+                <TableCell className="p-0" colSpan={4}>
+                  <div className="overflow-hidden" style={{ width: "600px" }}>
+                    <div
+                      className="flex"
+                      style={{
+                        width: `${weeks.length * 150}px`,
+                        transform: `translateX(-${startIndex * 150}px)`,
+                        transition: "transform 0.3s ease-in-out",
+                      }}
+                    >
+                      {weeks.map((week) => (
+                        <div key={week.week} className="w-[150px] shrink-0">
+                          <div className="p-2 text-center">
+                            <span className="font-medium">{week.cost}%</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+      <div className="text-center text-sm text-muted-foreground">
+        Showing weeks {startIndex + 1} -{" "}
+        {Math.min(startIndex + 4, weeks.length)} of {weeks.length}
       </div>
     </div>
   );
 }
-
-const CustomToast = ({
-  id,
-  uploads,
-}: {
-  id?: string | number;
-  uploads: UploadItem[];
-}) => {
-  return (
-    <div className="w-[356px] rounded-lg border-2 transition-all">
-      <div className="flex items-center justify-between bg-accent/40 px-4 py-3.5">
-        <span className="font-medium">4 uploads complete</span>
-        <span className="flex gap-3">
-          <ChevronDownIcon className="h-5 w-5 cursor-pointer" />
-          <XIcon
-            className="h-5 w-5 cursor-pointer"
-            onClick={() => toast.dismiss(id)}
-          />
-        </span>
-      </div>
-      <ul>
-        {uploads.map((item, index) => (
-          <li
-            key={index}
-            className="flex h-[51px] items-center justify-between px-4 hover:bg-muted"
-          >
-            <div className="flex items-center">
-              <ImageIcon className="mr-2 h-4 w-4 text-red-500" />
-              <span className="text-sm">{item.name}</span>
-            </div>
-            {item.status === "complete" && (
-              <div className="h-wit w-fit rounded-full bg-green-700 p-0.5">
-                <CheckIcon className="h-4 w-4 text-white" strokeWidth={3.123} />
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};

@@ -132,7 +132,7 @@ export async function updateIdentityAction({
   }
 }
 
-export async function updateDesignImageAction() { }
+export async function updateDesignImageAction() {}
 
 export async function updateProgressItemDescriptionAction({
   projectId,

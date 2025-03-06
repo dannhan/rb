@@ -53,12 +53,12 @@ const ProjectsViewMore: React.FC<Props> = ({ projects, type }) => {
         </SheetHeader>
         <div className="grid flex-1 gap-2 px-10 md:grid-cols-1 md:gap-4 lg:grid-cols-4">
           {projects.map((project, index) => (
-            <ProjectCard key={index} project={project}/>
+            <ProjectCard key={index} project={project} />
           ))}
         </div>
       </SheetContent>
     </Sheet>
   );
-}
+};
 
 export default ProjectsViewMore;

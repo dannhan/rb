@@ -11,11 +11,8 @@ import {
 import { db } from "@/lib/firebase/admin";
 import { PROJECT_COLLECTION } from "@/lib/utils";
 
-import { Button } from "@/components/ui/button";
-import { WithDialog } from "@/components/with-dialog";
-
-import { CreateDesignImageCategoryForm } from "@/components/create-design-image-category-form";
-import { DesignImagesCard } from "@/components/design-images-card";
+import CreateDesignImageSubcategoryForm from "@/components/Form/CreateDesignImageSubcategoryForm";
+import DesignImagesCard from "@/components/Attachment/DesignImagesCard";
 
 type Props = {
   params: { project: string };
@@ -28,10 +25,11 @@ export default async function Page({ params }: Props) {
     .collection(PROJECT_COLLECTION)
     .doc(params.project)
     .collection("design-image-subcategories");
-  const snapshot = await ref.get();
+  const snapshot = await ref.orderBy("createAt").get();
   snapshot.docs.map((doc) => {
     const parsed = designImageSubcategorySchema.safeParse(doc.data());
-    if (parsed.success) designImageSubcategories;
+    if (parsed.success)
+      designImageSubcategories.push({ id: doc.id, title: parsed.data.title });
   });
 
   const session = await auth();
@@ -44,17 +42,7 @@ export default async function Page({ params }: Props) {
           Gambar Desain
         </h2>
         {admin && (
-          <WithDialog
-            trigger={
-              <Button>
-                <PlusCircleIcon className="mr-2 h-4 w-4" />
-                Add New Category
-              </Button>
-            }
-            title="Add New Category"
-          >
-            <CreateDesignImageCategoryForm slug={params.project} />
-          </WithDialog>
+          <CreateDesignImageSubcategoryForm projectId={params.project} />
         )}
       </div>
       {/* fetch design images per category */}
@@ -73,12 +61,10 @@ export default async function Page({ params }: Props) {
 
         return (
           <DesignImagesCard
-            categoryId={category.id}
-            title={category.title}
-            slug={params.project}
             key={category.id}
+            projectId={params.project}
+            category={category}
             designImages={attachments}
-            admin={admin}
           />
         );
       })}

@@ -5,10 +5,11 @@ import { z } from "zod";
 
 import { auth } from "@/auth";
 
-import { getErrorMessage } from "@/lib/handle-error";
+import { attachmentCategorySchema } from "@/config/dataSchema";
+import type { AttachmentCategory } from "@/types";
+
 import { db } from "@/lib/firebase/admin";
 import { PROJECT_COLLECTION } from "@/lib/utils";
-import { attachmentCategorySchema } from "@/config/dataSchema";
 
 // TODO::
 // is rate limit necessary?
@@ -31,9 +32,7 @@ export const router = {
 
       // Throw if user isn't signed in
       if (!session || !session.user.isAdmin)
-        throw new UploadThingError(
-          "You must be logged in as admin to upload a profile picture",
-        );
+        throw new UploadThingError("You must be logged in as admin to upload.");
 
       return input;
     })
@@ -49,6 +48,54 @@ export const router = {
 
       try {
         await ref.set({ name, size, type, key, url, appUrl, category });
+
+        return { success: true };
+      } catch (error) {
+        await utapi.deleteFiles(file.key);
+
+        return { success: false };
+      }
+    }),
+
+  // WARN: check for the max number of files
+  designImage: f({ image: { maxFileSize: "32MB", maxFileCount: 64 } })
+    .input(
+      z.object({
+        projectId: z.string(),
+        subCategory: z.string(),
+      }),
+    )
+    .middleware(async ({ input }) => {
+      const session = await auth();
+
+      // Throw if user isn't signed in
+      if (!session || !session.user.isAdmin)
+        throw new UploadThingError("You must be logged in as admin to upload.");
+
+      return input;
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      const category = "designImage" satisfies AttachmentCategory;
+      const { projectId, subCategory } = metadata;
+      const { name, size, type, key, url, appUrl } = file;
+
+      const ref = db
+        .collection(PROJECT_COLLECTION)
+        .doc(projectId)
+        .collection("attachments")
+        .doc(file.key);
+
+      try {
+        await ref.set({
+          name,
+          size,
+          type,
+          key,
+          url,
+          appUrl,
+          category,
+          subCategory,
+        });
 
         return { success: true };
       } catch (error) {

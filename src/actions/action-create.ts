@@ -6,7 +6,12 @@ import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
 import { z } from "zod";
 
-import type { Project, TeamMember, Identity } from "@/types";
+import type {
+  Project,
+  TeamMember,
+  Identity,
+  DesignImageSubcategory,
+} from "@/types";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/firebase/admin";
@@ -17,6 +22,7 @@ import {
   createProjectFormSchema,
   addTeamMemberFormSchema,
   addIdentityFormSchema,
+  createDesignImageSubcategoryFormSchema,
 } from "@/config/formSchema";
 
 // NOTE:
@@ -146,6 +152,37 @@ export async function addIdentityAction(
   }
 
   revalidatePath(`${projectId}/gambar-desain`);
+}
+
+export async function createDesignImageSubcategoryAction({
+  projectId,
+  values,
+}: {
+  projectId: string;
+  values: z.infer<typeof createDesignImageSubcategoryFormSchema>;
+}) {
+  const { success, data } =
+    createDesignImageSubcategoryFormSchema.safeParse(values);
+  if (!success) {
+    return {
+      success: false,
+      error: "Invalid form data. Please check your inputs.",
+    };
+  }
+
+  const ref = db
+    .collection(PROJECT_COLLECTION)
+    .doc(projectId)
+    .collection("design-image-subcategories");
+
+  try {
+    await ref.add({
+      ...data,
+      createAt: Timestamp.now(),
+    } satisfies DesignImageSubcategory);
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
 }
 
 export async function addProgressItemAction({

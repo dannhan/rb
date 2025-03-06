@@ -4,9 +4,7 @@ import { useRouter } from "next/navigation";
 import type { AttachmentCategory } from "@/types";
 
 import { useUploadFile } from "@/hooks/use-upload-file";
-
-// TODO: refactor below component
-import { FileUploader } from "@/components/file-uploader";
+import FileUploader from "@/components/Attachment/FileUploader";
 
 // TODO: might change the api of this component
 type Props = { projectId: string; category: AttachmentCategory };

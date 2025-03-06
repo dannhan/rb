@@ -34,30 +34,3 @@ export async function deleteDesignImageAction({
 
   revalidatePath(`${slug}/gambar-desain`);
 }
-
-export async function deleteImageAction({
-  slug,
-  route,
-  fileKey,
-}: {
-  slug: string;
-  route: keyof OurFileRouter;
-  fileKey: string;
-}) {
-  const utapi = new UTApi();
-
-  Promise.all([
-    await updateDoc({
-      collectionName: "projects",
-      docId: slug,
-      errorMessage: "Error deleting data.",
-      data: { [route]: FieldValue.delete() },
-    }),
-    await deleteDoc({
-      collectionName: "project-files",
-      docId: fileKey,
-      errorMessage: "Error deleting data.",
-    }),
-    await utapi.deleteFiles([fileKey]),
-  ]);
-}

@@ -17,6 +17,10 @@ export const addTeamMemberFormSchema = z.object({
   // TODO: might add file schema here
 });
 
+export const createDesignImageSubcategoryFormSchema = z.object({
+  title: z.string().min(1, "Required").trim(),
+});
+
 export const addProgressWeekFormSchema = z.object({
   weekNumber: z.string().min(2, "Required").trim(),
   date: z.string().min(0, " Required").trim(),

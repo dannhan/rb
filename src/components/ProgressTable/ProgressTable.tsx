@@ -46,7 +46,7 @@ const getCommonPinningStyles = (column: Column<any>): React.CSSProperties => {
     right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
     opacity: isPinned ? 0.95 : 1,
     position: isPinned ? "sticky" : "relative",
-    width:  column.getSize(),
+    width: column.getSize(),
     zIndex: isPinned ? 1 : 0,
   };
 };
@@ -106,7 +106,7 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
                     "font-normal text-muted-foreground",
                     // header.column.id === "description" && "border-l",
                     header.column.id.startsWith("week-") &&
-                    "w-[120px] text-center",
+                      "w-[120px] text-center",
                     // header.column.id.startsWith("week-") &&
                     //   "border-l",
                   )}
@@ -114,9 +114,9 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                 </TableHead>
               ))}
             </TableRow>
@@ -135,7 +135,7 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
                   className={cn(
                     cell.column.id === "description" && "border-l px-1 py-0",
                     cell.column.id.startsWith("week-") &&
-                    "w-10 border-l px-1 py-0",
+                      "w-10 border-l px-1 py-0",
                   )}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

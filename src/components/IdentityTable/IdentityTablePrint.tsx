@@ -11,7 +11,7 @@ import type { WithId, Identity } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
-type Props = { table: TTable<WithId<Identity>>; };
+type Props = { table: TTable<WithId<Identity>> };
 
 const IdentityTablePrint: React.FC<Props> = ({ table }) => {
   const componentRef = React.useRef(null);

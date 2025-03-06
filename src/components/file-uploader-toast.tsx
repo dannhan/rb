@@ -51,7 +51,7 @@ export function FileUploaderToast({
             >
               <div className="flex items-center">
                 <ImageIcon className="mr-2 h-4 w-4 text-red-500" />
-                <span className="line-clamp-1  w-4/5 max-w-full overflow-hidden overflow-ellipsis text-sm">
+                <span className="line-clamp-1 w-4/5 max-w-full overflow-hidden overflow-ellipsis text-sm">
                   {item.name}
                 </span>
               </div>
