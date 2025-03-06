@@ -79,7 +79,7 @@ import * as React from "react";
 import Image from "next/image";
 
 // 3. Third-party library imports
-import { toast } from "react-hot-toast";  // or whichever toast library you're using
+import { toast } from "react-hot-toast"; // or whichever toast library you're using
 import { Icon } from "lucide-react";
 import { z } from "zod";
 
@@ -102,5 +102,11 @@ import { MyCustomComponent } from "@/components/MyCustomComponent";
 import { someFunction } from "@/lib/someFunction";
 ```
 
-to be continued: improve the image styles, and also log-out button on home page
-to be continued: refactor on login and logout button form component
+next:
+
+- improve the image styles, and also log-out button on home page
+- refactor on login and logout button form component
+
+prev:
+
+- working on create design image category form but not yet implemented the dialog trigger, store it into db
