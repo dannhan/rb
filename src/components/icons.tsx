@@ -10,9 +10,11 @@ import {
   Wallet,
   InfoIcon,
   MapPinned,
+  BarChart4,
 } from "lucide-react";
 
 export const Icons = {
+  progress: BarChart4,
   circle: Circle,
   users: Users,
   images: Images,

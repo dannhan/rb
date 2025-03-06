@@ -18,6 +18,11 @@ export const projectConfig: ProjectConfig = {
       icon: "images",
     },
     {
+      title: "Progress Proyek",
+      href: "progress-proyek",
+      icon: "progress",
+    },
+    {
       title: "Jadwal Proyek",
       href: "jadwal-proyek",
       icon: "calendar",

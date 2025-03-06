@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 export function StoreLocator({
   locations,
 }: {
-  locations: ( { title: string } & StoreLocation )[];
+  locations: ({ title: string } & StoreLocation)[];
 }) {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   const [geoError, setGeoError] =
