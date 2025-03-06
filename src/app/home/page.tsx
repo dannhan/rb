@@ -3,8 +3,8 @@ import { Timestamp } from "firebase-admin/firestore";
 import { db } from "@/lib/firebase/admin";
 import { PROJECT_COLLECTION } from "@/lib/utils";
 
-import type { ProjectData } from "@/types";
-import { projectSchema } from "@/config/schema";
+import type { WithId, Project } from "@/types";
+import { projectSchema } from "@/config/dataSchema";
 
 import { Header } from "@/layouts/header";
 import { Separator } from "@/components/ui/separator";
@@ -15,7 +15,10 @@ import ProjectSearchDialog from "@/components/Home/ProjectSearchDialog";
 import ProjectCardsList from "@/components/Home/ProjectCardsList";
 
 export default async function Page() {
-  const projects: ProjectData = { konstruksi: [], renovasi: [] };
+  const projects: {
+    konstruksi: WithId<Project>[];
+    renovasi: WithId<Project>[];
+  } = { konstruksi: [], renovasi: [] };
 
   const ref = db.collection(PROJECT_COLLECTION).orderBy("createdAt", "desc");
   const snapshot = await ref.get();

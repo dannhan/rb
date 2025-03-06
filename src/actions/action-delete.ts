@@ -2,10 +2,16 @@
 
 import { revalidatePath } from "next/cache";
 
+import { auth } from "@/auth";
+
 import { db } from "@/lib/firebase/admin";
 import { deleteDocumentWithSubcollections } from "@/lib/firebase/utils";
 
 import { PROJECT_COLLECTION } from "@/lib/utils";
+
+import { UTApi } from "uploadthing/server";
+
+const utapi = new UTApi();
 
 export async function deleteProjectAction(id: string) {
   if (!id) return { success: false, error: "Invalid." };
@@ -14,6 +20,28 @@ export async function deleteProjectAction(id: string) {
     await deleteDocumentWithSubcollections(PROJECT_COLLECTION, id);
 
     revalidatePath("home");
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+export async function deleteAttachmentAction(key: string, projectId: string) {
+  if (!key || !projectId) return { success: false, error: "Invalid." };
+
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unautorhized" };
+
+  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+  const targetRef = projectRef.collection("attachments").doc(key);
+
+  try {
+    await utapi.deleteFiles(key);
+    await targetRef.delete();
+
+    revalidatePath(`${projectId}/gambar-desain`);
     return { success: true };
   } catch (error) {
     console.error(error);

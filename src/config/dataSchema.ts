@@ -19,23 +19,24 @@ export const identitySchema = z.object({
   value: z.string(),
 });
 
-export const fileSchema = z.union([
-  z.object({
-    route: z.literal("designImages"),
-    key: z.string(),
-    name: z.string(),
-    url: z.string(),
-    type: z.string(),
-    category: z.string(), // Required only if route is "designImages"
-  }),
-  z.object({
-    route: z.string().refine((val) => val !== "designImages"), // Ensures this case does not handle "designImages"
-    key: z.string(),
-    name: z.string(),
-    url: z.string(),
-    type: z.string(),
-  }),
+export const attachmentCategorySchema = z.enum([
+  "teamMemberFile",
+  "designImage",
+  "rabFile",
+  "projectSchedule",
+  "costRealization",
+  "locationMap",
 ]);
+
+export const attachmentSchema = z.object({
+  name: z.string(),
+  size: z.number(),
+  type: z.string(),
+  key: z.string(),
+  url: z.string(),
+  appUrl: z.string(),
+  category: attachmentCategorySchema,
+});
 
 export const teamMemberSchema = z.object({
   position: z.number().int().positive(),
