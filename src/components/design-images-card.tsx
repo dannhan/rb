@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { ImageCard } from "@/components/image-card";
+import ImageCard from "@/components/Attachment/ImageCard";
 import { FileUploader } from "@/components/file-uploader";
 import { customToast } from "./file-uploader-toast";
 
@@ -40,12 +40,20 @@ import { customToast } from "./file-uploader-toast";
 // 4. might improve the custom hooks instead?
 
 interface Props {
+  categoryId: string;
   designImages: StoredFile[];
   slug: string;
+  title: string;
   admin?: boolean;
 }
 
-export function DesignImagesCard({ designImages, slug, admin }: Props) {
+export function DesignImagesCard({
+  categoryId,
+  designImages,
+  slug,
+  title,
+  admin,
+}: Props) {
   // prettier-ignore
   const [progresses, setProgresses] = React.useState<Record<string, number>>({});
   const [isUploading, setIsUploading] = React.useState(false);
@@ -68,7 +76,7 @@ export function DesignImagesCard({ designImages, slug, admin }: Props) {
     try {
       await uploadFiles("designImages", {
         files,
-        input: { slug },
+        input: { slug, category: categoryId },
         onUploadProgress: ({ file, progress }) => {
           const newProgresses = {
             ...progressesRef.current,
@@ -110,12 +118,10 @@ export function DesignImagesCard({ designImages, slug, admin }: Props) {
   return (
     <Card>
       <CardHeader className="mb-0 flex flex-row justify-between pb-0">
-        <div>
-          <CardTitle className="text-xl">Gambar Desain</CardTitle>
-          <CardDescription className="text-xs sm:block">
+        <CardTitle className="text-xl">{title}</CardTitle>
+        {/* <CardDescription className="text-xs sm:block">
             These are all of the images that have been uploaded.
-          </CardDescription>
-        </div>
+          </CardDescription> */}
 
         {admin && (
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -151,6 +157,7 @@ export function DesignImagesCard({ designImages, slug, admin }: Props) {
             <div className="my-4 flex w-max flex-row gap-6">
               {designImages.map((file) => (
                 <ImageCard
+                  className="max-h-[450px]"
                   key={file.key}
                   image={file}
                   admin={admin}
@@ -178,7 +185,7 @@ export function DesignImagesCard({ designImages, slug, admin }: Props) {
             <CardHeader className="flex flex-col items-center p-0 text-center md:gap-1.5">
               <div className="mr-4 shrink-0 rounded-full border border-dashed p-4">
                 <ImageIcon
-                  className="size-8 text-muted-foreground "
+                  className="size-8 text-muted-foreground"
                   aria-hidden="true"
                 />
               </div>

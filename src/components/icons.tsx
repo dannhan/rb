@@ -11,9 +11,11 @@ import {
   InfoIcon,
   MapPinned,
   BarChart4,
+  FileIcon,
 } from "lucide-react";
 
 export const Icons = {
+  document: FileIcon,
   progress: BarChart4,
   circle: Circle,
   users: Users,

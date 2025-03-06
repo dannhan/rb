@@ -1,15 +1,11 @@
 import { z } from "zod";
 
+// TODO: change createdAt from any to more specific type
+
 export const projectSchema = z.object({
   title: z.string(),
   type: z.string(),
   createdAt: z.any(),
-
-  // teams: z.array(z.string()).optional(),
-  // identities: z.array(z.string()).optional(),
-  // designImages: z.array(z.string()).optional(),
-  // projectSchedule: z.string().optional(),
-  // costRealization: z.string().optional(),
 });
 
 export const identitySchema = z.object({
@@ -36,6 +32,9 @@ export const attachmentSchema = z.object({
   url: z.string(),
   appUrl: z.string(),
   category: attachmentCategorySchema,
+  subCategory: z.string().optional(),
+
+  // TODO: createdAt
 });
 
 export const teamMemberSchema = z.object({
@@ -47,6 +46,11 @@ export const teamMemberSchema = z.object({
 
   // TODO: implement file for team table
   // file: fileSchema.optional(),
+});
+
+export const designImageSubcategorySchema = z.object({
+  title: z.string(),
+  createAt: z.any(),
 });
 
 export const progressItemSchema = z.object({
