@@ -180,3 +180,46 @@ export async function addProgressItemAction({
     const newProgress = {
       description: "",
       progress: {},
+      position: newPosition,
+    };
+
+    const ref = progressCollection.doc();
+    transaction.set(ref, newProgress);
+
+    return { success: true, progressId: ref.id, position: newPosition };
+  });
+}
+
+// TODO: change the structure of week and progress
+export async function addProgressWeekAction({
+  projectId,
+  week,
+}: {
+  projectId: string;
+  week: string;
+}) {
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unauthorized" };
+
+  const progressRef = db
+    .collection(PROJECT_COLLECTION)
+    .doc(projectId)
+    .collection("progress");
+
+  const progressDocs = await progressRef.get();
+  const batch = db.batch();
+
+  progressDocs.forEach((doc) => {
+    batch.update(doc.ref, {
+      [`progress.${week}`]: 0, // Default value for the new week
+    });
+  });
+
+  await batch.commit();
+
+  // need for the change to be visible
+  revalidatePath("/home");
+
+  return { success: true };
+}

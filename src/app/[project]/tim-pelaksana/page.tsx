@@ -4,7 +4,7 @@ import { db } from "@/lib/firebase/admin";
 import { PROJECT_COLLECTION } from "@/lib/utils";
 
 import type { WithId, TeamMember } from "@/types";
-import { teamMemberSchema } from "@/config/schema";
+import { teamMemberSchema } from "@/config/dataSchema";
 
 import TeamTable from "@/components/TeamTable/TeamTable";
 

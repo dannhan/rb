@@ -4,7 +4,7 @@ import { db } from "@/lib/firebase/admin";
 import { PROJECT_COLLECTION } from "@/lib/utils";
 
 import type { WithId, Identity } from "@/types";
-import { identitySchema } from "@/config/schema";
+import { identitySchema } from "@/config/dataSchema";
 
 import IdentityTable from "@/components/IdentityTable/IdentityTable";
 

@@ -170,3 +170,17 @@ export async function updateProgressValueAction({
   value: number;
 }) {
   const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unautorhized" };
+
+  const ref = db
+    .collection(PROJECT_COLLECTION)
+    .doc(projectId)
+    .collection("progress")
+    .doc(progressId);
+
+  // Update only the specific week
+  await ref.update({ [`progress.${week}`]: value });
+
+  return { success: true };
+}

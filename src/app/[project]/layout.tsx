@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { projectSchema } from "@/config/schema";
+import { projectSchema } from "@/config/dataSchema";
 import { projectConfig } from "@/config/project";
 import { fetchDoc } from "@/lib/firebase/firestore";
 import { PROJECT_COLLECTION } from "@/lib/utils";
