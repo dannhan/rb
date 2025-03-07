@@ -44,7 +44,7 @@ const TeamTablePrint: React.FC<Props> = ({ table }) => {
         Print
       </Button>
       <div ref={componentRef} className="m-10 hidden print:block">
-        <DocumentHeader title="Tim Pelaksana" />
+        <DocumentHeader title="TIM PELAKSANA" />
         <Table className="border-collapse border border-black">
           <TableHeader>
             <TableRow className="bg-[#7030A0]">

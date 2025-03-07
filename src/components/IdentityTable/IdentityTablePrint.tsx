@@ -11,6 +11,8 @@ import type { WithId, Identity } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
+import DocumentHeader from "@/components/Common/DocumentHeader";
+
 type Props = { table: TTable<WithId<Identity>> };
 
 const IdentityTablePrint: React.FC<Props> = ({ table }) => {
@@ -33,6 +35,7 @@ const IdentityTablePrint: React.FC<Props> = ({ table }) => {
         Print
       </Button>
       <div ref={componentRef} className="m-10 hidden print:block">
+        <DocumentHeader title="IDENTITAS PROYEK" />
         <Table className="border-collapse border border-black">
           <TableBody>
             {data.map(({ id, no, field, value }) => (
