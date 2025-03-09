@@ -62,11 +62,12 @@ const ProjectCardAction: React.FC<Props> = ({ project }) => {
   return (
     <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
       <DropdownMenuTrigger asChild>
+        {/* TODO: try to change the variant to outline */}
         <Button
           variant="ghost"
           size="icon"
           className={cn(
-            "absolute right-3 top-5 z-10 h-fit w-fit rounded-full p-2 text-muted-foreground opacity-0 transition-all duration-200 hover:bg-muted focus-visible:border-none focus-visible:ring-0 group-hover:opacity-100",
+            "absolute right-3 top-5 z-10 h-fit w-fit border p-2 text-muted-foreground opacity-100 transition-all duration-200 hover:bg-muted focus-visible:border-none focus-visible:ring-0 group-hover:opacity-100 lg:rounded-full lg:border-none lg:opacity-0",
             dropdownOpen && "opacity-100",
           )}
         >
