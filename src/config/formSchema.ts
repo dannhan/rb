@@ -26,6 +26,15 @@ export const addProgressWeekFormSchema = z.object({
   date: z.string().min(0, " Required").trim(),
 });
 
+export const createProjectLocationFormSchema = z.object({
+  detailAddress: z.string(),
+  link: z
+    .string()
+    .url({ message: "Please enter a valid URL." })
+    .or(z.string().min(0).max(0)),
+  image: z.instanceof(File, { message: "File is required" }).optional(),
+});
+
 export const updateProjectTitleFormSchema = createProjectFormSchema.omit({
   type: true,
 });

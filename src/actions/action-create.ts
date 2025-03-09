@@ -23,14 +23,18 @@ import {
   addTeamMemberFormSchema,
   addIdentityFormSchema,
   createDesignImageSubcategoryFormSchema,
+  createProjectLocationFormSchema,
 } from "@/config/formSchema";
 
-// NOTE:
-// - check the note-app project
-// - use analytics inside catch block
+// NOTE: check the note-app project, use analytics inside catch block
 export async function createProjectAction(
   values: z.infer<typeof createProjectFormSchema>,
 ): Promise<{ success: boolean; error?: string } | undefined> {
+  // Check user authentication
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unauthorized" };
+
   // Validate the data
   const { success, data } = createProjectFormSchema.safeParse(values);
   if (!success) {
@@ -96,12 +100,12 @@ export async function addTeamMemberAction(
     .collection("teams");
 
   return db.runTransaction(async (transaction) => {
-    // 🔥 Get the last item's position
+    // Get the last item's position
     const lastItemSnapshot = await transaction.get(
       teamsCollection.orderBy("position", "desc").limit(1),
     );
 
-    // ✅ Add new team member
+    // Add new team member
     const newProgress = {
       position: lastItemSnapshot.empty
         ? 1000
@@ -122,6 +126,11 @@ export async function addIdentityAction(
   values: z.infer<typeof addIdentityFormSchema>,
   projectId: string,
 ) {
+  // Check user authentication
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unauthorized" };
+
   const { success, data } = addIdentityFormSchema.safeParse(values);
   if (!success) {
     return {
@@ -161,9 +170,14 @@ export async function createDesignImageSubcategoryAction({
   projectId: string;
   values: z.infer<typeof createDesignImageSubcategoryFormSchema>;
 }) {
-  const { success, data } =
-    createDesignImageSubcategoryFormSchema.safeParse(values);
-  if (!success) {
+  // Check user authentication
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unauthorized" };
+
+  // Validate the data
+  const parsed = createDesignImageSubcategoryFormSchema.safeParse(values);
+  if (!parsed.success) {
     return {
       success: false,
       error: "Invalid form data. Please check your inputs.",
@@ -177,9 +191,45 @@ export async function createDesignImageSubcategoryAction({
 
   try {
     await ref.add({
-      ...data,
+      ...parsed.data,
       createAt: Timestamp.now(),
     } satisfies DesignImageSubcategory);
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+// This will be called when create location detail at new project, but without
+// uploading any image
+export async function createProjectLocationWithoutImageAction({
+  projectId,
+  values,
+}: {
+  projectId: string;
+  values: Omit<z.infer<typeof createProjectLocationFormSchema>, "image">;
+}) {
+  // Check user authentication
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unauthorized" };
+
+  const parsed = createProjectLocationFormSchema
+    .omit({ image: true })
+    .safeParse(values);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: "Invalid form data. Please check your inputs.",
+    };
+  }
+
+  const ref = db.collection(PROJECT_COLLECTION).doc(projectId);
+
+  try {
+    await ref.update({ location: parsed.data });
+
+    revalidatePath(`/${projectId}/lokadi`);
+    return { success: true };
   } catch (error) {
     return { success: false, error: (error as Error).message };
   }

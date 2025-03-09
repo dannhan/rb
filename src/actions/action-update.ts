@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { z } from "zod";
+import { UTApi } from "uploadthing/server";
 
 import { auth } from "@/auth";
 import { db } from "@/lib/firebase/admin";
@@ -12,6 +13,9 @@ import {
   updateIdentityFormSchema,
   updateTeamMemberFormSchema,
 } from "@/config/formSchema";
+import { projectLocationSchema } from "@/config/dataSchema";
+
+const utapi = new UTApi();
 
 export async function updateProjectTitleAction({
   id,
@@ -132,7 +136,48 @@ export async function updateIdentityAction({
   }
 }
 
-export async function updateDesignImageAction() {}
+// This will be called when user update location detail without changing the
+// image or just deleting the image
+export async function updateProjectLocationWithoutImageAction({
+  projectId,
+  values,
+  oldImageKey,
+}: {
+  projectId: string;
+  // using the data schema for retainging the image
+  values: z.infer<typeof projectLocationSchema>;
+  oldImageKey?: string;
+}) {
+  // Check user authentication
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unauthorized" };
+
+  const parsed = projectLocationSchema.safeParse(values);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: "Invalid form data. Please check your inputs.",
+    };
+  }
+
+  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+
+  try {
+    oldImageKey &&
+      (await Promise.all([
+        utapi.deleteFiles(oldImageKey),
+        projectRef.collection("attachments").doc(oldImageKey).delete(),
+      ]));
+    await projectRef.update({ location: parsed.data });
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+export async function updateDesignImageAction() { }
 
 export async function updateProgressItemDescriptionAction({
   projectId,

@@ -7,7 +7,7 @@ import {
   attachmentCategorySchema,
   designImageSubcategorySchema,
   teamMemberSchema,
-  storeLocationSchema,
+  projectLocationSchema,
 } from "@/config/dataSchema";
 
 export type Project = z.infer<typeof projectSchema>;
@@ -18,6 +18,6 @@ export type TeamMember = z.infer<typeof teamMemberSchema>;
 export type DesignImageSubcategory = z.infer<
   typeof designImageSubcategorySchema
 >;
-export type StoreLocation = z.infer<typeof storeLocationSchema>;
 export type ProgressItem = z.infer<typeof progressItemSchema>;
 export type Item = z.infer<typeof progressItemSchema>;
+export type ProjectLocation = z.infer<typeof projectLocationSchema>;

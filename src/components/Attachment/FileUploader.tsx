@@ -98,6 +98,14 @@ interface FileUploaderProps extends React.HTMLAttributes<HTMLDivElement> {
   withToast?: boolean;
 
   /**
+   * Whether the uploader should progress indicators.
+   * @type boolean
+   * @default false
+   * @example multiple
+   */
+  withProgressIndicators?: boolean;
+
+  /**
    * Whether the uploader is disabled.
    * @type boolean
    * @default false
@@ -117,6 +125,7 @@ const FileUploader: React.FC<FileUploaderProps> = (props) => {
     maxFileCount = 1,
     multiple = false,
     withToast = true,
+    withProgressIndicators = true,
     disabled = false,
     className,
     ...dropzoneProps
@@ -281,7 +290,7 @@ const FileUploader: React.FC<FileUploaderProps> = (props) => {
           </div>
         )}
       </Dropzone>
-      {files?.length ? (
+      {withProgressIndicators && files?.length ? (
         <ScrollArea className="h-fit w-full px-3">
           <div className="flex max-h-48 flex-col gap-4">
             {files?.map((file, index) => (

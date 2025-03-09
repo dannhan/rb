@@ -2,20 +2,20 @@
 
 import { revalidatePath } from "next/cache";
 
+import { UTApi } from "uploadthing/server";
 import { auth } from "@/auth";
 
 import { db } from "@/lib/firebase/admin";
 import { deleteDocumentWithSubcollections } from "@/lib/firebase/utils";
-
 import { PROJECT_COLLECTION } from "@/lib/utils";
-
-import { UTApi } from "uploadthing/server";
 
 const utapi = new UTApi();
 
 export async function deleteProjectAction(id: string) {
   if (!id) return { success: false, error: "Invalid." };
 
+  // WARN:
+  // TODO: delete all images here
   try {
     await deleteDocumentWithSubcollections(PROJECT_COLLECTION, id);
 
