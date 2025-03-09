@@ -56,25 +56,25 @@ const UpdateLocationForm: React.FC<Props> = ({ projectId, location }) => {
     try {
       const response = values.image
         ? (
-          await uploadFiles("location", {
-            files: [values.image],
-            input: {
-              projectId,
-              oldImageKey: isImageRemoved ? location.image?.key : undefined,
-              detailAddress: values.detailAddress,
-              link: values.link,
-            },
-          })
-        )[0].serverData
+            await uploadFiles("location", {
+              files: [values.image],
+              input: {
+                projectId,
+                oldImageKey: isImageRemoved ? location.image?.key : undefined,
+                detailAddress: values.detailAddress,
+                link: values.link,
+              },
+            })
+          )[0].serverData
         : await updateProjectLocationWithoutImageAction({
-          projectId,
-          values: {
-            link: values.link,
-            detailAddress: values.detailAddress,
-            image: isImageRemoved ? undefined : location.image,
-          },
-          oldImageKey: isImageRemoved ? location.image?.key : undefined,
-        });
+            projectId,
+            values: {
+              link: values.link,
+              detailAddress: values.detailAddress,
+              image: isImageRemoved ? undefined : location.image,
+            },
+            oldImageKey: isImageRemoved ? location.image?.key : undefined,
+          });
       if (!response?.success) throw new Error(response?.error);
 
       toast.success("New data has been updated.");
@@ -191,9 +191,9 @@ const UpdateLocationForm: React.FC<Props> = ({ projectId, location }) => {
             size="lg"
             className="px-4"
             disabled={isSubmitting}
-            asChild
+            asChild={isSubmitting}
           >
-            <Link href="lokasi">Batal</Link>
+            {isSubmitting ? "Batal" : <Link href="lokasi">Batal</Link>}
           </Button>
           <Button
             type="submit"
