@@ -67,14 +67,17 @@ const ProjectCardAction: React.FC<Props> = ({ project }) => {
           variant="ghost"
           size="icon"
           className={cn(
-            "absolute right-3 top-5 z-10 h-fit w-fit border p-2 text-muted-foreground opacity-100 transition-all duration-200 hover:bg-muted focus-visible:border-none focus-visible:ring-0 group-hover:opacity-100 lg:rounded-full lg:border-none lg:opacity-0",
+            ":bg-muted absolute right-3 top-5 z-10 h-fit w-fit rounded-full p-2 text-muted-foreground opacity-100 transition-all duration-200 focus-visible:border-none focus-visible:ring-0 group-hover:opacity-100 lg:opacity-0",
             dropdownOpen && "opacity-100",
           )}
         >
           <MoreHorizontalIcon className="h-6 w-6" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="z-50 w-40 rounded-xl px-1.5 py-1 shadow-xl">
+      <DropdownMenuContent
+        className="z-50 w-40 rounded-xl px-1.5 py-1 shadow-xl"
+        align="end"
+      >
         <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
           <DialogTrigger asChild>
             <DropdownMenuItem
