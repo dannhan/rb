@@ -14,7 +14,7 @@ import { LoginForm } from "@/components/login-form";
 
 export default function Page() {
   return (
-    <main className="flex h-svh w-full items-center justify-center">
+    <main className="flex h-dvh max-h-[480px] w-full items-center justify-center md:max-h-screen">
       <section className="relative hidden h-full flex-1 items-center justify-center border-r lg:flex">
         <Image
           src="/images/hero.jpg"
