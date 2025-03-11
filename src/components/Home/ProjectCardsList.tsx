@@ -11,7 +11,7 @@ const ProjectCardsList: React.FC<Props> = async ({ projects, type }) => {
   const displayedProjects = projects.slice(0, 3);
 
   const session = await auth();
-  const admin = session?.user.isAdmin;
+  const admin = session?.user.isAdmin ?? false;
 
   return (
     <section className="flex w-full max-w-screen-lg flex-1 flex-col gap-4 md:flex-initial lg:max-h-64 lg:flex-1 xl:max-h-72 xl:max-w-screen-xl">
@@ -19,10 +19,10 @@ const ProjectCardsList: React.FC<Props> = async ({ projects, type }) => {
       <div className="grid flex-1 gap-2 md:grid-cols-2 md:gap-4 lg:grid-cols-4">
         {admin && <CreateProjectSheet defaultType={type} />}
         {displayedProjects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <ProjectCard key={project.id} admin={admin} project={project} />
         ))}
       </div>
-      <ProjectsViewMore type={type} projects={projects} />
+      <ProjectsViewMore type={type} admin={admin} projects={projects} />
     </section>
   );
 };

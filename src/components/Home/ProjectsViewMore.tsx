@@ -17,11 +17,12 @@ import { Button } from "@/components/ui/button";
 import ProjectCard from "./ProjectCard";
 
 type Props = {
+  admin: boolean;
   projects: WithId<Project>[];
   type: string;
 };
 
-const ProjectsViewMore: React.FC<Props> = ({ projects, type }) => {
+const ProjectsViewMore: React.FC<Props> = ({ admin, projects, type }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   return (
@@ -53,7 +54,7 @@ const ProjectsViewMore: React.FC<Props> = ({ projects, type }) => {
         </SheetHeader>
         <div className="grid flex-1 gap-2 px-10 md:grid-cols-1 md:gap-4 lg:grid-cols-4">
           {projects.map((project, index) => (
-            <ProjectCard key={index} project={project} />
+            <ProjectCard key={index} admin={admin} project={project} />
           ))}
         </div>
       </SheetContent>
