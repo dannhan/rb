@@ -1,6 +1,7 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UTApi } from "uploadthing/server";
 import { UploadThingError } from "uploadthing/server";
+import { Timestamp } from "firebase-admin/firestore";
 import { z } from "zod";
 
 import { auth } from "@/auth";
@@ -48,7 +49,16 @@ export const router = {
         .doc(file.key);
 
       try {
-        await ref.set({ name, size, type, key, url, appUrl, category });
+        await ref.set({
+          name,
+          size,
+          type,
+          key,
+          url,
+          appUrl,
+          category,
+          createdAt: Timestamp.now(),
+        } satisfies Attachment);
 
         return { success: true };
       } catch (error) {
@@ -95,7 +105,8 @@ export const router = {
           appUrl,
           category,
           subCategory,
-        });
+          createdAt: Timestamp.now(),
+        } satisfies Attachment);
 
         return { success: true };
       } catch (error) {
@@ -134,6 +145,7 @@ export const router = {
         url,
         appUrl,
         category: "locationMap",
+        createdAt: Timestamp.now(),
       } satisfies Attachment;
       const locationData = {
         detailAddress,

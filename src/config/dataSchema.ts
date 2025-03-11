@@ -18,8 +18,7 @@ export const attachmentSchema = z.object({
   appUrl: z.string(),
   category: attachmentCategorySchema,
   subCategory: z.string().optional(),
-
-  // TODO: createdAt
+  createdAt: z.any(),
 });
 
 // TODO:

@@ -198,6 +198,7 @@ const FileUploader: React.FC<FileUploaderProps> = (props) => {
         }
 
         await onUpload(updatedFiles);
+        setFiles([]);
       }
     },
     [files, maxFileCount, multiple, withToast, onUpload, setFiles],
