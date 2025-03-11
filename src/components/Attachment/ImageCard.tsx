@@ -32,9 +32,11 @@ import { Button } from "@/components/ui/button";
 import { deleteAttachmentAction } from "@/actions/action-delete";
 import { useParams } from "next/navigation";
 
-type Props = { attachment: Attachment };
+type Props = { admin: boolean; attachment: Attachment };
 
-const ImageCard: React.FC<Props> = ({ attachment }) => {
+// TODO: if possible store the width and height of the image, find any method
+// to remove the gray area around image
+const ImageCard: React.FC<Props> = ({ admin, attachment }) => {
   const params = useParams();
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
@@ -119,7 +121,7 @@ const ImageCard: React.FC<Props> = ({ attachment }) => {
             >
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem
-                  className="rounded-md font-medium"
+                  className={cn("rounded-md font-medium", !admin && "hidden")}
                   onSelect={(event) => {
                     event.preventDefault();
                     setDeleteDialogOpen(true);

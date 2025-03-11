@@ -33,7 +33,7 @@ export default async function Page({ params }: Props) {
   });
 
   const session = await auth();
-  const admin = session?.user.isAdmin;
+  const admin = session?.user?.isAdmin ?? false;
 
   return (
     <div className="space-y-6">
@@ -56,11 +56,15 @@ export default async function Page({ params }: Props) {
         const snapshot = await ref.get();
         snapshot.docs.map((doc) => {
           const parsed = attachmentSchema.safeParse(doc.data());
-          if (parsed.success) attachments.push({ id: doc.id, ...parsed.data });
+          if (parsed.success) {
+            const { createdAt, ...rest } = parsed.data; // Exclude 'createdAt'
+            attachments.push({ id: doc.id, ...rest });
+          }
         });
 
         return (
           <DesignImagesCard
+            admin={admin}
             key={category.id}
             projectId={params.project}
             category={category}

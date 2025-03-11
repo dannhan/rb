@@ -27,10 +27,10 @@ export default async function Page({ params }: Props) {
 
   snapshot.docs.map((doc) => {
     const parsed = attachmentSchema.safeParse(doc.data());
-    if (!parsed.success) return;
-
-    const { name, size, type, key, url, appUrl, category } = parsed.data;
-    attachments.push({ name, size, type, key, url, appUrl, category });
+    if (parsed.success) {
+      const { createdAt, ...rest } = parsed.data; // Exclude 'createdAt'
+      attachments.push({ ...rest });
+    }
   });
 
   const session = await auth();
@@ -39,7 +39,7 @@ export default async function Page({ params }: Props) {
   return (
     <main className="mx-auto max-w-[750px] space-y-4">
       {attachments.map((attachment) => (
-        <ImageCard key={attachment.key} attachment={attachment} />
+        <ImageCard key={attachment.key} admin={admin} attachment={attachment} />
       ))}
       {admin && (
         <SingleImageUploader

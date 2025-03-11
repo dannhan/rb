@@ -30,15 +30,17 @@ import FileUploader from "./FileUploader";
 import ImageCard from "./ImageCard";
 
 type Props = {
-  projectId: string;
+  admin: boolean;
   category: WithId<DesignImageSubcategory>;
   designImages: WithId<Attachment>[];
+  projectId: string;
 };
 
 const DesignImagesCard: React.FC<Props> = ({
-  projectId,
+  admin,
   category,
   designImages,
+  projectId,
 }) => {
   const router = useRouter();
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -49,7 +51,7 @@ const DesignImagesCard: React.FC<Props> = ({
   });
 
   return (
-    <Card>
+    <Card className="mx-auto max-w-[750px]">
       <CardHeader className="mb-0 flex flex-row justify-between pb-0">
         <CardTitle className="text-xl">{category.title}</CardTitle>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
@@ -81,12 +83,13 @@ const DesignImagesCard: React.FC<Props> = ({
       <CardContent>
         {designImages.length > 0 ? (
           <ScrollArea>
-            <div className="my-4 flex w-max flex-row gap-6">
+            <div className="my-4 flex flex-col gap-6">
+              {/* <div className=""> */}
               {designImages.map((image) => (
-                <ImageCard attachment={image} />
+                <ImageCard key={image.key} admin={admin} attachment={image} />
               ))}
             </div>
-            <ScrollBar orientation="horizontal" />
+            <ScrollBar orientation="vertical" />
           </ScrollArea>
         ) : (
           <Card className="mt-6 flex h-[425px] w-full flex-col items-center justify-center space-y-6 bg-transparent p-4">
