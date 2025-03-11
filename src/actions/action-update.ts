@@ -25,7 +25,7 @@ export async function updateProjectTitleAction({
   title: string;
 }) {
   const session = await auth();
-  if (!session || !session.user.isAdmin)
+  if (!session || session.user.isAdmin)
     return { success: false, error: "Unautorhized" };
 
   // TODO: there is bug here, when the path is not exist it just return success
@@ -46,7 +46,7 @@ export async function updateTeamMemberStatusAction({
   status: string;
 }) {
   const session = await auth();
-  if (!session || !session.user.isAdmin)
+  if (!session || session.user.isAdmin)
     return { success: false, error: "Unautorhized" };
 
   try {
@@ -177,7 +177,7 @@ export async function updateProjectLocationWithoutImageAction({
   }
 }
 
-export async function updateDesignImageAction() { }
+export async function updateDesignImageAction() {}
 
 export async function updateProgressItemDescriptionAction({
   projectId,
