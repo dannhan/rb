@@ -5,6 +5,7 @@ import { useSelectedLayoutSegment } from "next/navigation";
 
 import { Slash } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -21,15 +22,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Icons } from "@/components/icons";
 
-type Props = {
-  projectTitle: string;
-};
+type Props = { className?: string; projectTitle: string };
 
-export function BreadcrumbNav({ projectTitle }: Props) {
+export function BreadcrumbNav({ className, projectTitle }: Props) {
   const segment = useSelectedLayoutSegment();
 
   return (
-    <Breadcrumb className="hidden flex-1 sm:flex">
+    <Breadcrumb className={cn("hidden flex-1 sm:flex", className)}>
       <BreadcrumbList>
         <BreadcrumbItem>
           <Link

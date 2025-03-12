@@ -52,11 +52,11 @@ const DesignImagesCard: React.FC<Props> = ({
 
   return (
     <Card className="mx-auto max-w-[750px]">
-      <CardHeader className="mb-0 flex flex-row justify-between pb-0">
-        <CardTitle className="text-xl">{category.title}</CardTitle>
+      <CardHeader className="mb-0 flex flex-row items-center justify-between py-3 pb-0">
+        <CardTitle className="text-base">{category.title}</CardTitle>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="secondary" className="border">
+            <Button variant="secondary" className="border" size="sm">
               <UploadCloudIcon className="h-5 w-5 sm:mr-2" />
               <span className="hidden sm:inline">Upload</span>
             </Button>
@@ -80,7 +80,7 @@ const DesignImagesCard: React.FC<Props> = ({
           </DialogContent>
         </Dialog>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pb-3">
         {designImages.length > 0 ? (
           <ScrollArea>
             <div className="my-4 flex flex-col gap-6">

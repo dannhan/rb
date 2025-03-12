@@ -9,10 +9,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { createProjectLocationFormSchema } from "@/config/formSchema";
+import { createProjectLocationWithoutImageAction } from "@/actions/create";
 
 import { getErrorMessage } from "@/lib/handle-error";
 import { uploadFiles } from "@/lib/uploadthing";
-import { createProjectLocationWithoutImageAction } from "@/actions/action-create";
 
 import { Button } from "@/components/ui/button";
 import {

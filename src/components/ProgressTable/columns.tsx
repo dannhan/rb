@@ -5,12 +5,12 @@ import { debounce } from "lodash";
 
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 import type { WithId, ProgressItem } from "@/types";
-
-import { Input } from "@/components/ui/input";
 import {
   updateProgressItemDescriptionAction,
   updateProgressValueAction,
-} from "@/actions/action-update";
+} from "@/actions/update";
+
+import { Input } from "@/components/ui/input";
 
 const columnHelper = createColumnHelper<WithId<ProgressItem>>();
 

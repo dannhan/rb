@@ -10,6 +10,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import type { WithId, ProgressItem } from "@/types";
+import { addProgressItemAction } from "@/actions/create";
+
 import { cn } from "@/lib/utils";
 import {
   Table,
@@ -20,9 +23,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import getColumns from "./columns";
-
-import type { WithId, ProgressItem } from "@/types";
-import { addProgressItemAction } from "@/actions/action-create";
 
 interface Props {
   projectId: string;
@@ -106,7 +106,7 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
                     "font-normal text-muted-foreground",
                     // header.column.id === "description" && "border-l",
                     header.column.id.startsWith("week-") &&
-                      "w-[120px] text-center",
+                    "w-[120px] text-center",
                     // header.column.id.startsWith("week-") &&
                     //   "border-l",
                   )}
@@ -114,9 +114,9 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
                 </TableHead>
               ))}
             </TableRow>
@@ -135,7 +135,7 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
                   className={cn(
                     cell.column.id === "description" && "border-l px-1 py-0",
                     cell.column.id.startsWith("week-") &&
-                      "w-10 border-l px-1 py-0",
+                    "w-10 border-l px-1 py-0",
                   )}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

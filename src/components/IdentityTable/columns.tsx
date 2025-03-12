@@ -7,7 +7,7 @@ import { EditIcon, EllipsisIcon, Trash2Icon } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { Identity, WithId } from "@/types";
 
-import { deleteIdentityAction } from "@/actions/action-delete";
+import { deleteIdentityAction } from "@/actions/delete";
 
 import { Button } from "@/components/ui/button";
 import {

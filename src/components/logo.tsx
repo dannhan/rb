@@ -3,11 +3,18 @@ import { Cabin } from "next/font/google";
 import Link from "next/link";
 import Image from "next/image";
 
+import { cn } from "@/lib/utils";
+
 const cabin = Cabin({ subsets: ["latin"] });
 
-export function Logo() {
+type Props = { className?: string };
+
+export function Logo({ className }: Props) {
   return (
-    <Link href="/home" className="flex flex-row items-center gap-2">
+    <Link
+      href="/home"
+      className={cn("flex flex-row items-center gap-2", className)}
+    >
       <div className="relative -ml-1 h-12 w-8">
         <Image
           src="/images/logo.png"

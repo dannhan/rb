@@ -9,9 +9,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { addProgressWeekFormSchema } from "@/config/formSchema";
+import { addProgressWeekAction } from "@/actions/create";
 
 import { getErrorMessage } from "@/lib/handle-error";
-import { addProgressWeekAction } from "@/actions/action-create";
 
 import { Button } from "@/components/ui/button";
 import {

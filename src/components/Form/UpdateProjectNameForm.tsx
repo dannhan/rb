@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { updateProjectTitleFormSchema } from "@/config/formSchema";
 
 import { getErrorMessage } from "@/lib/handle-error";
-import { updateProjectTitleAction } from "@/actions/action-update";
+import { updateProjectTitleAction } from "@/actions/update";
 
 import { Button } from "@/components/ui/button";
 import {

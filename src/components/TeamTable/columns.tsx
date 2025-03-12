@@ -3,12 +3,11 @@ import { useParams } from "next/navigation";
 
 import { toast } from "sonner";
 import { CheckIcon, EllipsisIcon, EditIcon, Trash2Icon } from "lucide-react";
-
 import type { ColumnDef } from "@tanstack/react-table";
 import type { WithId, TeamMember } from "@/types";
 
-import { updateTeamMemberStatusAction } from "@/actions/action-update";
-import { deleteTeamMemberAction } from "@/actions/action-delete";
+import { updateTeamMemberStatusAction } from "@/actions/update";
+import { deleteTeamMemberAction } from "@/actions/delete";
 
 import { teamTableConfig } from "@/config/table";
 

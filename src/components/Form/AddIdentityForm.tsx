@@ -9,9 +9,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { addIdentityFormSchema } from "@/config/formSchema";
+import { addIdentityAction } from "@/actions/create";
 
 import { getErrorMessage } from "@/lib/handle-error";
-import { addIdentityAction } from "@/actions/action-create";
 
 import { Button } from "@/components/ui/button";
 import {

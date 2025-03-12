@@ -20,7 +20,7 @@ interface TableViewOptionsProps<TData> {
 const TableViewOptions = <TData,>({ table }: TableViewOptionsProps<TData>) => (
   <DropdownMenu>
     <DropdownMenuTrigger asChild>
-      <Button variant="outline" size="sm" className="h-8">
+      <Button variant="outline">
         <SlidersHorizontalIcon className="mr-2 size-4 sm:mr-0" />
         <span className="sm:hidden">Toggle</span>
       </Button>

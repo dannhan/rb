@@ -34,12 +34,7 @@ const TeamTablePrint: React.FC<Props> = ({ table }) => {
 
   return (
     <>
-      <Button
-        onClick={handlePrint}
-        size="sm"
-        variant="secondary"
-        className="h-8 border"
-      >
+      <Button onClick={handlePrint} variant="secondary" className="border">
         <PrinterIcon className="mr-2 size-4" />
         Print
       </Button>

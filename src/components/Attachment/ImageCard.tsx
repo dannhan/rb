@@ -2,15 +2,16 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 import { toast } from "sonner";
 import { MoreHorizontalIcon, DownloadIcon, Trash2Icon } from "lucide-react";
 
 import type { Attachment } from "@/types";
+import { deleteAttachmentAction } from "@/actions/delete";
 
 import { cn } from "@/lib/utils";
 import { useDownload } from "@/hooks/use-download";
-
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -29,8 +30,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { deleteAttachmentAction } from "@/actions/action-delete";
-import { useParams } from "next/navigation";
 
 type Props = { admin: boolean; attachment: Attachment };
 

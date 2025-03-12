@@ -10,12 +10,12 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { ProjectLocation } from "@/types";
+import type { ProjectLocation } from "@/types";
 import { createProjectLocationFormSchema } from "@/config/formSchema";
+import { updateProjectLocationWithoutImageAction } from "@/actions/update";
 
 import { getErrorMessage } from "@/lib/handle-error";
 import { uploadFiles } from "@/lib/uploadthing";
-import { updateProjectLocationWithoutImageAction } from "@/actions/action-update";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -56,25 +56,25 @@ const UpdateLocationForm: React.FC<Props> = ({ projectId, location }) => {
     try {
       const response = values.image
         ? (
-            await uploadFiles("location", {
-              files: [values.image],
-              input: {
-                projectId,
-                oldImageKey: isImageRemoved ? location.image?.key : undefined,
-                detailAddress: values.detailAddress,
-                link: values.link,
-              },
-            })
-          )[0].serverData
-        : await updateProjectLocationWithoutImageAction({
-            projectId,
-            values: {
-              link: values.link,
+          await uploadFiles("location", {
+            files: [values.image],
+            input: {
+              projectId,
+              oldImageKey: isImageRemoved ? location.image?.key : undefined,
               detailAddress: values.detailAddress,
-              image: isImageRemoved ? undefined : location.image,
+              link: values.link,
             },
-            oldImageKey: isImageRemoved ? location.image?.key : undefined,
-          });
+          })
+        )[0].serverData
+        : await updateProjectLocationWithoutImageAction({
+          projectId,
+          values: {
+            link: values.link,
+            detailAddress: values.detailAddress,
+            image: isImageRemoved ? undefined : location.image,
+          },
+          oldImageKey: isImageRemoved ? location.image?.key : undefined,
+        });
       if (!response?.success) throw new Error(response?.error);
 
       toast.success("New data has been updated.");

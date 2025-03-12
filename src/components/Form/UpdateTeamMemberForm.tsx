@@ -9,9 +9,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { updateTeamMemberFormSchema } from "@/config/formSchema";
+import { updateTeamMemberAction } from "@/actions/update";
 
 import { getErrorMessage } from "@/lib/handle-error";
-import { updateTeamMemberAction } from "@/actions/action-update";
 
 import { Button } from "@/components/ui/button";
 import {

@@ -8,10 +8,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { addIdentityFormSchema } from "@/config/formSchema";
+import { updateIdentityFormSchema } from "@/config/formSchema";
+import { updateIdentityAction } from "@/actions/update";
 
 import { getErrorMessage } from "@/lib/handle-error";
-import { updateIdentityAction } from "@/actions/action-update";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -26,7 +26,7 @@ import { Icons } from "@/components/icons";
 
 type Props = {
   identityId: string;
-  defaultValues: z.infer<typeof addIdentityFormSchema>;
+  defaultValues: z.infer<typeof updateIdentityFormSchema>;
   onSuccess?: () => void;
   onCancel?: () => void;
 };
@@ -40,12 +40,12 @@ const UpdateIdentityForm: React.FC<Props> = ({
   const params = useParams();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const form = useForm<z.infer<typeof addIdentityFormSchema>>({
-    resolver: zodResolver(addIdentityFormSchema),
+  const form = useForm<z.infer<typeof updateIdentityFormSchema>>({
+    resolver: zodResolver(updateIdentityFormSchema),
     defaultValues,
   });
 
-  const onSubmit = async (values: z.infer<typeof addIdentityFormSchema>) => {
+  const onSubmit = async (values: z.infer<typeof updateIdentityFormSchema>) => {
     setIsSubmitting(true);
     try {
       if (typeof params?.project !== "string")

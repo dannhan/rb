@@ -9,6 +9,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { createDesignImageSubcategoryFormSchema } from "@/config/formSchema";
+import { createDesignImageSubcategoryAction } from "@/actions/create";
 
 import { getErrorMessage } from "@/lib/handle-error";
 
@@ -30,7 +31,6 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Icons } from "@/components/icons";
-import { createDesignImageSubcategoryAction } from "@/actions/action-create";
 
 type Props = { projectId: string };
 

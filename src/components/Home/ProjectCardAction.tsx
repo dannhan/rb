@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { EditIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 
 import type { WithId, Project } from "@/types";
+import { deleteProjectAction } from "@/actions/delete";
 
 import { cn } from "@/lib/utils";
 import {
@@ -17,6 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -30,9 +32,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { deleteProjectAction } from "@/actions/action-delete";
-import UpdateProjectForm from "../Form/UpdateProjectNameForm";
+import UpdateProjectForm from "@/components/Form/UpdateProjectNameForm";
 
 type Props = {
   project: WithId<Project>;
