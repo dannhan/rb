@@ -11,6 +11,7 @@ import { deleteTeamMemberAction } from "@/actions/delete";
 
 import { teamTableConfig } from "@/config/table";
 
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import {
   AlertDialog,
@@ -39,6 +40,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerBody,
+  DrawerTrigger,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer";
 import {
   Command,
   CommandGroup,
@@ -205,6 +217,7 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
           const params = useParams();
           const [editDialogOpen, setEditDialogOpen] = React.useState(false);
           const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+          const isDesktop = useMediaQuery("(min-width: 768px)");
 
           const { id, pekerjaan, spk, pelaksana } = row.original;
 
@@ -246,64 +259,139 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
                 align="end"
                 className="w-[160px]"
               >
-                <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-                  <DialogTrigger asChild>
-                    <DropdownMenuItem
-                      onSelect={(event) => {
-                        event.preventDefault();
-                        setEditDialogOpen(true);
-                      }}
-                    >
-                      <EditIcon className="mr-2.5 h-4 w-4" />
-                      Edit
-                    </DropdownMenuItem>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Edit Data</DialogTitle>
-                      <DialogDescription>
-                        Fill in the details below to update data.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <UpdateTeamMemberForm
-                      teamId={id}
-                      defaultValues={{ pekerjaan, spk, pelaksana }}
-                      setDialogOpen={setEditDialogOpen}
-                    />
-                  </DialogContent>
-                </Dialog>
-                <AlertDialog
-                  open={deleteDialogOpen}
-                  onOpenChange={setDeleteDialogOpen}
-                >
-                  <AlertDialogTrigger asChild>
-                    <DropdownMenuItem
-                      onSelect={(event) => {
-                        event.preventDefault();
-                        setDeleteDialogOpen(true);
-                      }}
-                    >
-                      <Trash2Icon className="mr-2.5 h-4 w-4" />
-                      Delete
-                    </DropdownMenuItem>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you absolutely sure?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDelete}>
-                        Continue
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                {isDesktop ? (
+                  <Dialog
+                    open={editDialogOpen}
+                    onOpenChange={setEditDialogOpen}
+                  >
+                    <DialogTrigger asChild>
+                      <DropdownMenuItem
+                        onSelect={(event) => {
+                          event.preventDefault();
+                          setEditDialogOpen(true);
+                        }}
+                      >
+                        <EditIcon className="mr-2.5 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Edit Data</DialogTitle>
+                        <DialogDescription>
+                          Fill in the details below to update data.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <UpdateTeamMemberForm
+                        teamId={id}
+                        defaultValues={{ pekerjaan, spk, pelaksana }}
+                        setDialogOpen={setEditDialogOpen}
+                      />
+                    </DialogContent>
+                  </Dialog>
+                ) : (
+                  <Drawer
+                    open={editDialogOpen}
+                    onOpenChange={setEditDialogOpen}
+                  >
+                    <DrawerTrigger asChild>
+                      <DropdownMenuItem
+                        onSelect={(event) => {
+                          event.preventDefault();
+                          setEditDialogOpen(true);
+                        }}
+                      >
+                        <EditIcon className="mr-2.5 h-4 w-4" />
+                        Edit
+                      </DropdownMenuItem>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <DrawerHeader>
+                        <DrawerTitle>Edit Data</DrawerTitle>
+                        <DrawerDescription>
+                          Fill in the details below to update data.
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <DrawerBody>
+                        <UpdateTeamMemberForm
+                          teamId={id}
+                          defaultValues={{ pekerjaan, spk, pelaksana }}
+                          setDialogOpen={setEditDialogOpen}
+                        />
+                      </DrawerBody>
+                    </DrawerContent>
+                  </Drawer>
+                )}
+                {isDesktop ? (
+                  <AlertDialog
+                    open={deleteDialogOpen}
+                    onOpenChange={setDeleteDialogOpen}
+                  >
+                    <AlertDialogTrigger asChild>
+                      <DropdownMenuItem
+                        onSelect={(event) => {
+                          event.preventDefault();
+                          setDeleteDialogOpen(true);
+                        }}
+                      >
+                        <Trash2Icon className="mr-2.5 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDelete}>
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                ) : (
+                  <Drawer
+                    open={deleteDialogOpen}
+                    onOpenChange={setDeleteDialogOpen}
+                  >
+                    <DrawerTrigger asChild>
+                      <DropdownMenuItem
+                        onSelect={(event) => {
+                          event.preventDefault();
+                          setDeleteDialogOpen(true);
+                        }}
+                      >
+                        <Trash2Icon className="mr-2.5 h-4 w-4" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <DrawerHeader>
+                        <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+                        <DrawerDescription>
+                          This action cannot be undone.
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <DrawerFooter>
+                        <DrawerClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DrawerClose>
+                        <Button variant="destructive" onClick={handleDelete}>
+                          Continue
+                        </Button>
+                        {/* <DrawerAction onClick={handleDelete}> */}
+                        {/*   Continue */}
+                        {/* </DrawerAction> */}
+                      </DrawerFooter>
+                    </DrawerContent>
+                  </Drawer>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           );

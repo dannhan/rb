@@ -48,8 +48,12 @@ const DrawerContent = React.forwardRef<
       )}
       {...props}
     >
-      <div className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-muted" />
-      {children}
+      <div className="scrollbar-hide flex-1 overflow-y-auto rounded-t-[10px] bg-inherit">
+        <div className="sticky top-0 z-20 flex items-center justify-center rounded-t-[10px] bg-inherit">
+          <div className="my-3 h-1 w-12 rounded-full bg-neutral-300" />
+        </div>
+        {children}
+      </div>
     </DrawerPrimitive.Content>
   </DrawerPortal>
 ));
@@ -65,6 +69,18 @@ const DrawerHeader = ({
   />
 );
 DrawerHeader.displayName = "DrawerHeader";
+
+const DrawerBody = ({
+  className,
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div className={cn("px-4 py-6 md:px-0 md:py-0", className)} {...props}>
+      {children}
+    </div>
+  );
+};
 
 const DrawerFooter = ({
   className,
@@ -112,6 +128,7 @@ export {
   DrawerClose,
   DrawerContent,
   DrawerHeader,
+  DrawerBody,
   DrawerFooter,
   DrawerTitle,
   DrawerDescription,

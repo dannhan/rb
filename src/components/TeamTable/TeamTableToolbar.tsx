@@ -23,6 +23,7 @@ import {
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
+  DrawerBody,
   DrawerTrigger,
 } from "@/components/ui/drawer";
 
@@ -51,7 +52,7 @@ const TeamTableToolbar: React.FC<Props> = ({ table, admin }) => {
           placeholder="Search"
           value={table.getState().globalFilter}
           onChange={(value) => table.setGlobalFilter(String(value))}
-          className="h-8 flex-1 sm:max-w-[150px] sm:flex-initial lg:max-w-[225px]"
+          className="flex-1 sm:max-w-[150px] sm:flex-initial lg:max-w-[225px]"
         />
         <TableFacetedFilter
           column={table.getColumn("status")}
@@ -97,7 +98,7 @@ const TeamTableToolbar: React.FC<Props> = ({ table, admin }) => {
                 Add Data
               </Button>
             </DrawerTrigger>
-            <DrawerContent className="px-4 pb-6">
+            <DrawerContent>
               <DrawerHeader>
                 <DrawerTitle>Add Data</DrawerTitle>
                 <DrawerDescription>
@@ -105,7 +106,9 @@ const TeamTableToolbar: React.FC<Props> = ({ table, admin }) => {
                   you&apos;re done.
                 </DrawerDescription>
               </DrawerHeader>
-              <AddTeamMemberFormSchema setDialogOpen={setDialogOpen} />
+              <DrawerBody>
+                <AddTeamMemberFormSchema setDialogOpen={setDialogOpen} />
+              </DrawerBody>
             </DrawerContent>
           </Drawer>
         )}
