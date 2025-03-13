@@ -48,7 +48,7 @@ const IdentityTable: React.FC<Props> = ({ data, admin }) => {
   });
 
   return (
-    <div className="w-full max-w-screen-md flex-1 space-y-2.5 pb-16">
+    <div className="w-full max-w-[750px] flex-1 space-y-2.5 pb-16">
       <IdentityTableToolbar table={table} admin={admin} />
       <div className="rounded-md border">
         <Table>
@@ -61,9 +61,9 @@ const IdentityTable: React.FC<Props> = ({ data, admin }) => {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   );
                 })}
@@ -85,7 +85,7 @@ const IdentityTable: React.FC<Props> = ({ data, admin }) => {
                         cell.column.id === "value" && "border-x",
                         (cell.column.id === "no" ||
                           cell.column.id === "actions") &&
-                          "w-0 p-2.5 text-center",
+                        "w-0 p-2.5 text-center",
                         "h-[53px]",
                       )}
                     >
