@@ -27,7 +27,7 @@ export function Sidebar({ items }: { items?: SidebarItem[] }) {
                   key={index}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary",
+                    "flex items-center gap-3 rounded-md px-3 py-2 text-muted-foreground transition-all hover:text-primary",
                     item.href.startsWith(`${segment}`) &&
                       "bg-muted text-primary",
                   )}

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSelectedLayoutSegment } from "next/navigation";
 import Link from "next/link";
 
-import { Menu } from "lucide-react";
+import { Menu, SidebarIcon } from "lucide-react";
 
 import type { SidebarItem } from "@/types";
 import { cn } from "@/lib/utils";
@@ -34,12 +34,12 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button
-          variant="outline"
+          variant="ghost"
           size="icon"
-          className="shrink-0 bg-muted/50 md:hidden"
+          className="h-fit w-fit shrink-0 bg-muted/50 p-1 md:hidden"
           onClick={() => setIsOpen(true)}
         >
-          <Menu className="h-5 w-5" />
+          <SidebarIcon className="h-5 w-5" />
           <span className="sr-only">Toggle navigation menu</span>
         </Button>
       </SheetTrigger>
@@ -57,9 +57,9 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
                 key={index}
                 href={item.href}
                 className={cn(
-                  "mx-[-0.65rem] flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted-foreground hover:text-foreground",
+                  "mx-[-0.65rem] flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:text-foreground",
                   item.href.startsWith(`${segment}`) &&
-                    "bg-muted text-foreground",
+                  "bg-muted text-foreground",
                 )}
               >
                 <Icon className="h-4 w-4" />
