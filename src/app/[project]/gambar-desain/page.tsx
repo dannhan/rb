@@ -13,6 +13,7 @@ import { PROJECT_COLLECTION } from "@/lib/utils";
 
 import CreateDesignImageSubcategoryForm from "@/components/Form/CreateDesignImageSubcategoryForm";
 import DesignImagesCard from "@/components/Attachment/DesignImagesCard";
+import EmptyData from "@/components/Common/EmptyData";
 
 type Props = {
   params: { project: string };
@@ -46,6 +47,14 @@ export default async function Page({ params }: Props) {
         )}
       </div>
       {/* fetch design images per category */}
+      {designImageSubcategories.length === 0 && (
+        <EmptyData
+          className="mx-auto max-w-[750px] py-8"
+          title="Belum Ada Kategori"
+          description="Mulai dengan membuat kategori baru."
+          form={<CreateDesignImageSubcategoryForm projectId={params.project} />}
+        />
+      )}
       {designImageSubcategories.map(async (category) => {
         const attachments: WithId<Attachment>[] = [];
 
