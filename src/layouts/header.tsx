@@ -9,7 +9,7 @@ export function Header({ children, className }: Props) {
   return (
     <header
       className={cn(
-        "flex h-14 items-center justify-between gap-4 border-b bg-surface px-4 text-muted-foreground lg:h-14 lg:px-6",
+        "flex h-14 items-center justify-between gap-4 border-b bg-surface px-3 text-muted-foreground md:px-4 lg:h-14 lg:px-6",
         className,
       )}
     >

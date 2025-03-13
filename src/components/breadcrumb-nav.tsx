@@ -3,9 +3,6 @@
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 
-import { Slash } from "lucide-react";
-
-import { cn } from "@/lib/utils";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,60 +11,28 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Icons } from "@/components/icons";
+import { HomeIcon } from "lucide-react";
 
-type Props = { className?: string; projectTitle: string };
+type Props = { projectTitle: string };
 
-export function BreadcrumbNav({ className, projectTitle }: Props) {
+export function BreadcrumbNav({ projectTitle }: Props) {
   const segment = useSelectedLayoutSegment();
 
   return (
-    <Breadcrumb className={cn("hidden flex-1 sm:flex", className)}>
-      <BreadcrumbList>
+    <Breadcrumb>
+      <BreadcrumbList className="md:text-[15px]">
         <BreadcrumbItem>
-          <Link
-            href="/home"
-            className="text-base transition-colors hover:text-foreground"
-          >
-            Home
-          </Link>
+          <BreadcrumbLink asChild>
+            <Link href="/home">
+              <HomeIcon className="h-4 w-4" />
+            </Link>
+          </BreadcrumbLink>
         </BreadcrumbItem>
-        <BreadcrumbSeparator>
-          <Slash />
-        </BreadcrumbSeparator>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>{projectTitle}</BreadcrumbItem>
+        <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <Link
-            href="#"
-            className="text-base transition-colors hover:text-foreground"
-          >
-            {projectTitle}
-          </Link>
-        </BreadcrumbItem>
-        {/* todo, important */}
-        {/* <BreadcrumbItem>
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-0.5 text-base">
-              {projectTitle}
-              <Icons.arrowDown className="h-[18px] fill-muted-foreground" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem>Documentation</DropdownMenuItem>
-              <DropdownMenuItem>Themes</DropdownMenuItem>
-              <DropdownMenuItem>GitHub</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </BreadcrumbItem> */}
-        <BreadcrumbSeparator>
-          <Slash />
-        </BreadcrumbSeparator>
-        <BreadcrumbItem>
-          <BreadcrumbPage className="text-base capitalize">
+          <BreadcrumbPage className="capitalize">
             {segment?.split("-").join(" ") || ""}
           </BreadcrumbPage>
         </BreadcrumbItem>

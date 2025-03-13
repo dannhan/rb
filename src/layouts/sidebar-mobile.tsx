@@ -36,10 +36,10 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
         <Button
           variant="ghost"
           size="icon"
-          className="h-fit w-fit shrink-0 bg-muted/50 p-1 md:hidden"
+          className="h-fit w-fit shrink-0 p-1 md:hidden"
           onClick={() => setIsOpen(true)}
         >
-          <SidebarIcon className="h-5 w-5" />
+          <SidebarIcon className="h-4 w-4" />
           <span className="sr-only">Toggle navigation menu</span>
         </Button>
       </SheetTrigger>

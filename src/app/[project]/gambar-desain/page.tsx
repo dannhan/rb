@@ -37,7 +37,7 @@ export default async function Page({ params }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="mx-auto flex max-w-[750px] flex-wrap items-center justify-between gap-4">
         <h2 className="text-xl font-semibold leading-none tracking-tight">
           Gambar Desain
         </h2>
