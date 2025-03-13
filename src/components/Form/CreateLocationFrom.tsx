@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 
 import { CornerDownLeftIcon } from "lucide-react";
 import { toast } from "sonner";
@@ -31,6 +32,7 @@ import FileUploader from "@/components/Attachment/FileUploader";
 type Props = { projectId: string };
 
 const CreateLocationForm: React.FC<Props> = ({ projectId }) => {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [preview, setPreview] = React.useState<string | null>(null);
 
@@ -62,6 +64,7 @@ const CreateLocationForm: React.FC<Props> = ({ projectId }) => {
 
       if (!response?.success) throw new Error(response?.error);
       toast.success("New data has been added.");
+      router.refresh();
     } catch (error) {
       const message = getErrorMessage(error);
       toast.error(message);
