@@ -20,7 +20,10 @@ export default async function Page() {
     renovasi: WithId<Project>[];
   } = { konstruksi: [], renovasi: [] };
 
-  const ref = db.collection(PROJECT_COLLECTION).orderBy("createdAt", "desc");
+  const ref = db
+    .collection(PROJECT_COLLECTION)
+    .orderBy("createdAt", "desc")
+    .select("title", "type", "createdAt");
   const snapshot = await ref.get();
   snapshot.docs.map((doc) => {
     const parsed = projectSchema.safeParse(doc.data());

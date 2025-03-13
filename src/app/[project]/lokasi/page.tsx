@@ -17,6 +17,7 @@ type Props = {
   searchParams?: { [key: string]: string | string[] | undefined };
 };
 
+// WARN: There is bug here for created_at
 export default async function Page({ params, searchParams }: Props) {
   const ref = db.collection(PROJECT_COLLECTION).doc(params.project);
   const doc = await ref.get();
@@ -24,6 +25,8 @@ export default async function Page({ params, searchParams }: Props) {
 
   const [session] = await Promise.all([auth()]);
   const admin = session?.user.isAdmin;
+
+  delete data?.image?.createdAt;
 
   return (
     <main className="mx-auto max-w-[750px] rounded-lg border bg-card shadow-sm">
