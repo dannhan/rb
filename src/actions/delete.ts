@@ -14,9 +14,16 @@ const utapi = new UTApi();
 export async function deleteProjectAction(id: string) {
   if (!id) return { success: false, error: "Invalid." };
 
-  // WARN:
-  // TODO: delete all images here
+  const attachmentsRef = db
+    .collection(PROJECT_COLLECTION)
+    .doc(id)
+    .collection("attachments");
   try {
+    // delete all image in uploadthing
+    const snapshot = await attachmentsRef.get();
+    // TODO: might not delete images here but inside the utility function
+    await utapi.deleteFiles(snapshot.docs.map((doc) => doc.id));
+
     await deleteDocumentWithSubcollections(PROJECT_COLLECTION, id);
 
     revalidatePath("home");
