@@ -194,6 +194,9 @@ export async function createDesignImageSubcategoryAction({
       ...parsed.data,
       createAt: Timestamp.now(),
     } satisfies DesignImageSubcategory);
+
+    revalidatePath(`/${projectId}/gambar-desain`);
+    return { success: true };
   } catch (error) {
     return { success: false, error: (error as Error).message };
   }
