@@ -39,7 +39,7 @@ const ImageCardDescription = ({ attachment }: Props) => {
   };
 
   return (
-    <div className="relative mb-0.5">
+    <div className="relative mb-0.5 pl-1">
       <div className="relative inline-block w-full">
         {/* Hidden span to measure text width */}
         <span
