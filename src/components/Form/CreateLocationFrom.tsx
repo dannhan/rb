@@ -48,19 +48,19 @@ const CreateLocationForm: React.FC<Props> = ({ projectId }) => {
     try {
       const response = values.image
         ? (
-          await uploadFiles("location", {
-            files: [values.image],
-            input: {
-              projectId,
-              detailAddress: values.detailAddress,
-              link: values.link,
-            },
-          })
-        )[0].serverData
+            await uploadFiles("location", {
+              files: [values.image],
+              input: {
+                projectId,
+                detailAddress: values.detailAddress,
+                link: values.link,
+              },
+            })
+          )[0].serverData
         : await createProjectLocationWithoutImageAction({
-          projectId,
-          values: { link: values.link, detailAddress: values.detailAddress },
-        });
+            projectId,
+            values: { link: values.link, detailAddress: values.detailAddress },
+          });
 
       if (!response?.success) throw new Error(response?.error);
       toast.success("New data has been added.");

@@ -59,7 +59,7 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
                 className={cn(
                   "mx-[-0.65rem] flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:text-foreground",
                   item.href.startsWith(`${segment}`) &&
-                  "bg-muted text-foreground",
+                    "bg-muted text-foreground",
                 )}
               >
                 <Icon className="h-4 w-4" />

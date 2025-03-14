@@ -55,7 +55,7 @@ const ImageCardDescription = ({ attachment }: Props) => {
             onChange={(e) => setInputValue(e.target.value)}
             onBlur={async () => await handleSave()}
             placeholder="Masukkan deskripsi"
-            className="col-span-3 mb-1 h-auto cursor-pointer border-transparent px-1 py-0 text-lg hover:border hover:border-foreground/60 focus-visible:hover:border-transparent"
+            className="col-span-3 mb-1 h-auto cursor-pointer border-transparent bg-transparent px-1 py-0 text-lg hover:border hover:border-foreground/60 focus-visible:hover:border-transparent"
             style={{ width }}
           />
         </div>
