@@ -178,7 +178,34 @@ export async function updateProjectLocationWithoutImageAction({
   }
 }
 
-export async function updateDesignImageAction() { }
+export async function updateAttachmentDescriptionAction({
+  attachmentId,
+  projectId,
+  description,
+}: {
+  attachmentId: string;
+  projectId: string;
+  description: string;
+}) {
+  // Check user authentication
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unauthorized" };
+
+  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+  const attachmentRef = projectRef.collection("attachments").doc(attachmentId);
+
+  try {
+    await attachmentRef.update({ description });
+
+    // No need for revalidePath here, using state on client side
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+export async function updateDesignImageAction() {}
 
 export async function updateProgressItemDescriptionAction({
   projectId,

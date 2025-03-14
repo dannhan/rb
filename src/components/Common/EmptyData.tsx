@@ -20,6 +20,8 @@ type Props = {
   form?: React.ReactNode;
 };
 
+// WARN:
+// TODO: improve this to also handle for manager
 const EmptyData: React.FC<Props> = ({
   className,
   title = "No data available",

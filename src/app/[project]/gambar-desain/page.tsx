@@ -26,7 +26,7 @@ export default async function Page({ params }: Props) {
     .collection(PROJECT_COLLECTION)
     .doc(params.project)
     .collection("design-image-subcategories");
-  const snapshot = await ref.orderBy("createAt").get();
+  const snapshot = await ref.orderBy("createAt", "desc").get();
   snapshot.docs.map((doc) => {
     const parsed = designImageSubcategorySchema.safeParse(doc.data());
     if (parsed.success)
@@ -61,7 +61,9 @@ export default async function Page({ params }: Props) {
         const ref = db
           .collection(PROJECT_COLLECTION)
           .doc(params.project)
-          .collection("attachments");
+          .collection("attachments")
+          .where("subCategory", "==", category.id)
+          .orderBy("createdAt", "desc");
         const snapshot = await ref.get();
         snapshot.docs.map((doc) => {
           const parsed = attachmentSchema.safeParse(doc.data());
