@@ -20,11 +20,12 @@ export function BreadcrumbNav({ projectTitle }: Props) {
 
   return (
     <Breadcrumb>
-      <BreadcrumbList className="md:text-[15px]">
+      <BreadcrumbList className="md:text-lg">
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
             <Link href="/home">
-              <HomeIcon className="h-4 w-4" />
+              <HomeIcon className="h-4 w-4 md:hidden" />
+              <span className="md-hidden">Home</span>
             </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>

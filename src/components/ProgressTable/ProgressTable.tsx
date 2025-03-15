@@ -29,6 +29,7 @@ interface Props {
   progress: WithId<ProgressItem>[];
 }
 
+// TODO:
 const getCommonPinningStyles = (column: Column<any>): React.CSSProperties => {
   const isPinned = column.getIsPinned();
   const isLastLeftPinnedColumn =
@@ -101,14 +102,14 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
               {headerGroup.headers.map((header) => (
                 <TableHead
                   key={header.id}
-                  style={{ ...getCommonPinningStyles(header.column) }}
+                  // style={{ ...getCommonPinningStyles(header.column) }}
                   className={cn(
                     "font-normal text-muted-foreground",
-                    // header.column.id === "description" && "border-l",
+                    header.column.id === "no" && "w-16",
+                    header.column.id === "description" && "border-l",
                     header.column.id.startsWith("week-") &&
                       "w-[120px] text-center",
-                    // header.column.id.startsWith("week-") &&
-                    //   "border-l",
+                    header.column.id.startsWith("week-") && "border-l",
                   )}
                 >
                   {header.isPlaceholder
@@ -131,7 +132,7 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
               {row.getVisibleCells().map((cell) => (
                 <TableCell
                   key={cell.id}
-                  style={{ ...getCommonPinningStyles(cell.column) }}
+                  // style={{ ...getCommonPinningStyles(cell.column) }}
                   className={cn(
                     cell.column.id === "description" && "border-l px-1 py-0",
                     cell.column.id.startsWith("week-") &&
