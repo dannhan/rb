@@ -19,13 +19,13 @@ export function BreadcrumbNav({ projectTitle }: Props) {
   const segment = useSelectedLayoutSegment();
 
   return (
-    <Breadcrumb>
-      <BreadcrumbList className="md:text-lg">
+    <Breadcrumb className="whitespace-nowrap">
+      <BreadcrumbList className="md:text-base">
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
             <Link href="/home">
               <HomeIcon className="h-4 w-4 md:hidden" />
-              <span className="md-hidden">Home</span>
+              <span className="hidden md:block">Home</span>
             </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
