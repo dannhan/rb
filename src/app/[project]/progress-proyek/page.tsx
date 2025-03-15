@@ -41,9 +41,10 @@ export default async function Page({ params }: Props) {
         <h2 className="text-xl font-semibold leading-none tracking-tight">
           Progress Proyek
         </h2>
-        <AddProgressDialog />
+        {admin && <AddProgressDialog />}
       </div>
       <ProgressTable projectId={params.project} progress={progress} />
+      <div className="h-40" />
     </main>
   );
 }

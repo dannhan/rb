@@ -4,7 +4,6 @@ import * as React from "react";
 
 import { Plus } from "lucide-react";
 import {
-  type Column,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -14,6 +13,7 @@ import type { WithId, ProgressItem } from "@/types";
 import { addProgressItemAction } from "@/actions/create";
 
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -22,6 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
 import getColumns from "./columns";
 
 interface Props {
@@ -30,31 +31,12 @@ interface Props {
 }
 
 // TODO:
-const getCommonPinningStyles = (column: Column<any>): React.CSSProperties => {
-  const isPinned = column.getIsPinned();
-  const isLastLeftPinnedColumn =
-    isPinned === "left" && column.getIsLastColumn("left");
-  const isFirstRightPinnedColumn =
-    isPinned === "right" && column.getIsFirstColumn("right");
-
-  return {
-    boxShadow: isLastLeftPinnedColumn
-      ? "-4px 0 4px -4px gray inset"
-      : isFirstRightPinnedColumn
-        ? "4px 0 4px -4px gray inset"
-        : undefined,
-    left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
-    right: isPinned === "right" ? `${column.getAfter("right")}px` : undefined,
-    opacity: isPinned ? 0.95 : 1,
-    position: isPinned ? "sticky" : "relative",
-    width: column.getSize(),
-    zIndex: isPinned ? 1 : 0,
-  };
-};
-
+// - dynamic width, refers to ImageDescription Input
+// - optimistic update
 const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
   const [data, setData] = React.useState(progress);
   const [lastAddedId, setLastAddedId] = React.useState<string | null>(null);
+  const tableContainerRef = React.useRef<HTMLDivElement | null>(null);
 
   const newInputRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -75,6 +57,16 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
     }
   }, [lastAddedId]);
 
+  React.useEffect(() => {
+    setTimeout(() => {
+      if (tableContainerRef.current) {
+        tableContainerRef.current.scrollLeft =
+          tableContainerRef.current.scrollWidth;
+        console.log(tableContainerRef.current.scrollWidth);
+      }
+    }, 0); // Short delay to ensure DOM is updated
+  }, [data]);
+
   async function handleAddNewItem() {
     const result = await addProgressItemAction({ projectId });
 
@@ -94,22 +86,22 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
   }
 
   return (
-    <div className="relative w-full overflow-x-scroll rounded-lg border">
-      <Table>
+    <div className="relative rounded-lg border border-border">
+      <Table className="w-full">
         <TableHeader className="bg-accent">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">
               {headerGroup.headers.map((header) => (
                 <TableHead
                   key={header.id}
-                  // style={{ ...getCommonPinningStyles(header.column) }}
                   className={cn(
-                    "font-normal text-muted-foreground",
-                    header.column.id === "no" && "w-16",
-                    header.column.id === "description" && "border-l",
-                    header.column.id.startsWith("week-") &&
-                      "w-[120px] text-center",
-                    header.column.id.startsWith("week-") && "border-l",
+                    "relatve font-normal text-muted-foreground",
+                    header.column.id === "no" &&
+                      "sticky left-0 z-10 min-w-14 bg-accent",
+                    header.column.id === "description" &&
+                      "sticky left-14 z-10 min-w-[214px] whitespace-nowrap bg-accent px-4",
+                    header.column.id.startsWith("week") &&
+                      "min-w-[120px] whitespace-nowrap border-l text-center",
                   )}
                 >
                   {header.isPlaceholder
@@ -118,13 +110,20 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
+                  {(header.column.id === "no" ||
+                    header.column.id === "description") && (
+                    <Separator
+                      className="absolute right-0 top-0 h-[52px]"
+                      orientation="vertical"
+                    />
+                  )}
                 </TableHead>
               ))}
             </TableRow>
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows.map((row) => (
+          {table.getRowModel().rows.map((row, index) => (
             <TableRow
               key={row.id}
               data-state={row.getIsSelected() && "selected"}
@@ -134,29 +133,40 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
                   key={cell.id}
                   // style={{ ...getCommonPinningStyles(cell.column) }}
                   className={cn(
-                    cell.column.id === "description" && "border-l px-1 py-0",
-                    cell.column.id.startsWith("week-") &&
-                      "w-10 border-l px-1 py-0",
+                    cell.column.id === "no" &&
+                      "sticky left-0 z-10 min-w-14 bg-background",
+                    cell.column.id === "description" &&
+                      "sticky left-14 z-10 min-w-[214px] whitespace-nowrap bg-background px-1 py-1",
+                    cell.column.id.startsWith("week") &&
+                      "min-w-[120px] whitespace-nowrap border-l bg-background px-1 py-1 text-center",
+                    table.getRowCount() === index + 1 && "pb-1.5",
                   )}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  {(cell.column.id === "no" ||
+                    cell.column.id === "description") && (
+                    <Separator
+                      className={cn(
+                        "absolute right-0 top-0 h-[40px]",
+                        table.getRowCount() === index + 1 && "h-[42px]",
+                      )}
+                      orientation="vertical"
+                    />
+                  )}
                 </TableCell>
               ))}
             </TableRow>
           ))}
-          <TableRow>
-            <TableCell colSpan={5} className="p-0 text-muted-foreground">
-              <button
-                className="flex h-full w-full items-center px-4 py-2"
-                onClick={() => handleAddNewItem()}
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Add new item
-              </button>
-            </TableCell>
-          </TableRow>
         </TableBody>
       </Table>
+      <Button
+        className="w-full justify-start rounded-t-none border-x-0 border-b-0 border-t text-muted-foreground"
+        variant="outline"
+        onClick={() => handleAddNewItem()}
+      >
+        <Plus className="mr-2 h-4 w-4" />
+        Add new item
+      </Button>
     </div>
   );
 };
