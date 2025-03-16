@@ -33,6 +33,7 @@ interface Props {
 // TODO:
 // - dynamic width, refers to ImageDescription Input
 // - optimistic update
+// - auto scroll to the right-most
 const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
   const [data, setData] = React.useState(progress);
   const [lastAddedId, setLastAddedId] = React.useState<string | null>(null);
@@ -97,11 +98,11 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
                   className={cn(
                     "relatve font-normal text-muted-foreground",
                     header.column.id === "no" &&
-                      "sticky left-0 z-10 min-w-14 bg-accent",
+                      "sticky left-0 z-10 w-12 bg-accent",
                     header.column.id === "description" &&
-                      "sticky left-14 z-10 min-w-[214px] whitespace-nowrap bg-accent px-4",
+                      "sticky left-12 z-10 min-w-[200px] whitespace-nowrap bg-accent px-4",
                     header.column.id.startsWith("week") &&
-                      "min-w-[120px] whitespace-nowrap border-l text-center",
+                      "min-w-[80px] md:min-w-[125px] whitespace-nowrap border-l text-center",
                   )}
                 >
                   {header.isPlaceholder
@@ -133,13 +134,14 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
                   key={cell.id}
                   // style={{ ...getCommonPinningStyles(cell.column) }}
                   className={cn(
+                    "h-[40px]",
                     cell.column.id === "no" &&
-                      "sticky left-0 z-10 min-w-14 bg-background",
+                      "sticky left-0 z-10 min-w-12 bg-background",
                     cell.column.id === "description" &&
-                      "sticky left-14 z-10 min-w-[214px] whitespace-nowrap bg-background px-1 py-1",
+                      "sticky left-12 z-10 min-w-[200px] whitespace-nowrap bg-background px-1 py-1",
                     cell.column.id.startsWith("week") &&
-                      "min-w-[120px] whitespace-nowrap border-l bg-background px-1 py-1 text-center",
-                    table.getRowCount() === index + 1 && "pb-1.5",
+                      "md:min-w-[120px] whitespace-nowrap border-l bg-background px-1 py-1 text-center",
+                    table.getRowCount() === index + 1 && "h-[42px] pb-1.5",
                   )}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
