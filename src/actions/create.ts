@@ -239,13 +239,14 @@ export async function createProjectLocationWithoutImageAction({
 }
 
 export async function addProgressItemAction({
+  progressId,
   projectId,
+  newPosition,
 }: {
+  progressId: string;
   projectId: string;
-}): Promise<
-  | { success: false; error: string }
-  | { success: true; progressId: string; position: number }
-> {
+  newPosition: number;
+}) {
   const session = await auth();
   if (!session || !session.user.isAdmin)
     return { success: false, error: "Unauthorized" };
@@ -253,31 +254,21 @@ export async function addProgressItemAction({
   const progressCollection = db
     .collection(PROJECT_COLLECTION)
     .doc(projectId)
-    .collection("progress");
+    .collection("progress")
+    .doc(progressId);
 
-  return db.runTransaction(async (transaction) => {
-    // 🔥 Get the last item's position
-    const lastItemSnapshot = await transaction.get(
-      progressCollection.orderBy("position", "desc").limit(1),
-    );
-
-    let newPosition = 1000; // Default position if no items exist
-    if (!lastItemSnapshot.empty) {
-      newPosition = lastItemSnapshot.docs[0].data().position + 1000;
-    }
-
-    // ✅ Add new progress item
-    const newProgress = {
+  try {
+    await progressCollection.set({
       description: "",
       progress: {},
       position: newPosition,
-    };
+    });
 
-    const ref = progressCollection.doc();
-    transaction.set(ref, newProgress);
-
-    return { success: true, progressId: ref.id, position: newPosition };
-  });
+    revalidatePath(`${projectId}/progress-proyek`);
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
 }
 
 // TODO: change the structure of week and progress

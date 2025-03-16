@@ -12,6 +12,7 @@ import {
 import type { WithId, ProgressItem } from "@/types";
 import { addProgressItemAction } from "@/actions/create";
 
+import { nanoid } from "@/lib/nanoid";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,91 +34,63 @@ interface Props {
 // TODO:
 // - dynamic width, refers to ImageDescription Input
 // - optimistic update
+// - auto focus input
 // - auto scroll to the right-most
 const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
-  const [data, setData] = React.useState(progress);
-  const [lastAddedId, setLastAddedId] = React.useState<string | null>(null);
-  const tableContainerRef = React.useRef<HTMLDivElement | null>(null);
-
   const newInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const table = useReactTable({
-    data: data,
+    data: progress,
     columns: getColumns(progress, newInputRef), // Pass progress data to extract week keys
     getCoreRowModel: getCoreRowModel(),
-    initialState: {
-      columnPinning: {
-        left: ["no", "description"],
-      },
-    },
   });
 
-  React.useEffect(() => {
-    if (lastAddedId) {
-      newInputRef.current?.focus();
-    }
-  }, [lastAddedId]);
-
-  React.useEffect(() => {
-    setTimeout(() => {
-      if (tableContainerRef.current) {
-        tableContainerRef.current.scrollLeft =
-          tableContainerRef.current.scrollWidth;
-        console.log(tableContainerRef.current.scrollWidth);
-      }
-    }, 0); // Short delay to ensure DOM is updated
-  }, [data]);
-
   async function handleAddNewItem() {
-    const result = await addProgressItemAction({ projectId });
-
-    if (result.success) {
-      // Add new item locally
-      setData((prev) => [
-        ...prev,
-        {
-          id: result.progressId,
-          description: "",
-          progress: {},
-          position: result.position,
-        },
-      ]);
-      setLastAddedId(result.progressId); // Track the newly added item
-    }
+    const progressId = nanoid();
+    const newPosition =
+      progress.length > 0
+        ? progress[progress.length - 1].position + 1000
+        : 1000;
+    await addProgressItemAction({
+      progressId,
+      projectId,
+      newPosition,
+    });
   }
 
   return (
-    <div className="relative rounded-lg border border-border">
+    <div className="relative overflow-hidden rounded-lg border border-border">
       <Table className="w-full">
         <TableHeader className="bg-accent">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">
-              {headerGroup.headers.map((header) => (
+              {headerGroup.headers.map((header, index) => (
                 <TableHead
                   key={header.id}
                   className={cn(
                     "relatve font-normal text-muted-foreground",
                     header.column.id === "no" &&
-                      "sticky left-0 z-10 w-12 bg-accent",
+                    "sticky left-0 z-10 w-12 bg-accent",
                     header.column.id === "description" &&
-                      "sticky left-12 z-10 min-w-[200px] whitespace-nowrap bg-accent px-4",
+                    "sticky left-12 z-10 min-w-[200px] whitespace-nowrap bg-accent px-4",
                     header.column.id.startsWith("week") &&
-                      "min-w-[80px] md:min-w-[125px] whitespace-nowrap border-l text-center",
+                    "min-w-[80px] max-w-[125px] whitespace-nowrap border-l text-center md:min-w-[125px]",
+                    index === 2 && "border-l-0",
                   )}
                 >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
                   {(header.column.id === "no" ||
                     header.column.id === "description") && (
-                    <Separator
-                      className="absolute right-0 top-0 h-[52px]"
-                      orientation="vertical"
-                    />
-                  )}
+                      <Separator
+                        className="absolute right-0 top-0 h-[52px] w-[0.75px]"
+                        orientation="vertical"
+                      />
+                    )}
                 </TableHead>
               ))}
             </TableRow>
@@ -129,32 +102,33 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
               key={row.id}
               data-state={row.getIsSelected() && "selected"}
             >
-              {row.getVisibleCells().map((cell) => (
+              {row.getVisibleCells().map((cell, rowIndex) => (
                 <TableCell
                   key={cell.id}
                   // style={{ ...getCommonPinningStyles(cell.column) }}
                   className={cn(
                     "h-[40px]",
                     cell.column.id === "no" &&
-                      "sticky left-0 z-10 min-w-12 bg-background",
+                    "sticky left-0 z-10 min-w-12 bg-background",
                     cell.column.id === "description" &&
-                      "sticky left-12 z-10 min-w-[200px] whitespace-nowrap bg-background px-1 py-1",
+                    "sticky left-12 z-10 min-w-[200px] whitespace-nowrap bg-background px-1 py-1",
                     cell.column.id.startsWith("week") &&
-                      "md:min-w-[120px] whitespace-nowrap border-l bg-background px-1 py-1 text-center",
+                    "max-w-[120px] whitespace-nowrap border-l bg-background px-1 py-1 text-center md:min-w-[120px]",
                     table.getRowCount() === index + 1 && "h-[42px] pb-1.5",
+                    rowIndex === 2 && "border-l-0",
                   )}
                 >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   {(cell.column.id === "no" ||
                     cell.column.id === "description") && (
-                    <Separator
-                      className={cn(
-                        "absolute right-0 top-0 h-[40px]",
-                        table.getRowCount() === index + 1 && "h-[42px]",
-                      )}
-                      orientation="vertical"
-                    />
-                  )}
+                      <Separator
+                        className={cn(
+                          "absolute right-0 top-0 h-[40px] w-[0.75px]",
+                          table.getRowCount() === index + 1 && "h-[42px]",
+                        )}
+                        orientation="vertical"
+                      />
+                    )}
                 </TableCell>
               ))}
             </TableRow>

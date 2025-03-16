@@ -127,8 +127,6 @@ const getColumns = (
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className="h-full w-full cursor-pointer border-0 bg-transparent text-center focus-visible:ring-2 focus-visible:ring-offset-0"
-                min="0"
-                max="100"
                 step="5"
               />
             );

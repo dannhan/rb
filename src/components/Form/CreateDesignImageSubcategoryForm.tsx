@@ -66,9 +66,9 @@ const CreateDesignImageSubcategoryForm: React.FC<Props> = ({ projectId }) => {
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button>
+        <Button size="sm">
           <PlusCircleIcon className="mr-2 h-4 w-4" />
-          Add New Category
+          Buat Kategori
         </Button>
       </DialogTrigger>
       <DialogContent className="w-full max-w-xl">
