@@ -10,9 +10,7 @@ import {
 } from "@tanstack/react-table";
 
 import type { WithId, ProgressItem } from "@/types";
-import { addProgressItemAction } from "@/actions/create";
 
-import { nanoid } from "@/lib/nanoid";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,14 +27,18 @@ import getColumns from "./columns";
 interface Props {
   projectId: string;
   progress: WithId<ProgressItem>[];
+  handleAddNewProgressItem: () => void;
 }
 
 // TODO:
 // - dynamic width, refers to ImageDescription Input
-// - optimistic update
 // - auto focus input
 // - auto scroll to the right-most
-const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
+const ProgressTable: React.FC<Props> = ({
+  progress,
+  handleAddNewProgressItem,
+}) => {
+  // const stableProgress = React.useMemo(() => progress, [progress]);
   const newInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const table = useReactTable({
@@ -44,19 +46,6 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
     columns: getColumns(progress, newInputRef), // Pass progress data to extract week keys
     getCoreRowModel: getCoreRowModel(),
   });
-
-  async function handleAddNewItem() {
-    const progressId = nanoid();
-    const newPosition =
-      progress.length > 0
-        ? progress[progress.length - 1].position + 1000
-        : 1000;
-    await addProgressItemAction({
-      progressId,
-      projectId,
-      newPosition,
-    });
-  }
 
   return (
     <div className="relative overflow-hidden rounded-lg border border-border">
@@ -136,9 +125,9 @@ const ProgressTable: React.FC<Props> = ({ projectId, progress }: Props) => {
         </TableBody>
       </Table>
       <Button
-        className="w-full justify-start rounded-t-none border-x-0 border-b-0 border-t text-muted-foreground"
+        className="w-full justify-start rounded-t-none border-x-0 border-b-0 border-t text-muted-foreground hover:text-muted-foreground"
         variant="outline"
-        onClick={() => handleAddNewItem()}
+        onClick={() => handleAddNewProgressItem()}
       >
         <Plus className="mr-2 h-4 w-4" />
         Add new item

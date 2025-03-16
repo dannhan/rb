@@ -27,10 +27,10 @@ const AddProgressDialog: React.FC = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425pxw-full max-w-xl]">
         <DialogHeader>
-          <DialogTitle>Add Data</DialogTitle>
+          <DialogTitle>New Week</DialogTitle>
           <DialogDescription>
-            Fill in the details below to add data. Click submit when you&apos;re
-            done.
+            Fill in the details below to add new week. Click submit when
+            you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <AddWeekForm setIsDialogOpen={setIsDialogOpen} />
