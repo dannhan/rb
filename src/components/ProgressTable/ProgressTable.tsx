@@ -25,8 +25,8 @@ import { Separator } from "@/components/ui/separator";
 import getColumns from "./columns";
 
 interface Props {
-  projectId: string;
   progress: WithId<ProgressItem>[];
+  weekKeys: string[];
   handleAddNewProgressItem: () => void;
 }
 
@@ -36,6 +36,7 @@ interface Props {
 // - auto scroll to the right-most
 const ProgressTable: React.FC<Props> = ({
   progress,
+  weekKeys,
   handleAddNewProgressItem,
 }) => {
   // const stableProgress = React.useMemo(() => progress, [progress]);
@@ -43,12 +44,12 @@ const ProgressTable: React.FC<Props> = ({
 
   const table = useReactTable({
     data: progress,
-    columns: getColumns(progress, newInputRef), // Pass progress data to extract week keys
+    columns: getColumns(progress, weekKeys, newInputRef), // Pass progress data to extract week keys
     getCoreRowModel: getCoreRowModel(),
   });
 
   return (
-    <div className="relative overflow-hidden rounded-lg border border-border">
+    <div className="relative overflow-clip rounded-lg border border-border">
       <Table className="w-full">
         <TableHeader className="bg-accent">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -57,29 +58,29 @@ const ProgressTable: React.FC<Props> = ({
                 <TableHead
                   key={header.id}
                   className={cn(
-                    "relatve font-normal text-muted-foreground",
+                    "relatve min-h-[52px] font-normal text-muted-foreground",
                     header.column.id === "no" &&
-                    "sticky left-0 z-10 w-12 bg-accent",
+                      "sticky left-0 z-10 w-12 bg-accent",
                     header.column.id === "description" &&
-                    "sticky left-12 z-10 min-w-[200px] whitespace-nowrap bg-accent px-4",
+                      "sticky left-12 z-10 min-w-[200px] whitespace-nowrap bg-accent px-4",
                     header.column.id.startsWith("week") &&
-                    "min-w-[80px] max-w-[125px] whitespace-nowrap border-l text-center md:min-w-[125px]",
+                      "min-w-[80px] max-w-[125px] whitespace-nowrap border-l text-center md:min-w-[125px]",
                     index === 2 && "border-l-0",
                   )}
                 >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
                   {(header.column.id === "no" ||
                     header.column.id === "description") && (
-                      <Separator
-                        className="absolute right-0 top-0 h-[52px] w-[0.75px]"
-                        orientation="vertical"
-                      />
-                    )}
+                    <Separator
+                      className="absolute right-0 top-0 h-[52px] w-[0.75px]"
+                      orientation="vertical"
+                    />
+                  )}
                 </TableHead>
               ))}
             </TableRow>
@@ -90,19 +91,20 @@ const ProgressTable: React.FC<Props> = ({
             <TableRow
               key={row.id}
               data-state={row.getIsSelected() && "selected"}
+              className="group"
             >
               {row.getVisibleCells().map((cell, rowIndex) => (
                 <TableCell
                   key={cell.id}
                   // style={{ ...getCommonPinningStyles(cell.column) }}
                   className={cn(
-                    "h-[40px]",
-                    cell.column.id === "no" &&
-                    "sticky left-0 z-10 min-w-12 bg-background",
+                    "h-[40px] whitespace-nowrap bg-background transition-colors group-hover:bg-accent",
+                    cell.column.id === "no" && "sticky left-0 z-50 min-w-12",
                     cell.column.id === "description" &&
-                    "sticky left-12 z-10 min-w-[200px] whitespace-nowrap bg-background px-1 py-1",
+                      "sticky left-12 z-50 min-w-[200px] px-1 py-1",
                     cell.column.id.startsWith("week") &&
-                    "max-w-[120px] whitespace-nowrap border-l bg-background px-1 py-1 text-center md:min-w-[120px]",
+                      "max-w-[120px] border-l px-1 py-1 text-center md:min-w-[120px]",
+                    cell.column.id === "action" && "sticky left-0",
                     table.getRowCount() === index + 1 && "h-[42px] pb-1.5",
                     rowIndex === 2 && "border-l-0",
                   )}
@@ -110,14 +112,14 @@ const ProgressTable: React.FC<Props> = ({
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   {(cell.column.id === "no" ||
                     cell.column.id === "description") && (
-                      <Separator
-                        className={cn(
-                          "absolute right-0 top-0 h-[40px] w-[0.75px]",
-                          table.getRowCount() === index + 1 && "h-[42px]",
-                        )}
-                        orientation="vertical"
-                      />
-                    )}
+                    <Separator
+                      className={cn(
+                        "absolute right-0 top-0 h-[40px] w-[0.75px]",
+                        table.getRowCount() === index + 1 && "h-[42px]",
+                      )}
+                      orientation="vertical"
+                    />
+                  )}
                 </TableCell>
               ))}
             </TableRow>

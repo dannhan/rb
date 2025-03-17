@@ -14,7 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import AddWeekForm from "@/components/Form/AddWeekForm";
 
-const AddProgressDialog: React.FC = () => {
+type Props = { latestWeekNumber: number | undefined };
+
+const AddProgressDialog: React.FC<Props> = ({ latestWeekNumber }) => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   return (
@@ -33,7 +35,10 @@ const AddProgressDialog: React.FC = () => {
             you&apos;re done.
           </DialogDescription>
         </DialogHeader>
-        <AddWeekForm setIsDialogOpen={setIsDialogOpen} />
+        <AddWeekForm
+          latestWeekNumber={latestWeekNumber}
+          setIsDialogOpen={setIsDialogOpen}
+        />
       </DialogContent>
     </Dialog>
   );

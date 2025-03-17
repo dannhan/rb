@@ -10,8 +10,8 @@ export async function seedProjectProgress() {
 
   // prettier-ignore
   const progressItems: Omit<ProgressItem, "position">[] = [
-    { description: "Pondasi tapak", progress: { "W11_18-08-23": 100, "W12_25-08-23": 100 } },
-    { description: "Struktur lantai 1", progress: { "W11_18-08-23": 20, "W12_25-08-23": 35 } },
+    { description: "Pondasi tapak", progress: { "11_18-08-23": 100, "12_25-08-23": 100 } },
+    { description: "Struktur lantai 1", progress: { "11_18-08-23": 20, "12_25-08-23": 35 } },
     { description: "Struktur lantai 2", progress: {} },
     { description: "Struktur lantai 3 baja", progress: {} },
     { description: "Atap spandex", progress: {} },

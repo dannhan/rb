@@ -25,16 +25,23 @@ import {
 import { Input } from "@/components/ui/input";
 import { Icons } from "@/components/icons";
 
-type Props = { setIsDialogOpen: (value: boolean) => void };
+type Props = {
+  latestWeekNumber: number | undefined;
+  setIsDialogOpen: (value: boolean) => void;
+};
 
-const AddWeekForm: React.FC<Props> = ({ setIsDialogOpen }) => {
+const AddWeekForm: React.FC<Props> = ({
+  latestWeekNumber,
+  setIsDialogOpen,
+}) => {
   const params = useParams();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const form = useForm<z.infer<typeof addProgressWeekFormSchema>>({
     resolver: zodResolver(addProgressWeekFormSchema),
+    // TODO: date
     defaultValues: {
-      weekNumber: "",
+      weekNumber: (latestWeekNumber || 0) + 1,
       date: "",
     },
   });
@@ -71,7 +78,7 @@ const AddWeekForm: React.FC<Props> = ({ setIsDialogOpen }) => {
             <FormItem className="grid w-full items-center gap-1.5">
               <FormLabel>Week</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} type="number" min={1} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -7,18 +7,22 @@ import { addProgressItemAction } from "@/actions/create";
 import { nanoid } from "@/lib/nanoid";
 
 import ProgressTable from "@/components/ProgressTable/ProgressTable";
-import AddProgressDialog from "@/components/ProgressTable/AddProgressDialog";
+import AddWeekDialog from "@/components/ProgressTable/AddWeekDialog";
 
 type Props = {
   admin: boolean;
   params: { project: string };
   progress: WithId<ProgressItem>[];
+  weekKeys: string[];
+  latestWeekNumber: number;
 };
 
 const ProjectProgressPageClient: React.FC<Props> = ({
   admin,
   params,
   progress,
+  weekKeys,
+  latestWeekNumber,
 }) => {
   const [, startTransition] = React.useTransition();
   const [optimisticProgress, addOptimisticProgress] = React.useOptimistic(
@@ -53,11 +57,11 @@ const ProjectProgressPageClient: React.FC<Props> = ({
         <h2 className="text-xl font-semibold leading-none tracking-tight">
           Progress Proyek
         </h2>
-        {admin && <AddProgressDialog />}
+        {admin && <AddWeekDialog latestWeekNumber={latestWeekNumber} />}
       </div>
       <ProgressTable
-        projectId={params.project}
         progress={optimisticProgress}
+        weekKeys={weekKeys}
         handleAddNewProgressItem={handleAddNewProgressItem}
       />
       <div className="h-40" />

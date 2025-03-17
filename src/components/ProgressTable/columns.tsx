@@ -16,16 +16,11 @@ const columnHelper = createColumnHelper<WithId<ProgressItem>>();
 
 const getColumns = (
   progressItems: WithId<ProgressItem>[],
+  weekKeys: string[],
   newInputRef?: React.MutableRefObject<HTMLInputElement | null>,
 ) =>
   React.useMemo<ColumnDef<WithId<ProgressItem>, any>[]>(() => {
-    // Extract unique week keys from progress objects
-    // PERF: expensive operation
-    const weekKeys = Array.from(
-      new Set(progressItems.flatMap((item) => Object.keys(item.progress))),
-    );
-
-    return [
+    const columns = [
       // Correctly display the row number
       columnHelper.display({
         id: "no",
@@ -82,8 +77,11 @@ const getColumns = (
             const [weekNumber, date] = week.split("_");
             return (
               <>
-                {weekNumber}
-                <div className="text-xs font-normal text-gray-500">{date}</div>
+                W{weekNumber}
+                {/* TWO "&nbsp" is used to consistently render blank space without affacting layout */}
+                <div className="text-xs font-normal text-gray-500">
+                  &nbsp;{date}&nbsp;
+                </div>
               </>
             );
           },
@@ -134,6 +132,7 @@ const getColumns = (
         }),
       ),
     ];
+    return columns;
   }, [progressItems]);
 
 export default getColumns;

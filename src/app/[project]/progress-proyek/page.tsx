@@ -13,7 +13,8 @@ type Props = {
 };
 
 export default async function Page({ params }: Props) {
-  const progress: WithId<ProgressItem>[] = [];
+  const session = await auth();
+  const admin = session?.user.isAdmin || false;
 
   const ref = db
     .collection(PROJECT_COLLECTION)
@@ -21,6 +22,8 @@ export default async function Page({ params }: Props) {
     .collection("progress")
     .orderBy("position");
   const snapshot = await ref.get();
+
+  const progress: WithId<ProgressItem>[] = [];
   snapshot.docs.map((doc) => {
     const parsed = progressItemSchema.safeParse(doc.data());
     if (!parsed.success) return;
@@ -31,8 +34,11 @@ export default async function Page({ params }: Props) {
     });
   });
 
-  const session = await auth();
-  const admin = session?.user.isAdmin || false;
+  // NOTE: it only depend on the first item of progress, check for bugs
+  const firstProgressWeekKeys = Object.keys(progress[0]?.progress || {});
+  const firstProgressWeekKeysLastItemWeekNumber = parseInt(
+    firstProgressWeekKeys[firstProgressWeekKeys.length - 1]?.split("_")[0],
+  );
 
   return (
     <main className="mx-auto max-w-[750px] space-y-4">
@@ -40,6 +46,8 @@ export default async function Page({ params }: Props) {
         admin={admin}
         params={params}
         progress={progress}
+        weekKeys={firstProgressWeekKeys}
+        latestWeekNumber={firstProgressWeekKeysLastItemWeekNumber}
       />
     </main>
   );
