@@ -72,7 +72,11 @@ const ImageCard: React.FC<Props> = ({ admin, attachment }) => {
 
   return (
     <section>
-      <ImageCardDescription attachment={attachment} />
+      {admin ? (
+        <ImageCardDescription attachment={attachment} />
+      ) : (
+        attachment.description
+      )}
       <div
         ref={cardRef}
         onMouseOver={() => setIsHovered(true)}

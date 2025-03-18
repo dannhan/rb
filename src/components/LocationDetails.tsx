@@ -5,7 +5,7 @@ import { LinkIcon, ImageIcon, MapPinnedIcon } from "lucide-react";
 import { ProjectLocation } from "@/types";
 import { cn } from "@/lib/utils";
 
-type Props = { location: ProjectLocation };
+type Props = { location: ProjectLocation | undefined };
 
 const LocationDetails: React.FC<Props> = ({ location }: Props) => {
   return (
@@ -18,10 +18,10 @@ const LocationDetails: React.FC<Props> = ({ location }: Props) => {
         <p
           className={cn(
             "whitespace-pre-line rounded-md bg-muted/10",
-            !location.detailAddress && "italic text-muted-foreground",
+            !location?.detailAddress && "italic text-muted-foreground",
           )}
         >
-          {location.detailAddress || "No data."}
+          {location?.detailAddress || "No data."}
         </p>
       </div>
       <div className="space-y-2">
@@ -29,7 +29,7 @@ const LocationDetails: React.FC<Props> = ({ location }: Props) => {
           <LinkIcon className="h-4 w-4" />
           Link Map
         </h4>
-        {location.link ? (
+        {location?.link ? (
           <a
             href={location.link}
             target="_blank"
@@ -44,7 +44,7 @@ const LocationDetails: React.FC<Props> = ({ location }: Props) => {
           </p>
         )}
       </div>
-      {location.image ? (
+      {location?.image ? (
         <div className="relative aspect-video overflow-hidden rounded-md border bg-muted/20">
           <img
             src={location.image.url}

@@ -165,6 +165,7 @@ export const router = {
           ]));
         await attachmentsRef.set(attachmentData);
         await projectRef.update({ location: locationData });
+        console.log("ASHIAP ASHIAP");
 
         return { success: true };
       } catch (error) {

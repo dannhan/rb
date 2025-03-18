@@ -66,8 +66,10 @@ export default async function Page({ params, searchParams }: Props) {
           ) : (
             <LocationDetails location={data} />
           )
-        ) : (
+        ) : admin ? (
           <CreateLocationForm projectId={params.project} />
+        ) : (
+          <LocationDetails location={data} />
         )}
       </div>
     </main>

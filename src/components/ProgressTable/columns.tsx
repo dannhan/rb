@@ -69,7 +69,7 @@ const getColumns = (
                 "disabled:cursor-default disabled:opacity-100",
               )}
               placeholder={admin ? "Add description..." : "No description"}
-              disabled
+              disabled={!admin}
             />
           );
         },
@@ -130,8 +130,12 @@ const getColumns = (
                 value={value}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className="h-full w-full cursor-pointer border-0 bg-transparent text-center focus-visible:ring-2 focus-visible:ring-offset-0"
+                className={cn(
+                  "h-full w-full cursor-pointer border-0 bg-transparent text-center focus-visible:ring-2 focus-visible:ring-offset-0",
+                  !admin && "[appearance:textfield] disabled:cursor-default disabled:opacity-100 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+                )}
                 step="5"
+                disabled={!admin}
               />
             );
           },
