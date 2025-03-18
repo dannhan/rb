@@ -25,6 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import getColumns from "./columns";
 
 interface Props {
+  admin: boolean;
   progress: WithId<ProgressItem>[];
   weekKeys: string[];
   handleAddNewProgressItem: () => void;
@@ -35,6 +36,7 @@ interface Props {
 // - auto focus input
 // - auto scroll to the right-most
 const ProgressTable: React.FC<Props> = ({
+  admin,
   progress,
   weekKeys,
   handleAddNewProgressItem,
@@ -44,7 +46,7 @@ const ProgressTable: React.FC<Props> = ({
 
   const table = useReactTable({
     data: progress,
-    columns: getColumns(progress, weekKeys, newInputRef), // Pass progress data to extract week keys
+    columns: getColumns(admin, progress, weekKeys, newInputRef), // Pass progress data to extract week keys
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -126,14 +128,16 @@ const ProgressTable: React.FC<Props> = ({
           ))}
         </TableBody>
       </Table>
-      <Button
-        className="w-full justify-start rounded-t-none border-x-0 border-b-0 border-t text-muted-foreground hover:text-muted-foreground"
-        variant="outline"
-        onClick={() => handleAddNewProgressItem()}
-      >
-        <Plus className="mr-2 h-4 w-4" />
-        Add new item
-      </Button>
+      {admin && (
+        <Button
+          className="w-full justify-start rounded-t-none border-x-0 border-b-0 border-t text-muted-foreground hover:text-muted-foreground"
+          variant="outline"
+          onClick={() => handleAddNewProgressItem()}
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          Add new item
+        </Button>
+      )}
     </div>
   );
 };

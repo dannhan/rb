@@ -10,11 +10,13 @@ import {
   updateProgressValueAction,
 } from "@/actions/update";
 
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 
 const columnHelper = createColumnHelper<WithId<ProgressItem>>();
 
 const getColumns = (
+  admin: boolean,
   progressItems: WithId<ProgressItem>[],
   weekKeys: string[],
   newInputRef?: React.MutableRefObject<HTMLInputElement | null>,
@@ -62,8 +64,12 @@ const getColumns = (
               value={value}
               onChange={(e) => setValue(e.target.value)}
               onBlur={handleBlur}
-              className="h-full w-full cursor-pointer border-0 bg-transparent px-3 focus-visible:ring-offset-0"
-              placeholder="Add description..."
+              className={cn(
+                "h-full w-full cursor-pointer border-0 bg-transparent px-3 focus-visible:ring-offset-0",
+                "disabled:cursor-default disabled:opacity-100",
+              )}
+              placeholder={admin ? "Add description..." : "No description"}
+              disabled
             />
           );
         },

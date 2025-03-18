@@ -60,6 +60,7 @@ const ProjectProgressPageClient: React.FC<Props> = ({
         {admin && <AddWeekDialog latestWeekNumber={latestWeekNumber} />}
       </div>
       <ProgressTable
+        admin={admin}
         progress={optimisticProgress}
         weekKeys={weekKeys}
         handleAddNewProgressItem={handleAddNewProgressItem}

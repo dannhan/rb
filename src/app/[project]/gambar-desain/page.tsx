@@ -49,9 +49,14 @@ export default async function Page({ params }: Props) {
       {/* fetch design images per category */}
       {designImageSubcategories.length === 0 && (
         <EmptyData
+          admin={admin}
           className="mx-auto max-w-[750px] py-8"
           title="Belum Ada Kategori"
-          description="Mulai dengan membuat kategori baru."
+          description={
+            admin
+              ? "Mulai dengan membuat kategori baru."
+              : "Silakan periksa kembali nanti untuk pembaruan."
+          }
           form={<CreateDesignImageSubcategoryForm projectId={params.project} />}
         />
       )}

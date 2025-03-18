@@ -8,6 +8,7 @@ import { attachmentSchema } from "@/config/dataSchema";
 
 import ImageCard from "@/components/Attachment/ImageCard";
 import SingleImageUploader from "@/components/Attachment/SingleImageUploader";
+import EmptyData from "@/components/Common/EmptyData";
 
 type Props = {
   params: { project: string };
@@ -41,11 +42,20 @@ export default async function Page({ params }: Props) {
       {attachments.map((attachment) => (
         <ImageCard key={attachment.key} admin={admin} attachment={attachment} />
       ))}
-      {admin && (
+      {admin ? (
         <SingleImageUploader
           projectId={params.project}
           category={"projectSchedule"}
         />
+      ) : (
+        attachments.length === 0 && (
+          <EmptyData
+            admin={admin}
+            className="mx-auto max-w-[750px] py-8"
+            title="Belum Ada Jadwal Proyek"
+            description="Silakan periksa kembali nanti untuk pembaruan."
+          />
+        )
       )}
     </main>
   );
