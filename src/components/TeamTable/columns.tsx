@@ -147,13 +147,15 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
 
           if (admin) {
             return (
-              <Badge
-                variant={status.value === "Finish" ? "default" : "secondary"}
-                className="min-w-[115px] px-2 py-1"
-              >
-                {status.icon && <Icon className="mr-2 h-3 w-3" />}
-                <span>{status.label}</span>
-              </Badge>
+              <div className="inline-flex h-10 items-center justify-center whitespace-nowrap rounded-md px-4 py-2">
+                <Badge
+                  variant={status.value === "Finish" ? "default" : "secondary"}
+                  className="w-full justify-between px-2 py-1"
+                >
+                  {status.icon && <Icon className="mr-2 h-3 w-3" />}
+                  <span>{status.label}</span>
+                </Badge>
+              </div>
             );
           }
 
