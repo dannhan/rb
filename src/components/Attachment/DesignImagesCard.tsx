@@ -54,31 +54,33 @@ const DesignImagesCard: React.FC<Props> = ({
     <Card className="mx-auto max-w-[750px]">
       <CardHeader className="mb-0 flex flex-row items-center justify-between py-3 pb-0">
         <CardTitle className="text-base">{category.title}</CardTitle>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="secondary" className="border" size="sm">
-              <UploadCloudIcon className="h-5 w-5 sm:mr-2" />
-              <span className="hidden sm:inline">Upload</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-xl">
-            <DialogHeader>
-              <DialogTitle>Upload Files</DialogTitle>
-              <DialogDescription>
-                Drag and drop your files here or click to browse.
-              </DialogDescription>
-            </DialogHeader>
-            <FileUploader
-              withToast={false}
-              accept={{ "image/*": [] }}
-              maxFileCount={64}
-              maxSize={32 * 1024 * 1024}
-              progresses={progresses}
-              onUpload={onUpload}
-              disabled={isUploading}
-            />
-          </DialogContent>
-        </Dialog>
+        {admin && (
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="secondary" className="border" size="sm">
+                <UploadCloudIcon className="h-5 w-5 sm:mr-2" />
+                <span className="hidden sm:inline">Upload</span>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-xl">
+              <DialogHeader>
+                <DialogTitle>Upload Files</DialogTitle>
+                <DialogDescription>
+                  Drag and drop your files here or click to browse.
+                </DialogDescription>
+              </DialogHeader>
+              <FileUploader
+                withToast={false}
+                accept={{ "image/*": [] }}
+                maxFileCount={64}
+                maxSize={32 * 1024 * 1024}
+                progresses={progresses}
+                onUpload={onUpload}
+                disabled={isUploading}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
       </CardHeader>
       <CardContent className="pb-3">
         {designImages.length > 0 ? (

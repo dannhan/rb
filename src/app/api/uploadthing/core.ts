@@ -162,7 +162,7 @@ export const router = {
 
       try {
         await attachmentRef.set(attachmentData);
-        await teamRef.update({ attachment: attachmentData});
+        await teamRef.update({ attachment: attachmentData });
 
         return { success: true };
       } catch (error) {

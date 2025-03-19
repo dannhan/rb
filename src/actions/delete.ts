@@ -104,10 +104,10 @@ export async function deleteTeamMemberFileAction(
       utapi.deleteFiles(attachmentKey),
       attachmentsRef.delete(),
       teamId &&
-      projectRef
-        .collection("teams")
-        .doc(teamId)
-        .update({ attachment: FieldValue.delete() }),
+        projectRef
+          .collection("teams")
+          .doc(teamId)
+          .update({ attachment: FieldValue.delete() }),
     ]);
 
     revalidatePath(`${projectId}/tim-pelaksana`);

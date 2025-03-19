@@ -71,47 +71,48 @@ const TeamTableToolbar: React.FC<Props> = ({ table, admin }) => {
         )}
       </div>
       <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-fit">
-        {admin && isDesktop ? (
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button variant="default" className="col-span-2 w-full">
-                <PlusIcon className="mr-2 size-4" aria-hidden="true" />
-                Add Data
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add Data</DialogTitle>
-                <DialogDescription>
-                  Fill in the details below to add data. Click submit when
-                  you&apos;re done.
-                </DialogDescription>
-              </DialogHeader>
-              <AddTeamMemberFormSchema setDialogOpen={setDialogOpen} />
-            </DialogContent>
-          </Dialog>
-        ) : (
-          <Drawer open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DrawerTrigger asChild>
-              <Button variant="default" className="col-span-2 w-full">
-                <PlusIcon className="mr-2 size-4" aria-hidden="true" />
-                Add Data
-              </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-              <DrawerHeader>
-                <DrawerTitle>Add Data</DrawerTitle>
-                <DrawerDescription>
-                  Fill in the details below to add data. Click submit when
-                  you&apos;re done.
-                </DrawerDescription>
-              </DrawerHeader>
-              <DrawerBody>
+        {admin &&
+          (isDesktop ? (
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="default" className="col-span-2 w-full">
+                  <PlusIcon className="mr-2 size-4" aria-hidden="true" />
+                  Add Data
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add Data</DialogTitle>
+                  <DialogDescription>
+                    Fill in the details below to add data. Click submit when
+                    you&apos;re done.
+                  </DialogDescription>
+                </DialogHeader>
                 <AddTeamMemberFormSchema setDialogOpen={setDialogOpen} />
-              </DrawerBody>
-            </DrawerContent>
-          </Drawer>
-        )}
+              </DialogContent>
+            </Dialog>
+          ) : (
+            <Drawer open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DrawerTrigger asChild>
+                <Button variant="default" className="col-span-2 w-full">
+                  <PlusIcon className="mr-2 size-4" aria-hidden="true" />
+                  Add Data
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader>
+                  <DrawerTitle>Add Data</DrawerTitle>
+                  <DrawerDescription>
+                    Fill in the details below to add data. Click submit when
+                    you&apos;re done.
+                  </DrawerDescription>
+                </DrawerHeader>
+                <DrawerBody>
+                  <AddTeamMemberFormSchema setDialogOpen={setDialogOpen} />
+                </DrawerBody>
+              </DrawerContent>
+            </Drawer>
+          ))}
         <TeamTablePrint table={table} />
         <TableViewOptions table={table} />
       </div>

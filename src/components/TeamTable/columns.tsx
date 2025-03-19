@@ -244,7 +244,7 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
               const result = await deleteTeamMemberFileAction(
                 attachment?.key,
                 params.project,
-                row.original.id
+                row.original.id,
               );
 
               if (result?.error) {
@@ -259,78 +259,87 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
             }
           };
 
-          return attachment ? (
-            <div className="flex items-center gap-2">
-              <Link
-                href={attachment.url}
-                target="_blank"
-                className="flex max-w-[200px] items-center overflow-hidden"
-              >
-                <FileIcons mimeType={attachment.type} />
-                <span className="max-w-[173px] overflow-hidden text-ellipsis whitespace-nowrap pl-3">
-                  {attachment.name}
-                </span>
-              </Link>
-              {admin && (
-                <AlertDialog
-                  open={deleteDialogOpen}
-                  onOpenChange={setDeleteDialogOpen}
+          if (attachment) {
+            return (
+              <div className="flex items-center gap-2">
+                <Link
+                  href={attachment.url}
+                  target="_blank"
+                  className="flex max-w-[200px] items-center overflow-hidden"
                 >
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      className="h-4 w-4 p-0 opacity-0 transition-opacity group-hover:opacity-100"
-                    >
-                      <Trash2Icon className="text-destructive" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        Are you absolutely sure?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDelete}>
-                        Continue
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              )}
-            </div>
-          ) : (
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8">
-                  <PlusCircleIcon className="mr-2 h-3.5 w-3.5"></PlusCircleIcon>
-                  Attach file
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-xl">
-                <DialogHeader>
-                  <DialogTitle>Upload a file</DialogTitle>
-                </DialogHeader>
-                <FileUploader
-                  withToast={false}
-                  accept={{ "image/*": [] }}
-                  maxFileCount={64}
-                  maxSize={32 * 1024 * 1024}
-                  progresses={progresses}
-                  onUpload={onUpload}
-                  disabled={isUploading}
-                />
-              </DialogContent>
-            </Dialog>
+                  <FileIcons mimeType={attachment.type} />
+                  <span className="max-w-[173px] overflow-hidden text-ellipsis whitespace-nowrap pl-3">
+                    {attachment.name}
+                  </span>
+                </Link>
+                {admin && (
+                  <AlertDialog
+                    open={deleteDialogOpen}
+                    onOpenChange={setDeleteDialogOpen}
+                  >
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-4 w-4 p-0 opacity-0 transition-opacity group-hover:opacity-100"
+                      >
+                        <Trash2Icon className="text-destructive" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDelete}>
+                          Continue
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+              </div>
+            );
+          }
+
+          if (admin) {
+            return (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8">
+                    <PlusCircleIcon className="mr-2 h-3.5 w-3.5"></PlusCircleIcon>
+                    Attach file
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-xl">
+                  <DialogHeader>
+                    <DialogTitle>Upload a file</DialogTitle>
+                  </DialogHeader>
+                  <FileUploader
+                    withToast={false}
+                    accept={{ "image/*": [] }}
+                    maxFileCount={64}
+                    maxSize={32 * 1024 * 1024}
+                    progresses={progresses}
+                    onUpload={onUpload}
+                    disabled={isUploading}
+                  />
+                </DialogContent>
+              </Dialog>
+            );
+          }
+
+          return (
+            <span className="italic text-muted-foreground">No Attachment.</span>
           );
         },
       },
-      // TODO: add file upload column here
     ];
 
     // Conditionally add the "Actions" column if admin is true
