@@ -25,6 +25,7 @@ export default async function Page({ params }: Props) {
     const parsed = teamMemberSchema.safeParse(doc.data());
     if (!parsed.success) return;
 
+    delete parsed.data.attachment?.createdAt;
     team.push({ id: doc.id, ...parsed.data });
   });
 

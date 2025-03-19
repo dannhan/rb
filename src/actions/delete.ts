@@ -3,8 +3,9 @@
 import { revalidatePath } from "next/cache";
 
 import { UTApi } from "uploadthing/server";
-import { auth } from "@/auth";
+import { FieldValue } from "firebase-admin/firestore";
 
+import { auth } from "@/auth";
 import { db } from "@/lib/firebase/admin";
 import { deleteDocumentWithSubcollections } from "@/lib/firebase/utils";
 import { PROJECT_COLLECTION } from "@/lib/utils";
@@ -56,17 +57,60 @@ export async function deleteAttachmentAction(key: string, projectId: string) {
   }
 }
 
-export async function deleteTeamMemberAction(id: string, projectId: string) {
+export async function deleteTeamMemberAction(
+  id: string,
+  attachmentKey: string | undefined,
+  projectId: string,
+) {
   if (!id || !projectId) return { success: false, error: "Invalid." };
 
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unautorhized" };
+
   const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
-  const teamsRef = projectRef.collection("teams");
-  const targetRef = teamsRef.doc(id);
+  const teamRef = projectRef.collection("teams").doc(id);
 
   try {
-    await targetRef.delete();
+    await teamRef.delete();
+    attachmentKey && deleteTeamMemberFileAction(attachmentKey, projectId);
 
-    revalidatePath(`${projectId}/gambar-desain`);
+    revalidatePath(`${projectId}/tim-pelaksana`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+export async function deleteTeamMemberFileAction(
+  attachmentKey: string | undefined,
+  projectId: string,
+  teamId?: string,
+) {
+  if (!attachmentKey) return { success: false, error: "Invalid." };
+
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unautorhized" };
+
+  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+  const attachmentsRef = projectRef
+    .collection("attachments")
+    .doc(attachmentKey);
+
+  try {
+    await Promise.all([
+      utapi.deleteFiles(attachmentKey),
+      attachmentsRef.delete(),
+      teamId &&
+      projectRef
+        .collection("teams")
+        .doc(teamId)
+        .update({ attachment: FieldValue.delete() }),
+    ]);
+
+    revalidatePath(`${projectId}/tim-pelaksana`);
     return { success: true };
   } catch (error) {
     console.error(error);

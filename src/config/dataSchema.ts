@@ -50,9 +50,7 @@ export const teamMemberSchema = z.object({
   spk: z.string(),
   pelaksana: z.string(),
   status: z.string(),
-
-  // TODO: implement file for team table
-  // file: fileSchema.optional(),
+  attachment: attachmentSchema.optional(),
 });
 
 export const designImageSubcategorySchema = z.object({

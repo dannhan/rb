@@ -1,17 +1,28 @@
 import * as React from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { toast } from "sonner";
-import { CheckIcon, EllipsisIcon, EditIcon, Trash2Icon } from "lucide-react";
+import {
+  CheckIcon,
+  EllipsisIcon,
+  EditIcon,
+  Trash2Icon,
+  PlusCircleIcon,
+} from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
 import type { WithId, TeamMember } from "@/types";
 
 import { updateTeamMemberStatusAction } from "@/actions/update";
-import { deleteTeamMemberAction } from "@/actions/delete";
+import {
+  deleteTeamMemberAction,
+  deleteTeamMemberFileAction,
+} from "@/actions/delete";
 
 import { teamTableConfig } from "@/config/table";
 
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useUploadFile } from "@/hooks/use-upload-file";
 import { cn } from "@/lib/utils";
 import {
   AlertDialog,
@@ -64,6 +75,8 @@ import {
 } from "@/components/ui/popover";
 
 import { Icons } from "@/components/icons";
+import FileIcons from "@/components/Attachment/FileIcons";
+import FileUploader from "@/components/Attachment/FileUploader";
 import UpdateTeamMemberForm from "@/components/Form/UpdateTeamMemberForm";
 import TableColumnHeader from "@/components/TableFeatures/TableColumnHeader";
 
@@ -132,10 +145,11 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
           if (!status) return null;
           const Icon = Icons[status.icon || "circle"];
 
-          if (admin && process.env.NODE_ENV === "production") {
+          if (admin) {
             return (
               <Badge
                 variant={status.value === "Finish" ? "default" : "secondary"}
+                className="min-w-[115px] px-2 py-1"
               >
                 {status.icon && <Icon className="mr-2 h-3 w-3" />}
                 <span>{status.label}</span>
@@ -206,6 +220,116 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
           );
         },
       },
+      {
+        accessorKey: "attachment",
+        id: "attachment",
+        header: () => <span>Attachment</span>,
+        cell: ({ row }) => {
+          const params = useParams() as { project: string };
+          const router = useRouter();
+          const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+          const { onUpload, progresses, isUploading } = useUploadFile("team", {
+            input: { projectId: params.project, teamId: row.original.id },
+            onSuccess: () => router.refresh(),
+          });
+
+          const attachment = row.original.attachment;
+
+          const handleDelete = async () => {
+            const toastId = toast.loading("Deleting data.");
+            try {
+              if (typeof params?.project !== "string")
+                throw new Error("Invalid form data. Please check your inputs.");
+
+              const result = await deleteTeamMemberFileAction(
+                attachment?.key,
+                params.project,
+                row.original.id
+              );
+
+              if (result?.error) {
+                toast.error("Failed to delete file.", { id: toastId });
+              } else {
+                toast.success("File deleted successfully", { id: toastId });
+                router.refresh();
+              }
+            } catch (error) {
+              // NOTE: track error
+              toast.error("Failed to delete file.", { id: toastId });
+            }
+          };
+
+          return attachment ? (
+            <div className="flex items-center gap-2">
+              <Link
+                href={attachment.url}
+                target="_blank"
+                className="flex max-w-[200px] items-center overflow-hidden"
+              >
+                <FileIcons mimeType={attachment.type} />
+                <span className="max-w-[173px] overflow-hidden text-ellipsis whitespace-nowrap pl-3">
+                  {attachment.name}
+                </span>
+              </Link>
+              {admin && (
+                <AlertDialog
+                  open={deleteDialogOpen}
+                  onOpenChange={setDeleteDialogOpen}
+                >
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-4 w-4 p-0 opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      <Trash2Icon className="text-destructive" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete}>
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+            </div>
+          ) : (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8">
+                  <PlusCircleIcon className="mr-2 h-3.5 w-3.5"></PlusCircleIcon>
+                  Attach file
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-xl">
+                <DialogHeader>
+                  <DialogTitle>Upload a file</DialogTitle>
+                </DialogHeader>
+                <FileUploader
+                  withToast={false}
+                  accept={{ "image/*": [] }}
+                  maxFileCount={64}
+                  maxSize={32 * 1024 * 1024}
+                  progresses={progresses}
+                  onUpload={onUpload}
+                  disabled={isUploading}
+                />
+              </DialogContent>
+            </Dialog>
+          );
+        },
+      },
       // TODO: add file upload column here
     ];
 
@@ -219,7 +343,7 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
           const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
           const isDesktop = useMediaQuery("(min-width: 768px)");
 
-          const { id, pekerjaan, spk, pelaksana } = row.original;
+          const { id, pekerjaan, spk, pelaksana, attachment } = row.original;
 
           const handleDelete = async () => {
             const toastId = toast.loading("Deleting data.");
@@ -228,7 +352,8 @@ const getColumns = (admin: boolean): ColumnDef<WithId<TeamMember>, any>[] =>
                 throw new Error("Invalid form data. Please check your inputs.");
 
               const result = await deleteTeamMemberAction(
-                row.original.id,
+                id,
+                attachment?.key,
                 params.project,
               );
 

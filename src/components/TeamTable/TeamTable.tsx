@@ -93,6 +93,7 @@ const TeamTable: React.FC<Props> = ({ data, admin }) => {
                       <TableCell
                         key={cell.id}
                         className={cn(
+                          "group",
                           cell.column.id === "no" && "w-14 p-2.5",
                           cell.column.id === "actions" && "w-[60px] p-2.5",
                           cell.column.id === "status" && "min-w-[130px] p-2.5",

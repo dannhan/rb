@@ -116,6 +116,63 @@ export const router = {
       }
     }),
 
+  team: f({
+    image: { maxFileSize: "32MB", maxFileCount: 1 },
+    pdf: { maxFileSize: "32MB", maxFileCount: 1 },
+    text: { maxFileSize: "32MB", maxFileCount: 1 },
+    video: { maxFileSize: "32MB", maxFileCount: 1 },
+    audio: { maxFileSize: "32MB", maxFileCount: 1 },
+    blob: { maxFileSize: "32MB", maxFileCount: 1 },
+    "application/zip": { maxFileSize: "32MB", maxFileCount: 1 },
+  })
+    .input(
+      z.object({
+        projectId: z.string(),
+        teamId: z.string(),
+      }),
+    )
+    .middleware(async ({ input }) => {
+      const session = await auth();
+
+      // Throw if user isn't signed in
+      if (!session || !session.user.isAdmin)
+        throw new UploadThingError("You must be logged in as admin to upload.");
+
+      return input;
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      const category = "teamMemberFile" satisfies AttachmentCategory;
+      const { projectId, teamId } = metadata;
+      const { name, size, type, key, url, appUrl } = file;
+
+      const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+      const teamRef = projectRef.collection("teams").doc(teamId);
+      const attachmentRef = projectRef.collection("attachments").doc(file.key);
+
+      const attachmentData = {
+        name,
+        size,
+        type,
+        key,
+        url,
+        appUrl,
+        category,
+        createdAt: Timestamp.now(),
+      } satisfies Attachment;
+
+      try {
+        await attachmentRef.set(attachmentData);
+        await teamRef.update({ attachment: attachmentData});
+
+        return { success: true };
+      } catch (error) {
+        console.error(error);
+        await utapi.deleteFiles(file.key);
+
+        return { error: "Failed to upload the data." };
+      }
+    }),
+
   location: f({ image: { maxFileSize: "32MB", maxFileCount: 1 } })
     .input(
       createProjectLocationFormSchema.omit({ image: true }).and(
@@ -165,7 +222,6 @@ export const router = {
           ]));
         await attachmentsRef.set(attachmentData);
         await projectRef.update({ location: locationData });
-        console.log("ASHIAP ASHIAP");
 
         return { success: true };
       } catch (error) {
