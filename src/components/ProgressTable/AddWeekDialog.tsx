@@ -22,7 +22,7 @@ const AddProgressDialog: React.FC<Props> = ({ latestWeekNumber }) => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button size="sm" className="rounded-lg px-3">
+        <Button>
           <PlusCircleIcon className="mr-2 h-3.5 w-3.5" />
           New week
         </Button>

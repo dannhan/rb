@@ -7,7 +7,6 @@ import { addProgressItemAction } from "@/actions/create";
 import { nanoid } from "@/lib/nanoid";
 
 import ProgressTable from "@/components/ProgressTable/ProgressTable";
-import AddWeekDialog from "@/components/ProgressTable/AddWeekDialog";
 
 type Props = {
   admin: boolean;
@@ -52,21 +51,13 @@ const ProjectProgressPageClient: React.FC<Props> = ({
   };
 
   return (
-    <>
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold leading-none tracking-tight">
-          Progress Proyek
-        </h2>
-        {admin && <AddWeekDialog latestWeekNumber={latestWeekNumber} />}
-      </div>
-      <ProgressTable
-        admin={admin}
-        progress={optimisticProgress}
-        weekKeys={weekKeys}
-        handleAddNewProgressItem={handleAddNewProgressItem}
-      />
-      <div className="h-40" />
-    </>
+    <ProgressTable
+      admin={admin}
+      progress={optimisticProgress}
+      weekKeys={weekKeys}
+      latestWeekNumber={latestWeekNumber}
+      handleAddNewProgressItem={handleAddNewProgressItem}
+    />
   );
 };
 

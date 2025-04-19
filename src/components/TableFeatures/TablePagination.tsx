@@ -20,13 +20,15 @@ interface TablePaginationProps<TData> {
 }
 
 const TablePagination = <TData,>({ table }: TablePaginationProps<TData>) => (
-  <div className="flex flex-col items-center justify-between gap-2 md:flex-row">
-    <div className="flex-1 text-sm text-muted-foreground md:block">
-      {table.getFilteredSelectedRowModel().rows.length} of{" "}
-      {table.getFilteredRowModel().rows.length} row(s) selected.
-    </div>
+  // <div className="flex flex-col items-center justify-between gap-2 md:flex-row">
+  <div>
+    {/* TODO: */}
+    {/* <div className="flex-1 text-sm text-muted-foreground md:block"> */}
+    {/*   {table.getFilteredSelectedRowModel().rows.length} of{" "} */}
+    {/*   {table.getFilteredRowModel().rows.length} row(s) selected. */}
+    {/* </div> */}
     <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
-      <div className="order-last flex items-center gap-2 md:order-none">
+      <div className="order-last flex flex-1 items-center gap-2 md:order-none">
         <p className="text-sm font-medium">Rows per page</p>
         <Select
           value={`${table.getState().pagination.pageSize}`}
@@ -70,7 +72,7 @@ const TablePagination = <TData,>({ table }: TablePaginationProps<TData>) => (
           <ChevronLeftIcon className="h-4 w-4" />
         </Button>
 
-        <div className="flex w-[80px] items-center justify-center text-sm font-medium md:order-first">
+        <div className="flex min-w-[80px] items-center justify-center text-sm font-medium md:order-first">
           Page {table.getState().pagination.pageIndex + 1} of{" "}
           {table.getPageCount()}
         </div>

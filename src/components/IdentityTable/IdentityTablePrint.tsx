@@ -39,17 +39,15 @@ const IdentityTablePrint: React.FC<Props> = ({ table }) => {
         <Table className="border-collapse border border-black">
           <TableBody>
             {data.map(({ id, no, field, value }) => (
-              <React.Fragment key={id}>
-                <TableRow className="border-none">
-                  <TableCell className="w-10 border-t border-black text-center font-bold">
-                    {no}.
-                  </TableCell>
-                  <TableCell className="border border-black font-bold">
-                    {field}
-                  </TableCell>
-                  <TableCell className="border border-black">{value}</TableCell>
-                </TableRow>
-              </React.Fragment>
+              <TableRow className="border-none" key={id}>
+                <TableCell className="w-10 border-t border-black text-center font-bold">
+                  {no}.
+                </TableCell>
+                <TableCell className="border border-black font-bold">
+                  {field}
+                </TableCell>
+                <TableCell className="border border-black">{value}</TableCell>
+              </TableRow>
             ))}
           </TableBody>
         </Table>
