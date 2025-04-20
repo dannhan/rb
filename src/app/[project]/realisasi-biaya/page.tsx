@@ -52,7 +52,7 @@ export default async function Page({ params }: Props) {
           <EmptyData
             admin={admin}
             className="mx-auto max-w-[750px] py-8"
-            title="Belum Ada Jadwal Proyek"
+            title="Belum Ada Realisasi Biaya"
             description="Silakan periksa kembali nanti untuk pembaruan."
           />
         )
