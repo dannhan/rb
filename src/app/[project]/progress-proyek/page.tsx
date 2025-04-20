@@ -28,6 +28,9 @@ export default async function Page({ params }: Props) {
     const parsed = progressItemSchema.safeParse(doc.data());
     if (!parsed.success) return;
 
+    delete parsed.data.attachment?.before?.createdAt;
+    delete parsed.data.attachment?.after?.createdAt;
+
     progress.push({
       id: doc.id,
       ...parsed.data,
@@ -40,8 +43,9 @@ export default async function Page({ params }: Props) {
     firstProgressWeekKeys[firstProgressWeekKeys.length - 1]?.split("_")[0],
   );
 
+  // TODO: check again
   return (
-    <main className="mx-auto max-w-[750px] space-y-4">
+    <main className="mx-auto max-w-[881.65px] space-y-4">
       <ProjectProgressPageClient
         admin={admin}
         params={params}

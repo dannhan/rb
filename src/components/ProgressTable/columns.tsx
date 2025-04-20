@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
 import { debounce } from "lodash";
 
@@ -11,7 +11,11 @@ import {
 } from "@/actions/update";
 
 import { cn } from "@/lib/utils";
+import { useUploadFile } from "@/hooks/use-upload-file";
+import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
+
+import AttachmentColumn from "./ProgressTableAttachmentColumn";
 
 const columnHelper = createColumnHelper<WithId<ProgressItem>>();
 
@@ -32,6 +36,37 @@ const getColumns = (
           <span className="text-muted-foreground">{`${row.index + 1}`}</span>
         ),
       }),
+
+      // TODO: check again
+      columnHelper.accessor("attachment", {
+        id: "attachment",
+        header: () => <span>Attachment</span>,
+        cell: ({ row }) => {
+          const attachment = row.original.attachment;
+          return (
+            <div className="flex flex-col gap-2">
+              <div className="mx-2">
+                <AttachmentColumn
+                  admin={admin}
+                  id={row.original.id}
+                  attachment={attachment?.before}
+                  type="before"
+                />
+              </div>
+              <Separator />
+              <div className="mx-2">
+                <AttachmentColumn
+                  admin={admin}
+                  id={row.original.id}
+                  attachment={attachment?.after}
+                  type="after"
+                />
+              </div>
+            </div>
+          );
+        },
+      }),
+
       columnHelper.accessor("description", {
         header: "Description",
         size: 180,
@@ -133,7 +168,7 @@ const getColumns = (
                 className={cn(
                   "h-full w-full cursor-pointer border-0 bg-transparent text-center focus-visible:ring-2 focus-visible:ring-offset-0",
                   !admin &&
-                    "[appearance:textfield] disabled:cursor-default disabled:opacity-100 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+                  "[appearance:textfield] disabled:cursor-default disabled:opacity-100 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
                 )}
                 step="5"
                 disabled={!admin}

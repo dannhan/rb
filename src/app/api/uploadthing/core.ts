@@ -173,6 +173,70 @@ export const router = {
       }
     }),
 
+  // TODO:
+  progress: f({
+    image: { maxFileSize: "32MB", maxFileCount: 1 },
+    pdf: { maxFileSize: "32MB", maxFileCount: 1 },
+    text: { maxFileSize: "32MB", maxFileCount: 1 },
+    video: { maxFileSize: "32MB", maxFileCount: 1 },
+    audio: { maxFileSize: "32MB", maxFileCount: 1 },
+    blob: { maxFileSize: "32MB", maxFileCount: 1 },
+    "application/zip": { maxFileSize: "32MB", maxFileCount: 1 },
+  })
+    .input(
+      z.object({
+        projectId: z.string(),
+        progressId: z.string(),
+        type: z.enum(["before", "after"]),
+      }),
+    )
+    .middleware(async ({ input }) => {
+      const session = await auth();
+
+      // Throw if user isn't signed in
+      if (!session || !session.user.isAdmin)
+        throw new UploadThingError("You must be logged in as admin to upload.");
+
+      return input;
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      const category = "progressFile" satisfies AttachmentCategory;
+      const { projectId, progressId } = metadata;
+      console.log({ projectId, progressId });
+
+      const { name, size, type, key, url, appUrl } = file;
+
+      const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+      const progressRef = projectRef.collection("progress").doc(progressId);
+      const attachmentRef = projectRef.collection("attachments").doc(file.key);
+
+      const attachmentData = {
+        name,
+        size,
+        type,
+        key,
+        url,
+        appUrl,
+        category,
+        createdAt: Timestamp.now(),
+      } satisfies Attachment;
+
+      try {
+        await attachmentRef.set(attachmentData);
+        await progressRef.set(
+          { attachment: { [metadata.type]: attachmentData } },
+          { merge: true },
+        );
+
+        return { success: true };
+      } catch (error) {
+        console.error(error);
+        await utapi.deleteFiles(file.key);
+
+        return { error: "Failed to upload the data." };
+      }
+    }),
+
   location: f({ image: { maxFileSize: "32MB", maxFileCount: 1 } })
     .input(
       createProjectLocationFormSchema.omit({ image: true }).and(

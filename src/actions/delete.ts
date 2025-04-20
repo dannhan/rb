@@ -83,6 +83,7 @@ export async function deleteTeamMemberAction(
   }
 }
 
+// TODO: change file to attachment
 export async function deleteTeamMemberFileAction(
   attachmentKey: string | undefined,
   projectId: string,
@@ -104,13 +105,51 @@ export async function deleteTeamMemberFileAction(
       utapi.deleteFiles(attachmentKey),
       attachmentsRef.delete(),
       teamId &&
-        projectRef
-          .collection("teams")
-          .doc(teamId)
-          .update({ attachment: FieldValue.delete() }),
+      projectRef
+        .collection("teams")
+        .doc(teamId)
+        .update({ attachment: FieldValue.delete() }),
     ]);
 
     revalidatePath(`${projectId}/tim-pelaksana`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+// TODO: check again
+export async function deleteProgressAttachmentAction(
+  attachmentKey: string | undefined,
+  projectId: string,
+  progressId: string,
+  type: "before" | "after",
+) {
+  if (!attachmentKey) return { success: false, error: "Invalid." };
+
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unautorhized" };
+
+  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+  const attachmentsRef = projectRef
+    .collection("attachments")
+    .doc(attachmentKey);
+
+  try {
+    await Promise.all([
+      utapi.deleteFiles(attachmentKey),
+      attachmentsRef.delete(),
+    ]);
+
+    await projectRef
+      .collection("progress")
+      .doc(progressId)
+      .update({ [`attachment.${type}`]: FieldValue.delete() });
+
+    revalidatePath(`${projectId}/progress-proyek`);
+
     return { success: true };
   } catch (error) {
     console.error(error);

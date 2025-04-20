@@ -38,6 +38,7 @@ interface Props {
 // - dynamic width, refers to ImageDescription Input
 // - auto focus input
 // - auto scroll to the right-most
+// - check again
 const ProgressTable: React.FC<Props> = ({
   admin,
   progress,
@@ -82,8 +83,10 @@ const ProgressTable: React.FC<Props> = ({
                       "relatve min-h-[52px] font-normal text-muted-foreground",
                       header.column.id === "no" &&
                       "sticky left-0 z-10 w-12 bg-accent",
+                      header.column.id === "attachment" &&
+                      "sticky left-12 z-50 max-w-[132px] bg-accent px-2",
                       header.column.id === "description" &&
-                      "sticky left-12 z-10 min-w-[200px] whitespace-nowrap bg-accent px-4",
+                      "sticky left-[180px] z-10 min-w-[200px] whitespace-nowrap bg-accent px-4",
                       header.column.id.startsWith("week") &&
                       "min-w-[80px] max-w-[125px] whitespace-nowrap border-l text-center md:min-w-[125px]",
                       // Remove border for left-most week column
@@ -97,6 +100,7 @@ const ProgressTable: React.FC<Props> = ({
                         header.getContext(),
                       )}
                     {(header.column.id === "no" ||
+                      header.column.id === "attachment" ||
                       header.column.id === "description") && (
                         <Separator
                           className="absolute right-0 top-0 h-[52px] w-[0.75px]"
@@ -121,8 +125,10 @@ const ProgressTable: React.FC<Props> = ({
                     className={cn(
                       "h-[40px] whitespace-nowrap bg-background transition-colors group-hover:bg-accent",
                       cell.column.id === "no" && "sticky left-0 z-50 min-w-12",
+                      cell.column.id === "attachment" &&
+                      "sticky left-12 z-50 max-w-[132px] px-0",
                       cell.column.id === "description" &&
-                      "sticky left-12 z-50 min-w-[200px] px-1 py-1",
+                      "sticky left-[180px] z-50 min-w-[200px] px-1 py-1",
                       cell.column.id.startsWith("week") &&
                       "max-w-[120px] border-l px-1 py-1 text-center md:min-w-[120px]",
                       cell.column.id === "action" && "sticky left-0",
@@ -132,9 +138,10 @@ const ProgressTable: React.FC<Props> = ({
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     {(cell.column.id === "no" ||
+                      cell.column.id === "attachment" ||
                       cell.column.id === "description") && (
                         <Separator
-                          className="absolute right-0 top-0 h-[40px] w-[0.75px]"
+                          className="absolute right-0 top-0 h-full w-[0.75px]"
                           orientation="vertical"
                         />
                       )}

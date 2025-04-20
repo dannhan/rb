@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const attachmentCategorySchema = z.enum([
   "teamMemberFile",
+  "progressFile",
   "designImage",
   "rabFile",
   "projectSchedule",
@@ -60,6 +61,9 @@ export const designImageSubcategorySchema = z.object({
 
 export const progressItemSchema = z.object({
   position: z.number().int().positive(),
+  attachment: z
+    .record(z.enum(["before", "after"]), attachmentSchema)
+    .optional(),
   description: z.string(),
   progress: z.record(z.string(), z.number().min(0).max(100)), // Maps week identifiers to percentage values (0-100)
 });
