@@ -30,8 +30,8 @@ const ProjectProgressPageClient: React.FC<Props> = ({
   );
 
   const handleAddNewProgressItem = () => {
+    const progressId = nanoid();
     startTransition(async () => {
-      const progressId = nanoid();
       const newPosition =
         optimisticProgress.length > 0
           ? optimisticProgress[optimisticProgress.length - 1].position + 1000
@@ -48,6 +48,7 @@ const ProjectProgressPageClient: React.FC<Props> = ({
         newPosition,
       });
     });
+    return progressId;
   };
 
   return (

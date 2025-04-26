@@ -119,44 +119,6 @@ export async function deleteTeamMemberFileAction(
   }
 }
 
-// TODO: check again
-export async function deleteProgressAttachmentAction(
-  attachmentKey: string | undefined,
-  projectId: string,
-  progressId: string,
-  type: "before" | "after",
-) {
-  if (!attachmentKey) return { success: false, error: "Invalid." };
-
-  const session = await auth();
-  if (!session || !session.user.isAdmin)
-    return { success: false, error: "Unautorhized" };
-
-  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
-  const attachmentsRef = projectRef
-    .collection("attachments")
-    .doc(attachmentKey);
-
-  try {
-    await Promise.all([
-      utapi.deleteFiles(attachmentKey),
-      attachmentsRef.delete(),
-    ]);
-
-    await projectRef
-      .collection("progress")
-      .doc(progressId)
-      .update({ [`attachment.${type}`]: FieldValue.delete() });
-
-    revalidatePath(`${projectId}/progress-proyek`);
-
-    return { success: true };
-  } catch (error) {
-    console.error(error);
-    return { success: false, error: (error as Error).message };
-  }
-}
-
 // NOTE: track error inside catch block
 export async function deleteIdentityAction(id: string, projectId: string) {
   if (!id || !projectId) return { success: false, error: "Invalid." };
@@ -189,6 +151,83 @@ export async function deleteIdentityAction(id: string, projectId: string) {
     });
 
     revalidatePath(`${projectId}/gambar-desain`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+export async function deleteProgressItemAction(
+  id: string,
+  attachmentKeys: string[],
+  projectId: string,
+) {
+  if (!id || !projectId) return { success: false, error: "Invalid." };
+
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unautorhized" };
+
+  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+  const progressRef = projectRef.collection("progress").doc(id);
+
+  const batch = db.batch();
+
+  try {
+    batch.delete(progressRef);
+
+    // Add attachment deletions to batch
+    attachmentKeys.forEach((key) => {
+      const attachmentRef = projectRef.collection("attachments").doc(key);
+      batch.delete(attachmentRef);
+    });
+
+    // Commit Firestore batch first
+    await batch.commit();
+
+    // Then delete from file storage (utapi)
+    await utapi.deleteFiles(attachmentKeys);
+
+    revalidatePath(`${projectId}/progress-proyek`);
+    return { success: true };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+// TODO: check again
+export async function deleteProgressAttachmentAction(
+  attachmentKey: string | undefined,
+  projectId: string,
+  progressId: string,
+  type: "before" | "after",
+) {
+  if (!attachmentKey) return { success: false, error: "Invalid." };
+
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unautorhized" };
+
+  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+  const attachmentsRef = projectRef
+    .collection("attachments")
+    .doc(attachmentKey);
+
+  try {
+    await Promise.all([
+      utapi.deleteFiles(attachmentKey),
+      attachmentsRef.delete(),
+    ]);
+
+    await projectRef
+      .collection("progress")
+      .doc(progressId)
+      .update({ [`attachment.${type}`]: FieldValue.delete() });
+
+    revalidatePath(`${projectId}/progress-proyek`);
+
     return { success: true };
   } catch (error) {
     console.error(error);

@@ -1,7 +1,9 @@
 import * as React from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 import { debounce } from "lodash";
+import { toast } from "sonner";
+import { EditIcon, EllipsisIcon, Trash2Icon } from "lucide-react";
 
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
 import type { WithId, ProgressItem } from "@/types";
@@ -9,11 +11,40 @@ import {
   updateProgressItemDescriptionAction,
   updateProgressValueAction,
 } from "@/actions/update";
+import { deleteProgressItemAction } from "@/actions/delete";
 
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
-import { useUploadFile } from "@/hooks/use-upload-file";
-import { Separator } from "@/components/ui/separator";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
 import AttachmentColumn from "./ProgressTableAttachmentColumn";
 
@@ -21,9 +52,8 @@ const columnHelper = createColumnHelper<WithId<ProgressItem>>();
 
 const getColumns = (
   admin: boolean,
-  progressItems: WithId<ProgressItem>[],
   weekKeys: string[],
-  newInputRef?: React.MutableRefObject<HTMLInputElement | null>,
+  newInputIdRef: React.MutableRefObject<string | null>,
 ) =>
   React.useMemo<ColumnDef<WithId<ProgressItem>, any>[]>(() => {
     const columns = [
@@ -67,15 +97,32 @@ const getColumns = (
         },
       }),
 
+      // Description column
       columnHelper.accessor("description", {
         header: "Description",
         size: 180,
         cell: ({ row }) => {
-          const params = useParams();
-          const [value, setValue] = React.useState(row.original.description);
+          const [dropdownOpen, setDropdownOpen] = React.useState(false);
+          const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+          const isDesktop = useMediaQuery("(min-width: 768px)");
 
-          async function handleBlur() {
-            // NOTE: still running if it previously has been changed
+          const inputRef = React.useRef<HTMLInputElement>(null);
+          React.useEffect(() => {
+            if (row.original.id === newInputIdRef.current) {
+              inputRef.current?.focus();
+              newInputIdRef.current = null;
+            }
+          }, []);
+
+          const [value, setValue] = React.useState(row.original.description);
+          const params = useParams();
+
+          const handleMouseDown = (e: React.MouseEvent) => {
+            e.preventDefault();
+            inputRef.current?.focus();
+          };
+
+          const handleBlur = async () => {
             if (value !== row.original.description) {
               try {
                 await updateProgressItemDescriptionAction({
@@ -87,28 +134,160 @@ const getColumns = (
                 console.error("Failed to update description:", error);
               }
             }
-          }
+          };
+
+          const handleDelete = async () => {
+            const toastId = toast.loading("Deleting data.");
+            setDropdownOpen(false);
+            try {
+              if (typeof params?.project !== "string")
+                throw new Error("Invalid form data. Please check your inputs.");
+
+              const result = await deleteProgressItemAction(
+                row.original.id,
+                row.original.attachment
+                  ? Object.values(row.original.attachment).map(
+                    (item) => item.key,
+                  )
+                  : [],
+                params.project,
+              );
+
+              if (result?.error) {
+                toast.error("Failed to delete data.", { id: toastId });
+              } else {
+                toast.success("Data deleted successfully", { id: toastId });
+              }
+            } catch (error) {
+              // NOTE: track error
+              toast.error("Failed to delete data.", { id: toastId });
+            }
+          };
 
           return (
-            <Input
-              ref={(el) => {
-                if (value === "" && newInputRef) {
-                  newInputRef.current = el;
-                }
-              }}
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              onBlur={handleBlur}
-              className={cn(
-                "h-full w-full cursor-pointer border-0 bg-transparent px-3 focus-visible:ring-offset-0",
-                "disabled:cursor-default disabled:opacity-100",
-              )}
-              placeholder={admin ? "Add description..." : "No description"}
-              disabled={!admin}
-            />
+            <div
+              onMouseDown={handleMouseDown}
+              className="group relative flex h-full cursor-pointer items-center"
+            >
+              <Input
+                ref={inputRef}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                onBlur={handleBlur}
+                placeholder={admin ? "Add description..." : "No Description"}
+                className={cn(
+                  "peer w-full cursor-pointer border-0 bg-transparent px-3 focus-visible:ring-offset-0",
+                  "disabled:cursor-default disabled:opacity-100",
+                )}
+              />
+              <div className="absolute right-2 peer-focus-within:invisible">
+                <DropdownMenu
+                  open={dropdownOpen}
+                  onOpenChange={setDropdownOpen}
+                >
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      onMouseDown={(e) => e.preventDefault()} // Prevent stealing focus
+                      variant="ghost"
+                      className="flex h-10 w-10 p-0 data-[state=open]:bg-muted"
+                    >
+                      <EllipsisIcon className="h-4 w-4" />
+                      <span className="sr-only">Open menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    collisionPadding={{ bottom: 100 }}
+                    align="end"
+                    className="w-[160px]"
+                  >
+                    <DropdownMenuItem
+                      onSelect={(event) => {
+                        event.preventDefault(); // Prevent auto-close behavior
+                        setDropdownOpen(false); // Close the dropdown
+                        requestAnimationFrame(() => inputRef.current?.focus());
+                      }}
+                    >
+                      <EditIcon className="mr-2.5 h-4 w-4" />
+                      Edit
+                    </DropdownMenuItem>
+                    {isDesktop ? (
+                      <AlertDialog
+                        open={deleteDialogOpen}
+                        onOpenChange={setDeleteDialogOpen}
+                      >
+                        <AlertDialogTrigger asChild>
+                          <DropdownMenuItem
+                            onSelect={(event) => {
+                              event.preventDefault();
+                              setDeleteDialogOpen(true);
+                            }}
+                          >
+                            <Trash2Icon className="mr-2.5 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDelete}>
+                              Continue
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    ) : (
+                      <Drawer
+                        open={deleteDialogOpen}
+                        onOpenChange={setDeleteDialogOpen}
+                      >
+                        <DrawerTrigger asChild>
+                          <DropdownMenuItem
+                            onSelect={(event) => {
+                              event.preventDefault();
+                              setDeleteDialogOpen(true);
+                            }}
+                          >
+                            <Trash2Icon className="mr-2.5 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DrawerTrigger>
+                        <DrawerContent>
+                          <DrawerHeader>
+                            <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+                            <DrawerDescription>
+                              This action cannot be undone.
+                            </DrawerDescription>
+                          </DrawerHeader>
+                          <DrawerFooter>
+                            <DrawerClose asChild>
+                              <Button variant="outline">Cancel</Button>
+                            </DrawerClose>
+                            <Button
+                              variant="destructive"
+                              onClick={handleDelete}
+                            >
+                              Continue
+                            </Button>
+                          </DrawerFooter>
+                        </DrawerContent>
+                      </Drawer>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
           );
         },
       }),
+
       // Weeks Columns
       ...weekKeys.map((week) =>
         columnHelper.accessor((row) => row.progress[week] || 0, {
@@ -179,6 +358,6 @@ const getColumns = (
       ),
     ];
     return columns;
-  }, [progressItems]);
+  }, [weekKeys.length]);
 
 export default getColumns;

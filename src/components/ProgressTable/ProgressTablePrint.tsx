@@ -54,8 +54,8 @@ const ProgressTablePrint: React.FC<Props> = ({ data, weekKeys }) => {
             </tr>
           </thead>
           <TableBody>
-            {data.map(({ position, description, progress }, index) => (
-              <TableRow className="border border-black" key={position}>
+            {data.map(({ id, description, progress }, index) => (
+              <TableRow className="border border-black" key={id}>
                 <TableCell className="border border-black text-center font-bold">
                   {index + 1}.
                 </TableCell>

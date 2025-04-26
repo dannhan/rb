@@ -20,7 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 
 import TablePagination from "@/components/TableFeatures/TablePagination";
 import ProgressTableToolbar from "./ProgressTableToolbar";
@@ -31,14 +30,12 @@ interface Props {
   progress: WithId<ProgressItem>[];
   weekKeys: string[];
   latestWeekNumber: number;
-  handleAddNewProgressItem: () => void;
+  handleAddNewProgressItem: () => string;
 }
 
 // TODO:
 // - dynamic width, refers to ImageDescription Input
-// - auto focus input
 // - auto scroll to the right-most
-// - check again
 const ProgressTable: React.FC<Props> = ({
   admin,
   progress,
@@ -46,15 +43,32 @@ const ProgressTable: React.FC<Props> = ({
   latestWeekNumber,
   handleAddNewProgressItem,
 }) => {
-  const newInputRef = React.useRef<HTMLInputElement | null>(null);
+  const newInputIdRef: React.MutableRefObject<string | null> =
+    React.useRef(null);
+  const columns = getColumns(admin, weekKeys, newInputIdRef);
 
   const table = useReactTable({
     data: progress,
-    columns: getColumns(admin, progress, weekKeys, newInputRef),
+    columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     autoResetPageIndex: false, //turn off auto reset of pageIndex
   });
+
+  React.useEffect(() => {
+    // Move to the prev page after delete last data on current page
+    if (table.getState().pagination.pageIndex > table.getPageCount() - 1) {
+      table.lastPage();
+    }
+
+    // After add new data move to the last page if can go to the next page
+    // NOTE:
+    // it will be better to create a state to check if it need to focus to the 
+    // new input rather than set the value of ref to be null on different comp
+    if (table.getCanNextPage() && newInputIdRef.current) {
+      table.lastPage();
+    }
+  }, [progress.length]);
 
   return (
     <div className="space-y-4 pb-16">
@@ -63,16 +77,13 @@ const ProgressTable: React.FC<Props> = ({
         progress={progress}
         weekKeys={weekKeys}
         latestWeekNumber={latestWeekNumber}
-        handleAddNewProgressItem={async () => {
-          handleAddNewProgressItem();
-          // wait for new page created
-          await new Promise((resolve) => setTimeout(resolve, 0));
-          if (table.getCanNextPage())
-            table.setPageIndex(table.getPageCount() - 1);
+        handleAddNewProgressItem={() => {
+          newInputIdRef.current = handleAddNewProgressItem();
         }}
       />
+
       <div className="relative overflow-clip rounded-lg border border-border">
-        <Table className="w-full">
+        <Table className="w-full border-separate border-spacing-0">
           <TableHeader className="bg-accent">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="hover:bg-transparent">
@@ -82,15 +93,15 @@ const ProgressTable: React.FC<Props> = ({
                     className={cn(
                       "relatve min-h-[52px] font-normal text-muted-foreground",
                       header.column.id === "no" &&
-                      "sticky left-0 z-10 w-12 bg-accent",
+                      "sticky left-0 z-10 w-12 border-r bg-accent",
                       header.column.id === "attachment" &&
-                      "sticky left-12 z-50 max-w-[132px] bg-accent px-2",
+                      "sticky left-12 z-50 max-w-[132px] border-r bg-accent px-2",
                       header.column.id === "description" &&
-                      "sticky left-[180px] z-10 min-w-[200px] whitespace-nowrap bg-accent px-4",
+                      "sticky left-[180px] z-10 min-w-[200px] whitespace-nowrap border-r bg-accent px-4",
                       header.column.id.startsWith("week") &&
                       "min-w-[80px] max-w-[125px] whitespace-nowrap border-l text-center md:min-w-[125px]",
                       // Remove border for left-most week column
-                      index === 2 && "border-l-0",
+                      index === 3 && "border-l-0",
                     )}
                   >
                     {header.isPlaceholder
@@ -99,68 +110,72 @@ const ProgressTable: React.FC<Props> = ({
                         header.column.columnDef.header,
                         header.getContext(),
                       )}
-                    {(header.column.id === "no" ||
-                      header.column.id === "attachment" ||
-                      header.column.id === "description") && (
-                        <Separator
-                          className="absolute right-0 top-0 h-[52px] w-[0.75px]"
-                          orientation="vertical"
-                        />
-                      )}
                   </TableHead>
                 ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="group"
-              >
-                {row.getVisibleCells().map((cell, rowIndex) => (
-                  <TableCell
-                    key={cell.id}
-                    className={cn(
-                      "h-[40px] whitespace-nowrap bg-background transition-colors group-hover:bg-accent",
-                      cell.column.id === "no" && "sticky left-0 z-50 min-w-12",
-                      cell.column.id === "attachment" &&
-                      "sticky left-12 z-50 max-w-[132px] px-0",
-                      cell.column.id === "description" &&
-                      "sticky left-[180px] z-50 min-w-[200px] px-1 py-1",
-                      cell.column.id.startsWith("week") &&
-                      "max-w-[120px] border-l px-1 py-1 text-center md:min-w-[120px]",
-                      cell.column.id === "action" && "sticky left-0",
-                      // Remove border for left-most week column
-                      rowIndex === 2 && "border-l-0",
-                    )}
+            {table.getRowModel().rows?.length ? (
+              <>
+                {table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.original.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    className="group"
                   >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    {(cell.column.id === "no" ||
-                      cell.column.id === "attachment" ||
-                      cell.column.id === "description") && (
-                        <Separator
-                          className="absolute right-0 top-0 h-full w-[0.75px]"
-                          orientation="vertical"
-                        />
-                      )}
-                  </TableCell>
+                    {row.getVisibleCells().map((cell, rowIndex) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cn(
+                          "h-[102px] whitespace-nowrap border-t bg-background transition-colors group-hover:bg-accent",
+                          cell.column.id === "no" &&
+                          "sticky left-0 z-50 min-w-12 border-r",
+                          cell.column.id === "attachment" &&
+                          "sticky left-12 z-50 max-w-[132px] border-r px-0",
+                          cell.column.id === "description" &&
+                          "sticky left-[180px] z-50 min-w-[200px] border-r px-1 py-1",
+                          cell.column.id.startsWith("week") &&
+                          "max-w-[120px] border-l px-1 py-1 text-center md:min-w-[120px]",
+                          cell.column.id === "action" && "sticky left-0",
+                          // Remove border for left-most week column
+                          rowIndex === 3 && "border-l-0",
+                        )}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
                 ))}
-              </TableRow>
-            ))}
+                {[
+                  ...Array(
+                    table.getState().pagination.pageSize -
+                    table.getRowModel().rows.length,
+                  ),
+                ].map((_, indexRow) => {
+                  return (
+                    <tr key={indexRow} className="h-[102px]">
+                      {[...Array(columns.length)].map((_, indexCol) => (
+                        <td
+                          key={indexCol}
+                          className={cn(
+                            "row-span-5",
+                            indexRow === 0 && "border-t",
+                          )}
+                        ></td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </>
+            ) : (
+              <></>
+            )}
           </TableBody>
         </Table>
-        {/* {admin && ( */}
-        {/*   <Button */}
-        {/*     className="w-full justify-start rounded-t-none border-x-0 border-b-0 border-t text-muted-foreground hover:text-muted-foreground" */}
-        {/*     variant="outline" */}
-        {/*     onClick={() => handleAddNewProgressItem()} */}
-        {/*   > */}
-        {/*     <Plus className="mr-2 h-4 w-4" /> */}
-        {/*     Add new item */}
-        {/*   </Button> */}
-        {/* )} */}
       </div>
       <TablePagination table={table} />
     </div>
