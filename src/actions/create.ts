@@ -238,69 +238,45 @@ export async function createProjectLocationWithoutImageAction({
   }
 }
 
-export async function addProgressItemAction({
-  progressId,
-  projectId,
-  newPosition,
-}: {
-  progressId: string;
-  projectId: string;
-  newPosition: number;
-}) {
+export async function addProgressItemAction(
+  projectId: string,
+  { id, position }: { id: string; position: number },
+) {
   const session = await auth();
   if (!session || !session.user.isAdmin)
     return { success: false, error: "Unauthorized" };
 
-  const progressCollection = db
-    .collection(PROJECT_COLLECTION)
-    .doc(projectId)
-    .collection("progress")
-    .doc(progressId);
+  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+  const itemsCollection = projectRef.collection("progress-items").doc(id);
 
   try {
-    await progressCollection.set({
-      description: "",
-      progress: {},
-      position: newPosition,
-    });
+    const data = { position, description: "", progress: {} };
+    await itemsCollection.set(data);
 
     revalidatePath(`${projectId}/progress-proyek`);
-    return { success: true };
+    return { success: true, data: { id, ...data } };
   } catch (error) {
     return { success: false, error: (error as Error).message };
   }
 }
 
-// TODO: change the structure of week and progress
-export async function addProgressWeekAction({
-  projectId,
-  week,
-}: {
-  projectId: string;
-  week: string;
-}) {
+export async function addProgressWeekAction(
+  projectId: string,
+  { weekCount, date }: { weekCount: number; date: Date },
+) {
   const session = await auth();
   if (!session || !session.user.isAdmin)
     return { success: false, error: "Unauthorized" };
 
-  const progressRef = db
-    .collection(PROJECT_COLLECTION)
-    .doc(projectId)
-    .collection("progress");
+  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+  const weeksRef = projectRef.collection("progress-weeks");
 
-  const progressDocs = await progressRef.get();
-  const batch = db.batch();
+  try {
+    await weeksRef.add({ weekCount, date: Timestamp.fromDate(date) });
+    revalidatePath(`${projectId}/progress-proyek`);
 
-  progressDocs.forEach((doc) => {
-    batch.update(doc.ref, {
-      [`progress.${week}`]: 0, // Default value for the new week
-    });
-  });
-
-  await batch.commit();
-
-  // need for the change to be visible
-  revalidatePath("/home");
-
-  return { success: true };
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
 }

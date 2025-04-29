@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 import { UTApi } from "uploadthing/server";
 import { FieldValue } from "firebase-admin/firestore";
 
+import type { WithId, ProgressItem } from "@/types";
+
 import { auth } from "@/auth";
 import { db } from "@/lib/firebase/admin";
 import { deleteDocumentWithSubcollections } from "@/lib/firebase/utils";
@@ -83,7 +85,7 @@ export async function deleteTeamMemberAction(
   }
 }
 
-// TODO: change file to attachment
+// TODO: change structure of the function
 export async function deleteTeamMemberFileAction(
   attachmentKey: string | undefined,
   projectId: string,
@@ -105,10 +107,10 @@ export async function deleteTeamMemberFileAction(
       utapi.deleteFiles(attachmentKey),
       attachmentsRef.delete(),
       teamId &&
-      projectRef
-        .collection("teams")
-        .doc(teamId)
-        .update({ attachment: FieldValue.delete() }),
+        projectRef
+          .collection("teams")
+          .doc(teamId)
+          .update({ attachment: FieldValue.delete() }),
     ]);
 
     revalidatePath(`${projectId}/tim-pelaksana`);
@@ -158,10 +160,10 @@ export async function deleteIdentityAction(id: string, projectId: string) {
   }
 }
 
+// NOTE: the "before" and "after" structure feel not clean
 export async function deleteProgressItemAction(
-  id: string,
-  attachmentKeys: string[],
   projectId: string,
+  { id, attachment }: WithId<ProgressItem>,
 ) {
   if (!id || !projectId) return { success: false, error: "Invalid." };
 
@@ -169,13 +171,17 @@ export async function deleteProgressItemAction(
   if (!session || !session.user.isAdmin)
     return { success: false, error: "Unautorhized" };
 
+  const attachmentKeys = attachment
+    ? Object.values(attachment).map((item) => item.key)
+    : [];
+
   const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
-  const progressRef = projectRef.collection("progress").doc(id);
+  const progressItemsRef = projectRef.collection("progress-items").doc(id);
 
   const batch = db.batch();
 
   try {
-    batch.delete(progressRef);
+    batch.delete(progressItemsRef);
 
     // Add attachment deletions to batch
     attachmentKeys.forEach((key) => {
@@ -197,12 +203,13 @@ export async function deleteProgressItemAction(
   }
 }
 
-// TODO: check again
 export async function deleteProgressAttachmentAction(
-  attachmentKey: string | undefined,
   projectId: string,
-  progressId: string,
-  type: "before" | "after",
+  {
+    id,
+    attachmentKey,
+    type,
+  }: { id: string; attachmentKey: string; type: "before" | "after" },
 ) {
   if (!attachmentKey) return { success: false, error: "Invalid." };
 
@@ -211,23 +218,19 @@ export async function deleteProgressAttachmentAction(
     return { success: false, error: "Unautorhized" };
 
   const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+  const itemCol = projectRef.collection("progress-items").doc(id);
   const attachmentsRef = projectRef
     .collection("attachments")
     .doc(attachmentKey);
 
   try {
     await Promise.all([
+      itemCol.update({ [`attachment.${type}`]: FieldValue.delete() }),
       utapi.deleteFiles(attachmentKey),
       attachmentsRef.delete(),
     ]);
 
-    await projectRef
-      .collection("progress")
-      .doc(progressId)
-      .update({ [`attachment.${type}`]: FieldValue.delete() });
-
     revalidatePath(`${projectId}/progress-proyek`);
-
     return { success: true };
   } catch (error) {
     console.error(error);

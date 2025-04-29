@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { PlusCircleIcon } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,9 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import AddWeekForm from "@/components/Form/AddWeekForm";
 
-type Props = { latestWeekNumber: number | undefined };
-
-const AddProgressDialog: React.FC<Props> = ({ latestWeekNumber }) => {
+const AddProgressDialog: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
 
   return (
@@ -35,10 +34,7 @@ const AddProgressDialog: React.FC<Props> = ({ latestWeekNumber }) => {
             you&apos;re done.
           </DialogDescription>
         </DialogHeader>
-        <AddWeekForm
-          latestWeekNumber={latestWeekNumber}
-          setIsDialogOpen={setIsDialogOpen}
-        />
+        <AddWeekForm setIsDialogOpen={setIsDialogOpen} />
       </DialogContent>
     </Dialog>
   );

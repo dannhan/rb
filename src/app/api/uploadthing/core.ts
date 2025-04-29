@@ -173,7 +173,7 @@ export const router = {
       }
     }),
 
-  // TODO:
+  // TODO: make variable for the argument
   progress: f({
     image: { maxFileSize: "32MB", maxFileCount: 1 },
     pdf: { maxFileSize: "32MB", maxFileCount: 1 },
@@ -202,12 +202,13 @@ export const router = {
     .onUploadComplete(async ({ metadata, file }) => {
       const category = "progressFile" satisfies AttachmentCategory;
       const { projectId, progressId } = metadata;
-      console.log({ projectId, progressId });
 
       const { name, size, type, key, url, appUrl } = file;
 
       const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
-      const progressRef = projectRef.collection("progress").doc(progressId);
+      const progressRef = projectRef
+        .collection("progress-items")
+        .doc(progressId);
       const attachmentRef = projectRef.collection("attachments").doc(file.key);
 
       const attachmentData = {

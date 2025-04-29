@@ -1,6 +1,6 @@
 "use client";
 
-import { FolderPlus, Inbox } from "lucide-react";
+import { Inbox } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import {
@@ -21,8 +21,6 @@ type Props = {
   form?: React.ReactNode;
 };
 
-// WARN:
-// TODO: improve this to also handle for manager
 const EmptyData: React.FC<Props> = ({
   admin,
   className,
@@ -41,7 +39,9 @@ const EmptyData: React.FC<Props> = ({
         <CardDescription className="text-center">{description}</CardDescription>
       </CardHeader>
       <CardContent className="flex justify-center pb-2">
-        {admin && <div className="h-[1px] w-full max-w-[240px] bg-border" />}
+        {admin && form && (
+          <div className="h-[1px] w-full max-w-[240px] bg-border" />
+        )}
       </CardContent>
       <CardFooter className="flex justify-center pt-0">
         {admin && form}

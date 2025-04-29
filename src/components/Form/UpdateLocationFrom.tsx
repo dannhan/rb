@@ -81,7 +81,7 @@ const UpdateLocationForm: React.FC<Props> = ({ projectId, location }) => {
       router.push("lokasi");
       router.refresh();
     } catch (error) {
-      console.log({ error });
+      console.error({ error });
       const message = getErrorMessage(error);
       toast.error(message);
     } finally {

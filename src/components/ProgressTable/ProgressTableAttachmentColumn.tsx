@@ -28,7 +28,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import FileIcons from "@/components/Attachment/FileIcons";
 import FileUploader from "@/components/Attachment/FileUploader";
 import { deleteProgressAttachmentAction } from "@/actions/delete";
 
@@ -37,23 +36,10 @@ type Props = {
   id: string;
   attachment?: Attachment;
   type: "after" | "before";
-  onUpload?: (files: File[]) => Promise<void>;
-  progresses?: Record<string, number>;
-  isUploading?: boolean;
-  deleteAction?: () => Promise<void>;
 };
 
 // TODO: make this work
-const AttachmentColumn: React.FC<Props> = ({
-  admin,
-  id,
-  attachment,
-  type,
-  // onUpload,
-  // progresses,
-  // isUploading,
-  // deleteAction,
-}) => {
+const AttachmentColumn: React.FC<Props> = ({ admin, id, attachment, type }) => {
   const params = useParams() as { project: string };
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
@@ -68,40 +54,38 @@ const AttachmentColumn: React.FC<Props> = ({
     onSuccess: () => router.refresh(),
   });
 
-  const handleDelete = async () => {
-    const toastId = toast.loading("Deleting attachment.");
-    try {
-      if (typeof params?.project !== "string")
-        throw new Error("Invalid form data. Please check your inputs.");
-
-      const result = await deleteProgressAttachmentAction(
-        attachment?.key,
-        params.project,
-        id,
-        type,
-      );
-
-      if (result?.error) {
-        toast.error("Failed to delete file.", { id: toastId });
-      } else {
-        toast.success("File deleted successfully", { id: toastId });
-        router.refresh();
-      }
-    } catch (error) {
-      // NOTE: track error
-      toast.error("Failed to delete file.", { id: toastId });
-    }
-  };
-
   if (attachment) {
+    const handleDelete = async () => {
+      const toastId = toast.loading("Deleting attachment.");
+      try {
+        if (typeof params?.project !== "string")
+          throw new Error("Invalid form data. Please check your inputs.");
+
+        const result = await deleteProgressAttachmentAction(params.project, {
+          id,
+          attachmentKey: attachment.key,
+          type,
+        });
+
+        if (result?.error) {
+          toast.error("Failed to delete file.", { id: toastId });
+        } else {
+          toast.success("File deleted successfully", { id: toastId });
+          router.refresh();
+        }
+      } catch (error) {
+        // NOTE: track error
+        toast.error("Failed to delete file.", { id: toastId });
+      }
+    };
+
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 px-2">
         <Link
           href={attachment.url}
           target="_blank"
           className="flex h-8 max-w-[200px] items-center overflow-hidden"
         >
-          {/* <FileIcons mimeType={attachment.type} /> */}
           <span className="overflow-hidden text-ellipsis whitespace-nowrap text-blue-600">
             {attachment.name}
           </span>
@@ -144,7 +128,7 @@ const AttachmentColumn: React.FC<Props> = ({
     return (
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline" size="sm" className="h-8">
+          <Button variant="outline" size="sm" className="mx-2 h-8">
             <PlusCircleIcon className="mr-2 h-3.5 w-3.5"></PlusCircleIcon>
             Attach file
           </Button>

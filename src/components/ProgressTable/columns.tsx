@@ -6,7 +6,8 @@ import { toast } from "sonner";
 import { EditIcon, EllipsisIcon, Trash2Icon } from "lucide-react";
 
 import { createColumnHelper, type ColumnDef } from "@tanstack/react-table";
-import type { WithId, ProgressItem } from "@/types";
+import type { WithId, ProgressItem, ProgressWeek } from "@/types";
+
 import {
   updateProgressItemDescriptionAction,
   updateProgressValueAction,
@@ -47,13 +48,15 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
 import AttachmentColumn from "./ProgressTableAttachmentColumn";
+import { format } from "date-fns";
+import { useProgressContext } from "../Providers/ProgressContext";
 
 const columnHelper = createColumnHelper<WithId<ProgressItem>>();
 
 const getColumns = (
   admin: boolean,
-  weekKeys: string[],
-  newInputIdRef: React.MutableRefObject<string | null>,
+  weeks: WithId<ProgressWeek>[],
+  // newInputIdRef: React.MutableRefObject<string | null>,
 ) =>
   React.useMemo<ColumnDef<WithId<ProgressItem>, any>[]>(() => {
     const columns = [
@@ -74,24 +77,20 @@ const getColumns = (
         cell: ({ row }) => {
           const attachment = row.original.attachment;
           return (
-            <div className="flex flex-col gap-2">
-              <div className="mx-2">
-                <AttachmentColumn
-                  admin={admin}
-                  id={row.original.id}
-                  attachment={attachment?.before}
-                  type="before"
-                />
-              </div>
+            <div className="flex flex-col items-start gap-2">
+              <AttachmentColumn
+                admin={admin}
+                id={row.original.id}
+                attachment={attachment?.before}
+                type="before"
+              />
               <Separator />
-              <div className="mx-2">
-                <AttachmentColumn
-                  admin={admin}
-                  id={row.original.id}
-                  attachment={attachment?.after}
-                  type="after"
-                />
-              </div>
+              <AttachmentColumn
+                admin={admin}
+                id={row.original.id}
+                attachment={attachment?.after}
+                type="after"
+              />
             </div>
           );
         },
@@ -104,18 +103,19 @@ const getColumns = (
         cell: ({ row }) => {
           const [dropdownOpen, setDropdownOpen] = React.useState(false);
           const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
+          const [value, setValue] = React.useState(row.original.description);
+          const params = useParams() as { project: string };
           const isDesktop = useMediaQuery("(min-width: 768px)");
+          const { shouldFocus, setShouldFocus } = useProgressContext();
 
+          // NOTE: not sure about the empty dependency array
           const inputRef = React.useRef<HTMLInputElement>(null);
           React.useEffect(() => {
-            if (row.original.id === newInputIdRef.current) {
+            if (shouldFocus) {
               inputRef.current?.focus();
-              newInputIdRef.current = null;
+              setShouldFocus(false);
             }
           }, []);
-
-          const [value, setValue] = React.useState(row.original.description);
-          const params = useParams();
 
           const handleMouseDown = (e: React.MouseEvent) => {
             e.preventDefault();
@@ -125,9 +125,8 @@ const getColumns = (
           const handleBlur = async () => {
             if (value !== row.original.description) {
               try {
-                await updateProgressItemDescriptionAction({
-                  projectId: params.project as string,
-                  progressId: row.original.id,
+                await updateProgressItemDescriptionAction(params.project, {
+                  id: row.original.id,
                   description: value,
                 });
               } catch (error) {
@@ -144,13 +143,8 @@ const getColumns = (
                 throw new Error("Invalid form data. Please check your inputs.");
 
               const result = await deleteProgressItemAction(
-                row.original.id,
-                row.original.attachment
-                  ? Object.values(row.original.attachment).map(
-                    (item) => item.key,
-                  )
-                  : [],
                 params.project,
+                row.original,
               );
 
               if (result?.error) {
@@ -289,37 +283,35 @@ const getColumns = (
       }),
 
       // Weeks Columns
-      ...weekKeys.map((week) =>
-        columnHelper.accessor((row) => row.progress[week] || 0, {
-          id: `week-${week}`,
+      ...weeks.map(({ id: weekId, weekCount, date }) =>
+        columnHelper.accessor((row) => row.progress[weekId] || 0, {
+          id: `week-${weekId}`,
           size: 40,
           header: () => {
-            const [weekNumber, date] = week.split("_");
             return (
               <>
-                W{weekNumber}
+                W{weekCount}
                 {/* TWO "&nbsp" is used to consistently render blank space without affacting layout */}
                 <div className="text-xs font-normal text-gray-500">
-                  &nbsp;{date}&nbsp;
+                  &nbsp;{format(new Date(date), "dd-MM-yy")}&nbsp;
                 </div>
               </>
             );
           },
           cell: ({ row }) => {
-            const params = useParams();
+            const params = useParams() as { project: string };
             const [value, setValue] = React.useState(
-              row.original.progress[week] || 0,
+              row.original.progress[weekId] || 0,
             );
 
             // Debounced server update (executes after 500ms of inactivity)
             const updateServer = React.useCallback(
-              debounce(async (newValue: number) => {
+              debounce(async (value: number) => {
                 try {
-                  await updateProgressValueAction({
-                    projectId: params.project as string,
-                    progressId: row.original.id,
-                    week: week,
-                    value: newValue,
+                  await updateProgressValueAction(params.project, {
+                    id: row.original.id,
+                    weekId,
+                    value,
                   });
                 } catch (error) {
                   console.error("Failed to update progress:", error);
@@ -347,7 +339,7 @@ const getColumns = (
                 className={cn(
                   "h-full w-full cursor-pointer border-0 bg-transparent text-center focus-visible:ring-2 focus-visible:ring-offset-0",
                   !admin &&
-                  "[appearance:textfield] disabled:cursor-default disabled:opacity-100 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+                    "[appearance:textfield] disabled:cursor-default disabled:opacity-100 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
                 )}
                 step="5"
                 disabled={!admin}
@@ -358,6 +350,6 @@ const getColumns = (
       ),
     ];
     return columns;
-  }, [weekKeys.length]);
+  }, [weeks.length]);
 
 export default getColumns;

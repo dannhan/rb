@@ -22,8 +22,8 @@ export const createDesignImageSubcategoryFormSchema = z.object({
 });
 
 export const addProgressWeekFormSchema = z.object({
-  weekNumber: z.coerce.number(),
-  date: z.string().min(0, " Required").trim(),
+  weekCount: z.coerce.number(),
+  date: z.date(),
 });
 
 export const createProjectLocationFormSchema = z.object({

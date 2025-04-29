@@ -3,15 +3,16 @@
 import * as React from "react";
 
 import {
+  functionalUpdate,
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
-import type { WithId, ProgressItem } from "@/types";
-
 import { cn } from "@/lib/utils";
+import { useLocalStorage } from "@uidotdev/usehooks";
+import { useProgressContext } from "@/components/Providers/ProgressContext";
 import {
   Table,
   TableBody,
@@ -21,38 +22,36 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import EmptyData from "@/components/Common/EmptyData";
 import TablePagination from "@/components/TableFeatures/TablePagination";
 import ProgressTableToolbar from "./ProgressTableToolbar";
 import getColumns from "./columns";
 
-interface Props {
-  admin: boolean;
-  progress: WithId<ProgressItem>[];
-  weekKeys: string[];
-  latestWeekNumber: number;
-  handleAddNewProgressItem: () => string;
-}
-
 // TODO:
 // - dynamic width, refers to ImageDescription Input
 // - auto scroll to the right-most
-const ProgressTable: React.FC<Props> = ({
-  admin,
-  progress,
-  weekKeys,
-  latestWeekNumber,
-  handleAddNewProgressItem,
-}) => {
-  const newInputIdRef: React.MutableRefObject<string | null> =
-    React.useRef(null);
-  const columns = getColumns(admin, weekKeys, newInputIdRef);
+const ProgressTable: React.FC<{ admin: boolean }> = ({ admin }) => {
+  // NOTE: using this make a white screen when reload
+  const [pageSize, setPageSize] = useLocalStorage("pageSize", 10);
+  const [pagination, setPagination] = React.useState({
+    pageSize,
+    pageIndex: 0,
+  });
+  const { weeks, items, shouldFocus } = useProgressContext();
 
+  const columns = getColumns(admin, weeks);
   const table = useReactTable({
-    data: progress,
+    data: items,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     autoResetPageIndex: false, //turn off auto reset of pageIndex
+    onPaginationChange: (updater) => {
+      const newValue = functionalUpdate(updater, pagination);
+      setPageSize(newValue.pageSize);
+      return setPagination(newValue);
+    },
+    state: { pagination },
   });
 
   React.useEffect(() => {
@@ -62,26 +61,14 @@ const ProgressTable: React.FC<Props> = ({
     }
 
     // After add new data move to the last page if can go to the next page
-    // NOTE:
-    // it will be better to create a state to check if it need to focus to the 
-    // new input rather than set the value of ref to be null on different comp
-    if (table.getCanNextPage() && newInputIdRef.current) {
+    if (table.getCanNextPage() && shouldFocus) {
       table.lastPage();
     }
-  }, [progress.length]);
+  }, [items.length]);
 
   return (
     <div className="space-y-4 pb-16">
-      <ProgressTableToolbar
-        admin={admin}
-        progress={progress}
-        weekKeys={weekKeys}
-        latestWeekNumber={latestWeekNumber}
-        handleAddNewProgressItem={() => {
-          newInputIdRef.current = handleAddNewProgressItem();
-        }}
-      />
-
+      <ProgressTableToolbar admin={admin} weeks={weeks} />
       <div className="relative overflow-clip rounded-lg border border-border">
         <Table className="w-full border-separate border-spacing-0">
           <TableHeader className="bg-accent">
@@ -93,13 +80,13 @@ const ProgressTable: React.FC<Props> = ({
                     className={cn(
                       "relatve min-h-[52px] font-normal text-muted-foreground",
                       header.column.id === "no" &&
-                      "sticky left-0 z-10 w-12 border-r bg-accent",
+                        "sticky left-0 z-10 w-12 border-r bg-accent",
                       header.column.id === "attachment" &&
-                      "sticky left-12 z-50 max-w-[132px] border-r bg-accent px-2",
+                        "sticky left-12 z-50 max-w-[132px] border-r bg-accent px-2",
                       header.column.id === "description" &&
-                      "sticky left-[180px] z-10 min-w-[200px] whitespace-nowrap border-r bg-accent px-4",
+                        "sticky left-[180px] z-10 min-w-[200px] whitespace-nowrap border-r bg-accent px-4",
                       header.column.id.startsWith("week") &&
-                      "min-w-[80px] max-w-[125px] whitespace-nowrap border-l text-center md:min-w-[125px]",
+                        "min-w-[80px] max-w-[125px] whitespace-nowrap border-l text-center md:min-w-[125px]",
                       // Remove border for left-most week column
                       index === 3 && "border-l-0",
                     )}
@@ -107,9 +94,9 @@ const ProgressTable: React.FC<Props> = ({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -130,13 +117,13 @@ const ProgressTable: React.FC<Props> = ({
                         className={cn(
                           "h-[102px] whitespace-nowrap border-t bg-background transition-colors group-hover:bg-accent",
                           cell.column.id === "no" &&
-                          "sticky left-0 z-50 min-w-12 border-r",
+                            "sticky left-0 z-50 min-w-12 border-r",
                           cell.column.id === "attachment" &&
-                          "sticky left-12 z-50 max-w-[132px] border-r px-0",
+                            "sticky left-12 z-50 max-w-[132px] border-r px-0",
                           cell.column.id === "description" &&
-                          "sticky left-[180px] z-50 min-w-[200px] border-r px-1 py-1",
+                            "sticky left-[180px] z-50 min-w-[200px] border-r px-1 py-1",
                           cell.column.id.startsWith("week") &&
-                          "max-w-[120px] border-l px-1 py-1 text-center md:min-w-[120px]",
+                            "max-w-[120px] border-l px-1 py-1 text-center md:min-w-[120px]",
                           cell.column.id === "action" && "sticky left-0",
                           // Remove border for left-most week column
                           rowIndex === 3 && "border-l-0",
@@ -153,7 +140,7 @@ const ProgressTable: React.FC<Props> = ({
                 {[
                   ...Array(
                     table.getState().pagination.pageSize -
-                    table.getRowModel().rows.length,
+                      table.getRowModel().rows.length,
                   ),
                 ].map((_, indexRow) => {
                   return (
@@ -172,7 +159,18 @@ const ProgressTable: React.FC<Props> = ({
                 })}
               </>
             ) : (
-              <></>
+              <TableRow className="hover:bg-transparent">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-96 border-t text-center text-lg"
+                >
+                  <EmptyData
+                    admin={admin}
+                    className="w-full border-none bg-transparent"
+                    title="No data found."
+                  />
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>

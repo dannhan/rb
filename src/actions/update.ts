@@ -205,55 +205,46 @@ export async function updateAttachmentDescriptionAction({
   }
 }
 
-export async function updateDesignImageAction() {}
-
-export async function updateProgressItemDescriptionAction({
-  projectId,
-  progressId,
-  description,
-}: {
-  projectId: string;
-  progressId: string;
-  description: string;
-}) {
+export async function updateProgressItemDescriptionAction(
+  projectId: string,
+  { id, description }: { id: string; description: string },
+) {
   const session = await auth();
   if (!session || !session.user.isAdmin)
     return { success: false, error: "Unautorhized" };
 
-  const ref = db
-    .collection(PROJECT_COLLECTION)
-    .doc(projectId)
-    .collection("progress")
-    .doc(progressId);
+  try {
+    await db
+      .collection(PROJECT_COLLECTION)
+      .doc(projectId)
+      .collection("progress-items")
+      .doc(id)
+      .update({ description });
 
-  await ref.update({ description });
-
-  return { success: true };
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
 }
 
-export async function updateProgressValueAction({
-  projectId,
-  progressId,
-  week,
-  value,
-}: {
-  projectId: string;
-  progressId: string;
-  week: string;
-  value: number;
-}) {
+export async function updateProgressValueAction(
+  projectId: string,
+  { id, weekId, value }: { id: string; weekId: string; value: number },
+) {
   const session = await auth();
   if (!session || !session.user.isAdmin)
     return { success: false, error: "Unautorhized" };
 
-  const ref = db
-    .collection(PROJECT_COLLECTION)
-    .doc(projectId)
-    .collection("progress")
-    .doc(progressId);
+  try {
+    await db
+      .collection(PROJECT_COLLECTION)
+      .doc(projectId)
+      .collection("progress-items")
+      .doc(id)
+      .update({ [`progress.${weekId}`]: value });
 
-  // Update only the specific week
-  await ref.update({ [`progress.${week}`]: value });
-
-  return { success: true };
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
 }

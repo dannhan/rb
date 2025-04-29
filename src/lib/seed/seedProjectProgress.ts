@@ -1,17 +1,37 @@
 import { db } from "@/lib/firebase/admin";
 
-import { ProgressItem } from "@/types";
+import type { WithId, ProgressItem, ProgressWeek } from "@/types";
+
+import { nanoid } from "@/lib/nanoid";
+import { Timestamp } from "firebase-admin/firestore";
 
 export async function seedProjectProgress() {
-  const ref = db
+  const progressItemsRef = db
     .collection("test-projects")
     .doc("ria-busana-test")
-    .collection("progress");
+    .collection("progress-items");
+  const progressWeeksRef = db
+    .collection("test-projects")
+    .doc("ria-busana-test")
+    .collection("progress-weeks");
+
+  const progressWeeks: WithId<ProgressWeek>[] = [
+    {
+      id: nanoid(),
+      weekCount: 11,
+      date: Timestamp.fromDate(new Date(2023, 8, 18)),
+    },
+    {
+      id: nanoid(),
+      weekCount: 12,
+      date: Timestamp.fromDate(new Date(2023, 8, 25)),
+    },
+  ];
 
   // prettier-ignore
   const progressItems: Omit<ProgressItem, "position">[] = [
-    { description: "Pondasi tapak", progress: { "11_18-08-23": 100, "12_25-08-23": 100 } },
-    { description: "Struktur lantai 1", progress: { "11_18-08-23": 20, "12_25-08-23": 35 } },
+    { description: "Pondasi tapak", progress: { [progressWeeks[0].id]: 100, [progressWeeks[1].id]: 100 } },
+    { description: "Struktur lantai 1", progress: { [progressWeeks[0].id]: 20, [progressWeeks[1].id]: 35 } },
     { description: "Struktur lantai 2", progress: {} },
     { description: "Struktur lantai 3 baja", progress: {} },
     { description: "Atap spandex", progress: {} },
@@ -32,8 +52,13 @@ export async function seedProjectProgress() {
 
   // Batch write for Firestore
   const batch = db.batch();
+
+  progressWeeks.forEach(({ id, ...rest }) => {
+    const docRef = progressWeeksRef.doc(id);
+    batch.set(docRef, rest satisfies ProgressWeek);
+  });
   progressItems.forEach((item, index) => {
-    const docRef = ref.doc(); // Auto-generate Firestore document ID
+    const docRef = progressItemsRef.doc(); // Auto-generate Firestore document ID
     batch.set(docRef, {
       position: (index + 1) * 1000, // Sparse ordering for future flexibility
       ...item,

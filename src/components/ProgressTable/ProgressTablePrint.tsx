@@ -1,24 +1,21 @@
 "use client";
 
 import * as React from "react";
+
 import { useReactToPrint } from "react-to-print";
+import { format } from "date-fns";
 import { PrinterIcon } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+import { useProgressContext } from "@/components/Providers/ProgressContext";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-
 import DocumentHeader from "@/components/Common/DocumentHeader";
 
-type ProgressData = {
-  id: string;
-  position: number;
-  description: string;
-  progress: Record<string, number>;
-};
+type Props = { className?: string };
+const ProgressTablePrint: React.FC<Props> = ({ className }) => {
+  const { items, weeks } = useProgressContext();
 
-type Props = { data: ProgressData[]; weekKeys: string[] };
-
-const ProgressTablePrint: React.FC<Props> = ({ data, weekKeys }) => {
   const componentRef = React.useRef(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -29,7 +26,7 @@ const ProgressTablePrint: React.FC<Props> = ({ data, weekKeys }) => {
       <Button
         onClick={handlePrint}
         variant="secondary"
-        className="flex items-center border"
+        className={cn("flex items-center border", className)}
       >
         <PrinterIcon className="mr-2 h-4 w-4" />
         Print
@@ -41,20 +38,19 @@ const ProgressTablePrint: React.FC<Props> = ({ data, weekKeys }) => {
             <tr className="border border-black bg-yellow-300 text-black">
               <th className="border border-black px-2 py-1">NO.</th>
               <th className="border border-black px-2 py-1">DESKRIPSI</th>
-              {weekKeys.map((header) => {
-                const [weekNumber, date] = header.split("_");
+              {weeks.map(({ id, weekCount, date }) => {
                 return (
-                  <th key={header} className="border border-black px-2 py-1">
-                    W{weekNumber}
+                  <th key={id} className="border border-black px-2 py-1">
+                    W{weekCount}
                     {/* TWO "&nbsp" is used to consistently render blank space without affacting layout */}
-                    <div>&nbsp;{date}&nbsp;</div>
+                    <div>&nbsp;{format(new Date(date), "dd-MM-yy")}&nbsp;</div>
                   </th>
                 );
               })}
             </tr>
           </thead>
           <TableBody>
-            {data.map(({ id, description, progress }, index) => (
+            {items.map(({ id, description, progress }, index) => (
               <TableRow className="border border-black" key={id}>
                 <TableCell className="border border-black text-center font-bold">
                   {index + 1}.
@@ -62,12 +58,12 @@ const ProgressTablePrint: React.FC<Props> = ({ data, weekKeys }) => {
                 <TableCell className="border border-black font-bold">
                   {description}
                 </TableCell>
-                {weekKeys.map((header) => (
+                {weeks.map(({ id }) => (
                   <TableCell
-                    key={header}
+                    key={id}
                     className="border border-black text-center"
                   >
-                    {progress[header] ? `${progress[header]}%` : "0%"}
+                    {progress[id] ? `${progress[id]}%` : "0%"}
                   </TableCell>
                 ))}
               </TableRow>

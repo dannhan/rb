@@ -1,3 +1,5 @@
+// TODO: might just change the createdAt to be an ISO string
+
 import { z } from "zod";
 
 export const attachmentCategorySchema = z.enum([
@@ -23,14 +25,12 @@ export const attachmentSchema = z.object({
   createdAt: z.any(),
 });
 
-// TODO:
 export const projectLocationSchema = z.object({
   detailAddress: z.string(),
   link: z.string().url().or(z.string().min(0).max(0)),
   image: attachmentSchema.optional(),
 });
 
-// TODO: change createdAt from any to more specific type
 export const projectSchema = z.object({
   title: z.string(),
   type: z.string(),
@@ -57,6 +57,11 @@ export const teamMemberSchema = z.object({
 export const designImageSubcategorySchema = z.object({
   title: z.string(),
   createAt: z.any(),
+});
+
+export const progressWeekSchema = z.object({
+  weekCount: z.number(),
+  date: z.any(),
 });
 
 export const progressItemSchema = z.object({
