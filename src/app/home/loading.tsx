@@ -6,7 +6,6 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { Logo } from "@/components/logo";
-import { ModeToggle } from "@/components/mode-toggle";
 
 export default function Loading() {
   return (

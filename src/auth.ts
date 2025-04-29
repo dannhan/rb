@@ -20,14 +20,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         >;
         const isAdmin = email === "admin@gmail.com";
 
-        console.log(email, password, isAdmin);
         return await signInWithEmailAndPassword(firebaseAuth, email, password)
           .then((userCredential) => {
             if (userCredential.user) {
               return { ...userCredential.user, isAdmin };
             }
 
-            console.log("THIS SHOULD NOT BE LOGGED");
+            console.error("THIS SHOULD NOT BE LOGGED");
             return null;
           })
           .catch((error) => console.log(error));

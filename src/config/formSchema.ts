@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+export const loginFormSchema = z.object({
+  password: z.string().min(1, "Please fill out this field"),
+});
+
 export const createProjectFormSchema = z.object({
   title: z.string().min(1, "Project name is required.").trim(),
   type: z.string().min(3, "Please select a type.").trim(),

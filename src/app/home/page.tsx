@@ -8,9 +8,9 @@ import { projectSchema } from "@/config/dataSchema";
 
 import { Header } from "@/layouts/header";
 import { Separator } from "@/components/ui/separator";
-import { ModeToggle } from "@/components/mode-toggle";
 import { Logo } from "@/components/logo";
 import { HomeLogoutForm } from "@/components/logout-form";
+import ThemeToggle from "@/components/Common/ThemeToggle";
 import ProjectSearchDialog from "@/components/Home/ProjectSearchDialog";
 import ProjectCardsList from "@/components/Home/ProjectCardsList";
 
@@ -46,7 +46,7 @@ export default async function Page() {
         <Logo />
         <div className="flex items-center gap-2">
           <ProjectSearchDialog projects={projects} />
-          <ModeToggle />
+          <ThemeToggle />
           <HomeLogoutForm />
         </div>
       </Header>

@@ -5,7 +5,7 @@ import { NextAuthProvider } from "@/components/providers/next-auth-provider";
 import { FirebaseAuthProvider } from "@/components/providers/firebase-auth-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ToastProvider } from "@/components/providers/toast-provider";
-import { TailwindIndicator } from "@/components/tailwind-indicator";
+import TailwindIndicator from "@/components/TailwindIndicator";
 
 type Props = React.PropsWithChildren;
 

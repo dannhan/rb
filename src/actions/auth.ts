@@ -5,25 +5,26 @@ import { isRedirectError } from "next/dist/client/components/redirect";
 import { CredentialsSignin } from "next-auth";
 import { signIn, signOut } from "@/auth";
 
-// todos:
+// TODO:
 // 1. improve for handle any error like credential and timeout error
 
-export async function login(_: { message: string }, formData: FormData) {
+export async function login({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
   try {
-    const email = formData.get("email");
-    const password = formData.get("password");
-
-    console.log(email, password);
-
     await signIn("credentials", { email, password, redirectTo: "/home" });
 
     return { message: "" };
   } catch (error: any) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // TODO:
+    console.log("SOMEHOW THE ERROR IS HAPPENING IDK WHY THE FUCK IS THAT: ", {
+      password,
+    });
+    if (isRedirectError(error)) throw error;
 
     if (error instanceof CredentialsSignin) {
       return { message: "Incorrect password. Please try again." };
