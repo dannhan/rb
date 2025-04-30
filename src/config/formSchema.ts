@@ -6,7 +6,7 @@ export const loginFormSchema = z.object({
 
 export const createProjectFormSchema = z.object({
   title: z.string().min(1, "Project name is required.").trim(),
-  type: z.string().min(3, "Please select a type.").trim(),
+  type: z.enum(["konstruksi", "renovasi"]),
 });
 
 export const addIdentityFormSchema = z.object({

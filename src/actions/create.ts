@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { Timestamp } from "firebase-admin/firestore";
 import { z } from "zod";
 
 import type {
@@ -11,6 +10,8 @@ import type {
   TeamMember,
   Identity,
   DesignImageSubcategory,
+  ProgressWeek,
+  ProgressItem,
 } from "@/types";
 
 import { auth } from "@/auth";
@@ -65,7 +66,7 @@ export async function createProjectAction(
     // Add new project
     await ref.set({
       ...data,
-      createdAt: Timestamp.now(),
+      createdAt: new Date().toISOString(),
     } satisfies Project);
   } catch (error) {
     return { success: false, error: (error as Error).message };
@@ -192,7 +193,7 @@ export async function createDesignImageSubcategoryAction({
   try {
     await ref.add({
       ...parsed.data,
-      createAt: Timestamp.now(),
+      createAt: new Date().toISOString(),
     } satisfies DesignImageSubcategory);
 
     revalidatePath(`/${projectId}/gambar-desain`);
@@ -250,7 +251,11 @@ export async function addProgressItemAction(
   const itemsCollection = projectRef.collection("progress-items").doc(id);
 
   try {
-    const data = { position, description: "", progress: {} };
+    const data = {
+      position,
+      description: "",
+      progress: {},
+    } satisfies ProgressItem;
     await itemsCollection.set(data);
 
     revalidatePath(`${projectId}/progress-proyek`);
@@ -272,7 +277,10 @@ export async function addProgressWeekAction(
   const weeksRef = projectRef.collection("progress-weeks");
 
   try {
-    await weeksRef.add({ weekCount, date: Timestamp.fromDate(date) });
+    await weeksRef.add({
+      weekCount,
+      date: new Date(date).toISOString(),
+    } satisfies ProgressWeek);
     revalidatePath(`${projectId}/progress-proyek`);
 
     return { success: true };

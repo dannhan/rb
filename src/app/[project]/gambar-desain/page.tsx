@@ -20,6 +20,9 @@ type Props = {
 };
 
 export default async function Page({ params, searchParams }: Props) {
+  // NOTE: toLowerCase???
+  // TODO: toLowerCase???
+  // WARN: toLowerCase???
   const query = searchParams?.query || "";
   const session = await auth();
   const admin = session?.user?.isAdmin ?? false;
@@ -31,15 +34,14 @@ export default async function Page({ params, searchParams }: Props) {
   const snapshot = await ref.orderBy("createAt", "desc").get();
 
   const filteredSubcategories: WithId<DesignImageSubcategory>[] = [];
-  for (const doc of snapshot.docs) {
+  snapshot.docs.forEach((doc) => {
     const parsed = designImageSubcategorySchema.safeParse(doc.data());
-    if (parsed.success) {
-      const title = parsed.data.title.toLowerCase();
-      if (!query || title.includes(query)) {
-        filteredSubcategories.push({ id: doc.id, title: parsed.data.title });
-      }
+    if (!parsed.success) return;
+
+    if (!query || parsed.data.title.toLowerCase().includes(query)) {
+      filteredSubcategories.push({ id: doc.id, ...parsed.data });
     }
-  }
+  });
 
   // Fetch attachments for each filtered category
   const categoriesWithImages = await Promise.all(
@@ -54,13 +56,12 @@ export default async function Page({ params, searchParams }: Props) {
       const snapshot = await attachmentRef.get();
       const attachments: WithId<Attachment>[] = [];
 
-      for (const doc of snapshot.docs) {
+      snapshot.forEach((doc) => {
         const parsed = attachmentSchema.safeParse(doc.data());
-        if (parsed.success) {
-          const { createdAt, ...rest } = parsed.data;
-          attachments.push({ id: doc.id, ...rest });
-        }
-      }
+        if (!parsed.success) return;
+
+        attachments.push({ id: doc.id, ...parsed.data });
+      });
 
       return { category, attachments };
     }),

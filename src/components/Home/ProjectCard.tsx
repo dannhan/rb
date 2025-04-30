@@ -7,11 +7,7 @@ import type { WithId, Project } from "@/types";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import ProjectCardAction from "./ProjectCardAction";
 
-type Props = {
-  admin: boolean;
-  project: WithId<Project>;
-};
-
+type Props = { admin: boolean; project: WithId<Project> };
 const ProjectCard: React.FC<Props> = ({ admin, project }) => {
   return (
     <Card className="group relative h-20 border-none shadow-[0px_1px_2px_.75px_#00000024] transition-colors hover:bg-accent lg:h-full">

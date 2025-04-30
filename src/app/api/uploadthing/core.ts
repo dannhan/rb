@@ -1,7 +1,6 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UTApi } from "uploadthing/server";
 import { UploadThingError } from "uploadthing/server";
-import { Timestamp } from "firebase-admin/firestore";
 import { z } from "zod";
 
 import { auth } from "@/auth";
@@ -57,7 +56,7 @@ export const router = {
           url,
           appUrl,
           category,
-          createdAt: Timestamp.now(),
+          createdAt: new Date().toISOString(),
         } satisfies Attachment);
 
         return { success: true };
@@ -105,7 +104,7 @@ export const router = {
           appUrl,
           category,
           subCategory,
-          createdAt: Timestamp.now(),
+          createdAt: new Date().toISOString(),
         } satisfies Attachment);
 
         return { success: true };
@@ -157,7 +156,7 @@ export const router = {
         url,
         appUrl,
         category,
-        createdAt: Timestamp.now(),
+        createdAt: new Date().toISOString(),
       } satisfies Attachment;
 
       try {
@@ -219,7 +218,7 @@ export const router = {
         url,
         appUrl,
         category,
-        createdAt: Timestamp.now(),
+        createdAt: new Date().toISOString(),
       } satisfies Attachment;
 
       try {
@@ -267,7 +266,7 @@ export const router = {
         url,
         appUrl,
         category: "locationMap",
-        createdAt: Timestamp.now(),
+        createdAt: new Date().toISOString(),
       } satisfies Attachment;
       const locationData = {
         detailAddress,

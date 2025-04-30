@@ -15,9 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import CreateProjectForm from "@/components/Form/CreateProjectForm";
 
-type Props = {
-  defaultType?: string;
-};
+type Props = { defaultType?: "renovasi" | "konstruksi" };
 
 const CreateProjectSheet: React.FC<Props> = ({ defaultType }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);

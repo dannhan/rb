@@ -1,5 +1,3 @@
-import { Timestamp } from "firebase-admin/firestore";
-
 import { db } from "@/lib/firebase/admin";
 import { PROJECT_COLLECTION } from "@/lib/utils";
 
@@ -29,15 +27,7 @@ export default async function Page() {
     const parsed = projectSchema.safeParse(doc.data());
     if (!parsed.success) return;
 
-    const data = {
-      ...parsed.data,
-      id: doc.id,
-      createdAt: (parsed.data.createdAt as Timestamp).toDate(),
-    };
-
-    if (data.type === "konstruksi" || data.type === "renovasi") {
-      projects[data.type].push(data);
-    }
+    projects[parsed.data.type].push({ id: doc.id, ...parsed.data });
   });
 
   return (

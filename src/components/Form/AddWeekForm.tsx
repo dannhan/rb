@@ -3,13 +3,15 @@
 import * as React from "react";
 import { useParams } from "next/navigation";
 
-import { format } from "date-fns";
+import { format, addWeeks } from "date-fns";
+import { id } from "date-fns/locale";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "lucide-react";
 
+import type { ProgressWeek, WithId } from "@/types";
 import { addProgressWeekFormSchema } from "@/config/formSchema";
 import { addProgressWeekAction } from "@/actions/create";
 
@@ -37,16 +39,21 @@ import { Icons } from "@/components/icons";
 
 type Props = { setIsDialogOpen: (value: boolean) => void };
 
-// WARN:
-// TODO: date
 const AddWeekForm: React.FC<Props> = ({ setIsDialogOpen }) => {
-  const params = useParams();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const params = useParams();
+
   const { weeks } = useProgressContext();
+  const lastWeek: WithId<ProgressWeek> | undefined = weeks.at(-1);
 
   const form = useForm<z.infer<typeof addProgressWeekFormSchema>>({
     resolver: zodResolver(addProgressWeekFormSchema),
-    defaultValues: { weekCount: (weeks.at(-1)?.weekCount ?? 0) + 1 },
+    defaultValues: lastWeek
+      ? {
+        weekCount: lastWeek.weekCount + 1,
+        date: addWeeks(new Date(lastWeek.date), 1),
+      }
+      : { weekCount: 1, date: new Date() },
   });
 
   const onSubmit = async (
@@ -61,6 +68,7 @@ const AddWeekForm: React.FC<Props> = ({ setIsDialogOpen }) => {
       toast.success("New week has been added.");
       setIsDialogOpen(false);
     } catch (error) {
+      new Date();
       const message = getErrorMessage(error);
       toast.error(message);
     } finally {
@@ -90,9 +98,6 @@ const AddWeekForm: React.FC<Props> = ({ setIsDialogOpen }) => {
           render={({ field }) => (
             <FormItem className="grid w-full items-center gap-1.5">
               <FormLabel>Tanggal</FormLabel>
-              {/* <FormControl> */}
-              {/*   <Input {...field} /> */}
-              {/* </FormControl> */}
               <Popover modal={true}>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -104,7 +109,9 @@ const AddWeekForm: React.FC<Props> = ({ setIsDialogOpen }) => {
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "PPP")
+                        format(field.value, "d MMMM yyyy", {
+                          locale: id,
+                        })
                       ) : (
                         <span>Pick a date</span>
                       )}
@@ -115,6 +122,7 @@ const AddWeekForm: React.FC<Props> = ({ setIsDialogOpen }) => {
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
+                    locale={id}
                     selected={field.value}
                     onSelect={field.onChange}
                     initialFocus

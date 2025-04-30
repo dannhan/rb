@@ -28,10 +28,9 @@ export default async function Page({ params }: Props) {
 
   snapshot.docs.map((doc) => {
     const parsed = attachmentSchema.safeParse(doc.data());
-    if (parsed.success) {
-      const { createdAt, ...rest } = parsed.data; // Exclude 'createdAt'
-      attachments.push({ ...rest });
-    }
+    if (!parsed.success) return;
+
+    attachments.push(parsed.data);
   });
 
   const session = await auth();

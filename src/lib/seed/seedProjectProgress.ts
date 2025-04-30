@@ -3,7 +3,6 @@ import { db } from "@/lib/firebase/admin";
 import type { WithId, ProgressItem, ProgressWeek } from "@/types";
 
 import { nanoid } from "@/lib/nanoid";
-import { Timestamp } from "firebase-admin/firestore";
 
 export async function seedProjectProgress() {
   const progressItemsRef = db
@@ -19,12 +18,12 @@ export async function seedProjectProgress() {
     {
       id: nanoid(),
       weekCount: 11,
-      date: Timestamp.fromDate(new Date(2023, 8, 18)),
+      date: new Date(2023, 8, 18).toISOString(),
     },
     {
       id: nanoid(),
       weekCount: 12,
-      date: Timestamp.fromDate(new Date(2023, 8, 25)),
+      date: new Date(2023, 8, 25).toISOString(),
     },
   ];
 

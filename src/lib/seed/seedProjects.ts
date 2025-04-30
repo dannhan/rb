@@ -13,11 +13,11 @@ export async function seedProjects() {
   await ref.doc("ria-busana-test").set({
     title: "Ria Busana Test",
     type: "konstruksi",
-    createdAt: Timestamp.now(),
+    createdAt: new Date().toISOString(),
   } satisfies Project);
   await ref.doc("ria-busana-semarang").set({
     title: "Ria Busana Semarang",
     type: "renovasi",
-    createdAt: Timestamp.now(),
+    createdAt: new Date().toISOString(),
   } satisfies Project);
 }

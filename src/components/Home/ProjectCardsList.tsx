@@ -5,7 +5,7 @@ import ProjectCard from "./ProjectCard";
 import CreateProjectSheet from "./CreateProjectSheet";
 import ProjectsViewMore from "./ProjectsViewMore";
 
-type Props = { projects: WithId<Project>[]; type: string };
+type Props = { projects: WithId<Project>[]; type: "renovasi" | "konstruksi" };
 
 const ProjectCardsList: React.FC<Props> = async ({ projects, type }) => {
   const displayedProjects = projects.slice(0, 3);

@@ -3,7 +3,6 @@ import { auth } from "@/auth";
 import { db } from "@/lib/firebase/admin";
 import { PROJECT_COLLECTION } from "@/lib/utils";
 
-import type { Timestamp } from "firebase-admin/firestore";
 import type { WithId, ProgressItem, ProgressWeek } from "@/types";
 import { progressItemSchema, progressWeekSchema } from "@/config/dataSchema";
 
@@ -27,9 +26,6 @@ export default async function Page({ params }: Props) {
     const parsed = progressItemSchema.safeParse(doc.data());
     if (!parsed.success) return;
 
-    delete parsed.data.attachment?.before?.createdAt;
-    delete parsed.data.attachment?.after?.createdAt;
-
     items.push({ id: doc.id, ...parsed.data });
   });
 
@@ -40,12 +36,7 @@ export default async function Page({ params }: Props) {
     const parsed = progressWeekSchema.safeParse(doc.data());
     if (!parsed.success) return;
 
-    const { weekCount, date: timestamp } = parsed.data;
-    weeks.push({
-      id: doc.id,
-      weekCount,
-      date: (timestamp as Timestamp).toDate().toISOString(),
-    });
+    weeks.push({ id: doc.id, ...parsed.data });
   });
 
   return (

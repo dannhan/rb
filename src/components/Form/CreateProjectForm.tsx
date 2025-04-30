@@ -34,7 +34,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 
-type Props = { defaultType?: string };
+type Props = { defaultType?: "renovasi" | "konstruksi" };
 
 const CreateProjectForm: React.FC<Props> = ({ defaultType }) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -46,7 +46,7 @@ const CreateProjectForm: React.FC<Props> = ({ defaultType }) => {
 
   const form = useForm<z.infer<typeof createProjectFormSchema>>({
     resolver: zodResolver(createProjectFormSchema),
-    defaultValues: { title: "", type: defaultType || "" },
+    defaultValues: { title: "", type: defaultType },
   });
 
   const onSubmit = async (values: z.infer<typeof createProjectFormSchema>) => {

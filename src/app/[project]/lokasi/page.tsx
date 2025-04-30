@@ -26,8 +26,6 @@ export default async function Page({ params, searchParams }: Props) {
   const [session] = await Promise.all([auth()]);
   const admin = session?.user.isAdmin;
 
-  delete data?.image?.createdAt;
-
   return (
     <main className="mx-auto max-w-[750px] rounded-lg border bg-card shadow-sm">
       <div className="flex h-16 items-center justify-between border-b px-4 py-3">

@@ -22,7 +22,7 @@ export const attachmentSchema = z.object({
   category: attachmentCategorySchema,
   subCategory: z.string().optional(),
   description: z.string().optional(),
-  createdAt: z.any(),
+  createdAt: z.string().datetime(),
 });
 
 export const projectLocationSchema = z.object({
@@ -33,8 +33,8 @@ export const projectLocationSchema = z.object({
 
 export const projectSchema = z.object({
   title: z.string(),
-  type: z.string(),
-  createdAt: z.any(),
+  type: z.enum(["renovasi", "konstruksi"]),
+  createdAt: z.string().datetime(),
   location: projectLocationSchema.optional(),
 });
 
@@ -56,12 +56,12 @@ export const teamMemberSchema = z.object({
 
 export const designImageSubcategorySchema = z.object({
   title: z.string(),
-  createAt: z.any(),
+  createAt: z.string().datetime(),
 });
 
 export const progressWeekSchema = z.object({
   weekCount: z.number(),
-  date: z.any(),
+  date: z.string().datetime(),
 });
 
 export const progressItemSchema = z.object({
