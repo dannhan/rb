@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/drawer";
 
 import { DebouncedInput } from "@/components/debounced-input";
-import AddTeamMemberFormSchema from "@/components/Form/AddTeamMemberForm";
+import AddTeamMemberForm from "@/components/Form/AddTeamMemberForm";
 
 import TableFacetedFilter from "@/components/TableFeatures/TableFacetedFilter";
 import TableViewOptions from "@/components/TableFeatures/TableViewOptions";
@@ -88,7 +88,7 @@ const TeamTableToolbar: React.FC<Props> = ({ table, admin }) => {
                     you&apos;re done.
                   </DialogDescription>
                 </DialogHeader>
-                <AddTeamMemberFormSchema setDialogOpen={setDialogOpen} />
+                <AddTeamMemberForm setDialogOpen={setDialogOpen} />
               </DialogContent>
             </Dialog>
           ) : (
@@ -108,7 +108,7 @@ const TeamTableToolbar: React.FC<Props> = ({ table, admin }) => {
                   </DrawerDescription>
                 </DrawerHeader>
                 <DrawerBody>
-                  <AddTeamMemberFormSchema setDialogOpen={setDialogOpen} />
+                  <AddTeamMemberForm setDialogOpen={setDialogOpen} />
                 </DrawerBody>
               </DrawerContent>
             </Drawer>
