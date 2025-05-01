@@ -1,12 +1,11 @@
 import * as React from "react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 
-import "./globals.css";
+import { inter, satoshi } from "@/styles/fonts";
+import "@/styles/globals.css";
 
+import { cn } from "@/lib/utils";
 import { BaseLayout } from "@/layouts/base";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Ria Busana",
@@ -15,7 +14,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn(satoshi.variable, inter.variable)}
+    >
       {process.env.NODE_ENV === "development" && (
         <head>
           <script
@@ -24,7 +27,7 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           />
         </head>
       )}
-      <body className={inter.className} suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <BaseLayout>{children}</BaseLayout>
       </body>
     </html>
