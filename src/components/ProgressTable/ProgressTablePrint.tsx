@@ -18,6 +18,7 @@ const ProgressTablePrint: React.FC<Props> = ({ className }) => {
   const { weeks } = useProgressWeeksContext();
   const { items } = useProgressItemsContext();
 
+  const displayedWeeks = weeks.slice(-4);
   const componentRef = React.useRef(null);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -40,7 +41,7 @@ const ProgressTablePrint: React.FC<Props> = ({ className }) => {
             <tr className="border border-black bg-yellow-300 text-black">
               <th className="border border-black px-2 py-1">NO.</th>
               <th className="border border-black px-2 py-1">DESKRIPSI</th>
-              {weeks.map(({ id, weekCount, date }) => {
+              {displayedWeeks.map(({ id, weekCount, date }) => {
                 return (
                   <th key={id} className="border border-black px-2 py-1">
                     W{weekCount}
@@ -60,7 +61,7 @@ const ProgressTablePrint: React.FC<Props> = ({ className }) => {
                 <TableCell className="border border-black font-bold">
                   {description}
                 </TableCell>
-                {weeks.map(({ id }) => (
+                {displayedWeeks.map(({ id }) => (
                   <TableCell
                     key={id}
                     className="border border-black text-center"
