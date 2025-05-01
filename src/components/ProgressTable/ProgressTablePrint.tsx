@@ -7,14 +7,16 @@ import { format } from "date-fns";
 import { PrinterIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { useProgressContext } from "@/components/Providers/ProgressContext";
+import { useProgressWeeksContext } from "@/components/Providers/ProgressWeeksContext";
+import { useProgressItemsContext } from "@/components/Providers/ProgressItemsContext";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import DocumentHeader from "@/components/Common/DocumentHeader";
 
 type Props = { className?: string };
 const ProgressTablePrint: React.FC<Props> = ({ className }) => {
-  const { items, weeks } = useProgressContext();
+  const { weeks } = useProgressWeeksContext();
+  const { items } = useProgressItemsContext();
 
   const componentRef = React.useRef(null);
   const handlePrint = useReactToPrint({

@@ -11,14 +11,13 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon } from "lucide-react";
 
-import type { ProgressWeek, WithId } from "@/types";
 import { addProgressWeekFormSchema } from "@/config/formSchema";
 import { updateProgressWeekAction } from "@/actions/update";
 
 import { getErrorMessage } from "@/lib/handle-error";
 
 import { cn } from "@/lib/utils";
-import { useProgressContext } from "@/components/Providers/ProgressContext";
+import { useProgressWeeksContext } from "@/components/Providers/ProgressWeeksContext";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -46,8 +45,8 @@ const UpdateWeekForm: React.FC<Props> = ({ weekId, setIsDialogOpen }) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const params = useParams();
 
-  const { weeks } = useProgressContext();
-  const currentWeek = weeks.find((week) => (week.id = weekId));
+  const { weeks } = useProgressWeeksContext();
+  const currentWeek = weeks.find((week) => week.id === weekId);
   if (currentWeek === undefined) return notFound();
 
   const form = useForm<z.infer<typeof addProgressWeekFormSchema>>({
@@ -67,7 +66,7 @@ const UpdateWeekForm: React.FC<Props> = ({ weekId, setIsDialogOpen }) => {
         throw new Error("Invalid form data. Please check your inputs.");
 
       await updateProgressWeekAction(params.project, { id: weekId, ...values });
-      toast.success("New week has been added.");
+      toast.success("Week has been updated.");
       setIsDialogOpen(false);
     } catch (error) {
       new Date();

@@ -7,7 +7,8 @@ import type { WithId, ProgressItem, ProgressWeek } from "@/types";
 import { progressItemSchema, progressWeekSchema } from "@/config/dataSchema";
 
 import ProgressTable from "@/components/ProgressTable/ProgressTable";
-import { ProgressProvider } from "@/components/Providers/ProgressContext";
+import { ProgressItemsProvider } from "@/components/Providers/ProgressItemsContext";
+import { ProgressWeeksProvider } from "@/components/Providers/ProgressWeeksContext";
 
 type Props = {
   params: { project: string };
@@ -28,7 +29,6 @@ export default async function Page({ params }: Props) {
 
     items.push({ id: doc.id, ...parsed.data });
   });
-
   const weeks: WithId<ProgressWeek>[] = [];
   const weeksRef = projectRef.collection("progress-weeks").orderBy("weekCount");
   const weeksSnap = await weeksRef.get();
@@ -40,11 +40,13 @@ export default async function Page({ params }: Props) {
   });
 
   return (
-    <ProgressProvider initialWeeks={weeks} initialItems={items}>
-      {/* using weird value for width so that the week column looks nice */}
-      <main className="mx-auto max-w-[881.65px] space-y-4">
-        <ProgressTable admin={admin} />
-      </main>
-    </ProgressProvider>
+    <ProgressWeeksProvider initialWeeks={weeks}>
+      <ProgressItemsProvider initialItems={items}>
+        {/* using weird value for width so that the week column looks nice */}
+        <main className="mx-auto max-w-[881.65px] space-y-4">
+          <ProgressTable admin={admin} />
+        </main>
+      </ProgressItemsProvider>
+    </ProgressWeeksProvider>
   );
 }

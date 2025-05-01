@@ -4,14 +4,14 @@ import type { ProgressWeek, WithId } from "@/types";
 
 import { Button } from "@/components/ui/button";
 
-import { useProgressContext } from "@/components/Providers/ProgressContext";
+import { useProgressItemsContext } from "@/components/Providers/ProgressItemsContext";
 import AddWeekDialog from "@/components/ProgressTable/AddWeekDialog";
 import ProgressTablePrint from "@/components/ProgressTable/ProgressTablePrint";
 
 type Props = { admin: boolean; weeks: WithId<ProgressWeek>[] };
 
 const ProgressTableToolbar: React.FC<Props> = ({ admin }) => {
-  const { addProgressItem } = useProgressContext();
+  const { addProgressItem } = useProgressItemsContext();
 
   return (
     <div className="flex items-center gap-2">

@@ -18,7 +18,7 @@ import { addProgressWeekAction } from "@/actions/create";
 import { getErrorMessage } from "@/lib/handle-error";
 
 import { cn } from "@/lib/utils";
-import { useProgressContext } from "@/components/Providers/ProgressContext";
+import { useProgressWeeksContext } from "@/components/Providers/ProgressWeeksContext";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -43,7 +43,7 @@ const AddWeekForm: React.FC<Props> = ({ setIsDialogOpen }) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const params = useParams();
 
-  const { weeks } = useProgressContext();
+  const { weeks } = useProgressWeeksContext();
   const lastWeek: WithId<ProgressWeek> | undefined = weeks.at(-1);
 
   const form = useForm<z.infer<typeof addProgressWeekFormSchema>>({

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useParams } from "next/navigation";
 
+import { format } from "date-fns";
 import { debounce } from "lodash";
 import { toast } from "sonner";
 import { EditIcon, EllipsisIcon, Trash2Icon } from "lucide-react";
@@ -14,8 +15,9 @@ import {
 } from "@/actions/update";
 import { deleteProgressItemAction } from "@/actions/delete";
 
-import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { useProgressItemsContext } from "@/components/Providers/ProgressItemsContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -48,8 +50,6 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
 import AttachmentColumn from "./ProgressTableAttachmentColumn";
-import { format } from "date-fns";
-import { useProgressContext } from "../Providers/ProgressContext";
 import UpdateWeekDialog from "./UpdateWeekDialog";
 
 const columnHelper = createColumnHelper<WithId<ProgressItem>>();
@@ -105,9 +105,10 @@ const getColumns = (
           const [dropdownOpen, setDropdownOpen] = React.useState(false);
           const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
           const [value, setValue] = React.useState(row.original.description);
+
           const params = useParams() as { project: string };
           const isDesktop = useMediaQuery("(min-width: 768px)");
-          const { shouldFocus, setShouldFocus } = useProgressContext();
+          const { shouldFocus, setShouldFocus } = useProgressItemsContext();
 
           // NOTE: not sure about the empty dependency array
           const inputRef = React.useRef<HTMLInputElement>(null);

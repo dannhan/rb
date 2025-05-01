@@ -12,7 +12,8 @@ import {
 
 import { cn } from "@/lib/utils";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { useProgressContext } from "@/components/Providers/ProgressContext";
+import { useProgressWeeksContext } from "@/components/Providers/ProgressWeeksContext";
+import { useProgressItemsContext } from "@/components/Providers/ProgressItemsContext";
 import {
   Table,
   TableBody,
@@ -37,7 +38,9 @@ const ProgressTable: React.FC<{ admin: boolean }> = ({ admin }) => {
     pageSize,
     pageIndex: 0,
   });
-  const { weeks, items, shouldFocus } = useProgressContext();
+
+  const { weeks } = useProgressWeeksContext();
+  const { items, shouldFocus } = useProgressItemsContext();
 
   const columns = getColumns(admin, weeks);
   const table = useReactTable({

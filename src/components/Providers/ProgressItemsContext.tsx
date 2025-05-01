@@ -6,25 +6,23 @@ import { useParams } from "next/navigation";
 import { nanoid } from "@/lib/nanoid";
 import { addProgressItemAction } from "@/actions/create";
 
-import type { WithId, ProgressWeek, ProgressItem } from "@/types";
+import type { WithId, ProgressItem } from "@/types";
 
-type ProgressContext = {
-  weeks: WithId<ProgressWeek>[];
+type ProgressItemsContext = {
   items: WithId<ProgressItem>[];
   addProgressItem: () => void;
   shouldFocus: boolean;
   setShouldFocus: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ProgressContext = React.createContext<ProgressContext | null>(null);
+const ProgressItemsContext = React.createContext<ProgressItemsContext | null>(
+  null,
+);
 
-type Props = React.PropsWithChildren<{
-  initialWeeks: WithId<ProgressWeek>[];
-  initialItems: WithId<ProgressItem>[];
-}>;
+type Props = React.PropsWithChildren<{ initialItems: WithId<ProgressItem>[] }>;
 
-export const ProgressProvider: React.FC<Props> = (props) => {
-  const { children, initialWeeks, initialItems } = props;
+export const ProgressItemsProvider: React.FC<Props> = (props) => {
+  const { children, initialItems } = props;
   const params = useParams() as { project: string };
 
   const [shouldFocus, setShouldFocus] = React.useState(false);
@@ -47,9 +45,8 @@ export const ProgressProvider: React.FC<Props> = (props) => {
   };
 
   return (
-    <ProgressContext.Provider
+    <ProgressItemsContext.Provider
       value={{
-        weeks: initialWeeks,
         items: optimisticItems,
         addProgressItem,
         shouldFocus,
@@ -57,13 +54,15 @@ export const ProgressProvider: React.FC<Props> = (props) => {
       }}
     >
       {children}
-    </ProgressContext.Provider>
+    </ProgressItemsContext.Provider>
   );
 };
 
-export const useProgressContext = () => {
-  const context = React.useContext(ProgressContext);
+export const useProgressItemsContext = () => {
+  const context = React.useContext(ProgressItemsContext);
   if (!context)
-    throw new Error("useProgressContext must be inside ProgressProvider");
+    throw new Error(
+      "useProgressItemsContext must be inside ProgressItemsProvider",
+    );
   return context;
 };
