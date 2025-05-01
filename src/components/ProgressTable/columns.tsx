@@ -50,6 +50,7 @@ import { Separator } from "@/components/ui/separator";
 import AttachmentColumn from "./ProgressTableAttachmentColumn";
 import { format } from "date-fns";
 import { useProgressContext } from "../Providers/ProgressContext";
+import UpdateWeekDialog from "./UpdateWeekDialog";
 
 const columnHelper = createColumnHelper<WithId<ProgressItem>>();
 
@@ -288,14 +289,28 @@ const getColumns = (
           id: `week-${weekId}`,
           size: 40,
           header: () => {
+            if (!admin) {
+              return (
+                <>
+                  W{weekCount}
+                  {/* TWO "&nbsp" is used to consistently render blank space without affacting layout */}
+                  <div className="cursor-pointer text-xs font-normal text-gray-500">
+                    &nbsp;{format(new Date(date), "dd-MM-yy")}&nbsp;
+                  </div>
+                </>
+              );
+            }
+
             return (
-              <>
-                W{weekCount}
-                {/* TWO "&nbsp" is used to consistently render blank space without affacting layout */}
-                <div className="text-xs font-normal text-gray-500">
-                  &nbsp;{format(new Date(date), "dd-MM-yy")}&nbsp;
+              <UpdateWeekDialog weekId={weekId}>
+                <div className="h-full cursor-pointer transition-colors hover:bg-muted">
+                  W{weekCount}
+                  {/* TWO "&nbsp" is used to consistently render blank space without affacting layout */}
+                  <div className="cursor-pointer text-xs font-normal text-gray-500">
+                    &nbsp;{format(new Date(date), "dd-MM-yy")}&nbsp;
+                  </div>
                 </div>
-              </>
+              </UpdateWeekDialog>
             );
           },
           cell: ({ row }) => {
@@ -350,6 +365,6 @@ const getColumns = (
       ),
     ];
     return columns;
-  }, [weeks.length]);
+  }, [weeks]);
 
 export default getColumns;

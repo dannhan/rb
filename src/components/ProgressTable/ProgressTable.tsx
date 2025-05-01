@@ -86,7 +86,7 @@ const ProgressTable: React.FC<{ admin: boolean }> = ({ admin }) => {
                       header.column.id === "description" &&
                         "sticky left-[180px] z-10 min-w-[200px] whitespace-nowrap border-r bg-accent px-4",
                       header.column.id.startsWith("week") &&
-                        "min-w-[80px] max-w-[125px] whitespace-nowrap border-l text-center md:min-w-[125px]",
+                        "min-w-[80px] max-w-[125px] whitespace-nowrap border-l p-0 text-center md:min-w-[125px]",
                       // Remove border for left-most week column
                       index === 3 && "border-l-0",
                     )}

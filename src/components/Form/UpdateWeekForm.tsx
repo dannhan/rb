@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 
-import { format, addWeeks } from "date-fns";
+import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
@@ -13,7 +13,7 @@ import { CalendarIcon } from "lucide-react";
 
 import type { ProgressWeek, WithId } from "@/types";
 import { addProgressWeekFormSchema } from "@/config/formSchema";
-import { addProgressWeekAction } from "@/actions/create";
+import { updateProgressWeekAction } from "@/actions/update";
 
 import { getErrorMessage } from "@/lib/handle-error";
 
@@ -37,23 +37,25 @@ import {
 } from "@/components/ui/popover";
 import { Icons } from "@/components/icons";
 
-type Props = { setIsDialogOpen: (value: boolean) => void };
+type Props = {
+  weekId: string;
+  setIsDialogOpen: (value: boolean) => void;
+};
 
-const AddWeekForm: React.FC<Props> = ({ setIsDialogOpen }) => {
+const UpdateWeekForm: React.FC<Props> = ({ weekId, setIsDialogOpen }) => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const params = useParams();
 
   const { weeks } = useProgressContext();
-  const lastWeek: WithId<ProgressWeek> | undefined = weeks.at(-1);
+  const currentWeek = weeks.find((week) => (week.id = weekId));
+  if (currentWeek === undefined) return notFound();
 
   const form = useForm<z.infer<typeof addProgressWeekFormSchema>>({
     resolver: zodResolver(addProgressWeekFormSchema),
-    defaultValues: lastWeek
-      ? {
-          weekCount: lastWeek.weekCount + 1,
-          date: addWeeks(new Date(lastWeek.date), 1),
-        }
-      : { weekCount: 1, date: new Date() },
+    defaultValues: {
+      weekCount: currentWeek.weekCount,
+      date: new Date(currentWeek.date),
+    },
   });
 
   const onSubmit = async (
@@ -64,7 +66,7 @@ const AddWeekForm: React.FC<Props> = ({ setIsDialogOpen }) => {
       if (typeof params?.project !== "string")
         throw new Error("Invalid form data. Please check your inputs.");
 
-      await addProgressWeekAction(params.project, values);
+      await updateProgressWeekAction(params.project, { id: weekId, ...values });
       toast.success("New week has been added.");
       setIsDialogOpen(false);
     } catch (error) {
@@ -153,4 +155,4 @@ const AddWeekForm: React.FC<Props> = ({ setIsDialogOpen }) => {
   );
 };
 
-export default AddWeekForm;
+export default UpdateWeekForm;

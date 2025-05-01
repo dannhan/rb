@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { UTApi } from "uploadthing/server";
 
+import type { ProgressWeek } from "@/types";
 import { auth } from "@/auth";
 import { db } from "@/lib/firebase/admin";
 import { PROJECT_COLLECTION } from "@/lib/utils";
@@ -242,6 +243,30 @@ export async function updateProgressValueAction(
       .collection("progress-items")
       .doc(id)
       .update({ [`progress.${weekId}`]: value });
+
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+export async function updateProgressWeekAction(
+  projectId: string,
+  { id, weekCount, date }: { id: string; weekCount: number; date: Date },
+) {
+  const session = await auth();
+  if (!session || !session.user.isAdmin)
+    return { success: false, error: "Unauthorized" };
+
+  const projectRef = db.collection(PROJECT_COLLECTION).doc(projectId);
+  const weeksRef = projectRef.collection("progress-weeks").doc(id);
+
+  try {
+    await weeksRef.update({
+      weekCount,
+      date: new Date(date).toISOString(),
+    } satisfies ProgressWeek);
+    revalidatePath(`${projectId}/progress-proyek`);
 
     return { success: true };
   } catch (error) {
