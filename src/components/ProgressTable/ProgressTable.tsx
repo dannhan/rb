@@ -12,8 +12,8 @@ import {
 
 import { cn } from "@/lib/utils";
 import { useLocalStorage } from "@uidotdev/usehooks";
-import { useProgressWeeksContext } from "@/components/Providers/ProgressWeeksContext";
-import { useProgressItemsContext } from "@/components/Providers/ProgressItemsContext";
+import { useProgressWeeksContext } from "@/components/Providers/ProgressWeeksProvider";
+import { useProgressItemsContext } from "@/components/Providers/ProgressItemsProvider";
 import {
   Table,
   TableBody,

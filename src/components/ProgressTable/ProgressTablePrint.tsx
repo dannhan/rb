@@ -7,8 +7,8 @@ import { format } from "date-fns";
 import { PrinterIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { useProgressWeeksContext } from "@/components/Providers/ProgressWeeksContext";
-import { useProgressItemsContext } from "@/components/Providers/ProgressItemsContext";
+import { useProgressWeeksContext } from "@/components/Providers/ProgressWeeksProvider";
+import { useProgressItemsContext } from "@/components/Providers/ProgressItemsProvider";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import DocumentHeader from "@/components/Common/DocumentHeader";

@@ -17,7 +17,7 @@ import { deleteProgressItemAction } from "@/actions/delete";
 
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { useProgressItemsContext } from "@/components/Providers/ProgressItemsContext";
+import { useProgressItemsContext } from "@/components/Providers/ProgressItemsProvider";
 import {
   AlertDialog,
   AlertDialogAction,

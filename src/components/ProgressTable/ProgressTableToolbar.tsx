@@ -4,7 +4,7 @@ import type { ProgressWeek, WithId } from "@/types";
 
 import { Button } from "@/components/ui/button";
 
-import { useProgressItemsContext } from "@/components/Providers/ProgressItemsContext";
+import { useProgressItemsContext } from "@/components/Providers/ProgressItemsProvider";
 import AddWeekDialog from "@/components/ProgressTable/AddWeekDialog";
 import ProgressTablePrint from "@/components/ProgressTable/ProgressTablePrint";
 

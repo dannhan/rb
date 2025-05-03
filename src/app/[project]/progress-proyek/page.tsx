@@ -7,8 +7,8 @@ import type { WithId, ProgressItem, ProgressWeek } from "@/types";
 import { progressItemSchema, progressWeekSchema } from "@/config/dataSchema";
 
 import ProgressTable from "@/components/ProgressTable/ProgressTable";
-import { ProgressItemsProvider } from "@/components/Providers/ProgressItemsContext";
-import { ProgressWeeksProvider } from "@/components/Providers/ProgressWeeksContext";
+import { ProgressItemsProvider } from "@/components/Providers/ProgressItemsProvider";
+import { ProgressWeeksProvider } from "@/components/Providers/ProgressWeeksProvider";
 
 type Props = {
   params: { project: string };
