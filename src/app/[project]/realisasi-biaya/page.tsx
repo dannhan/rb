@@ -37,7 +37,7 @@ export default async function Page({ params }: Props) {
   const admin = session?.user?.isAdmin ?? false;
 
   return (
-    <div className="mx-auto max-w-[750px] space-y-4">
+    <div className="space-y-4">
       {attachments.map((attachment) => (
         <ImageCard key={attachment.key} admin={admin} attachment={attachment} />
       ))}
@@ -50,7 +50,7 @@ export default async function Page({ params }: Props) {
         attachments.length === 0 && (
           <EmptyData
             admin={admin}
-            className="mx-auto max-w-[750px] py-8"
+            className="py-8"
             title="Belum Ada Realisasi Biaya"
             description="Silakan periksa kembali nanti untuk pembaruan."
           />

@@ -69,7 +69,7 @@ export default async function Page({ params, searchParams }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="mx-auto flex max-w-[750px] flex-wrap items-center justify-between gap-4">
+      <div className="mx-auto flex flex-wrap items-center justify-between gap-4">
         <Search placeholder="Cari kategori..." />
         {admin && (
           <CreateDesignImageSubcategoryForm projectId={params.project} />
@@ -78,7 +78,7 @@ export default async function Page({ params, searchParams }: Props) {
       {filteredSubcategories.length === 0 && (
         <EmptyData
           admin={admin}
-          className="mx-auto max-w-[750px] py-8"
+          className="py-8"
           title={query ? "Tidak Ditemukan" : "Belum Ada Kategori"}
           description={
             query

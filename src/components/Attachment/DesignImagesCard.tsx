@@ -51,7 +51,7 @@ const DesignImagesCard: React.FC<Props> = ({
   });
 
   return (
-    <Card className="mx-auto max-w-[750px]">
+    <Card>
       <CardHeader className="mb-0 flex flex-row items-center justify-between py-3 pb-0">
         <CardTitle className="text-base">{category.title}</CardTitle>
         {admin && (

@@ -8,6 +8,7 @@ import { Sidebar } from "@/layouts/sidebar";
 import { SidebarMobile } from "@/layouts/sidebar-mobile";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import ThemeToggle from "@/components/Common/ThemeToggle";
+import { MaxWidthWrapper } from "./max-width-wrapper";
 
 type Props = React.PropsWithChildren<{
   items: SidebarItem[];
@@ -25,7 +26,9 @@ export function Dashboard({ children, items, projectTitle }: Props) {
           <BreadcrumbNav projectTitle={projectTitle} />
           <ThemeToggle className="ml-auto hidden md:flex" />
         </Header>
-        <main className="flex-1 overflow-auto p-3 md:p-4">{children}</main>
+        <main className="flex-1 overflow-auto p-3 md:p-4">
+          <MaxWidthWrapper>{children}</MaxWidthWrapper>
+        </main>
       </div>
     </div>
   );

@@ -7,7 +7,6 @@ import type { WithId, TeamMember } from "@/types";
 import { teamMemberSchema } from "@/config/dataSchema";
 
 import TeamTable from "@/components/TeamTable/TeamTable";
-
 type Props = {
   params: { project: string };
 };

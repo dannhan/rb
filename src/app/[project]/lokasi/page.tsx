@@ -27,7 +27,7 @@ export default async function Page({ params, searchParams }: Props) {
   const admin = session?.user.isAdmin;
 
   return (
-    <div className="mx-auto max-w-[750px] rounded-lg border bg-card shadow-sm">
+    <div className="rounded-lg border bg-card shadow-sm">
       <div className="flex h-16 items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <MapPinIcon className="h-5 w-5" />
