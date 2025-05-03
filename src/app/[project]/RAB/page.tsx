@@ -37,7 +37,7 @@ export default async function Page({ params }: Props) {
   const admin = session?.user?.isAdmin ?? false;
 
   return (
-    <main className="mx-auto max-w-[750px] space-y-4">
+    <div className="mx-auto max-w-[750px] space-y-4">
       {attachments.map((attachment) => (
         <ImageCard key={attachment.key} admin={admin} attachment={attachment} />
       ))}
@@ -53,6 +53,6 @@ export default async function Page({ params }: Props) {
           />
         )
       )}
-    </main>
+    </div>
   );
 }

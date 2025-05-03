@@ -30,8 +30,8 @@ export default async function Page({ params }: Props) {
   const admin = session?.user.isAdmin || false;
 
   return (
-    <main className="flex h-full min-h-screen flex-1 flex-col items-center space-y-8">
+    <div className="flex h-full min-h-screen flex-1 flex-col items-center space-y-8">
       <IdentityTable data={identities} admin={admin} />
-    </main>
+    </div>
   );
 }

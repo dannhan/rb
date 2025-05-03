@@ -43,9 +43,9 @@ export default async function Page({ params }: Props) {
     <ProgressWeeksProvider initialWeeks={weeks}>
       <ProgressItemsProvider initialItems={items}>
         {/* using weird value for width so that the week column looks nice */}
-        <main className="mx-auto max-w-[881.65px] space-y-4">
+        <div className="mx-auto max-w-[881.65px] space-y-4">
           <ProgressTable admin={admin} />
-        </main>
+        </div>
       </ProgressItemsProvider>
     </ProgressWeeksProvider>
   );
