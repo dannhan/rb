@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { ImageIcon, PlusIcon } from "lucide-react";
+import { ImageIcon, ImagesIcon, PlusIcon } from "lucide-react";
 import type { WithId, DesignDrawingCategory } from "@/types";
 
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,12 @@ const DesignDrawingCategoryBlock = ({
 }) => (
   <div className="border-t py-4">
     <div className="flex justify-between gap-1 pb-2">
-      <h1 className="text-lg font-medium md:text-xl">{category.title}</h1>
+      <div className="flex items-center">
+        {process.env.NODE_ENV === "development" && (
+          <ImagesIcon className="mr-3 size-5 text-primary" />
+        )}
+        <h1 className="text-lg font-medium md:text-xl">{category.title}</h1>
+      </div>
       <Button
         className="ml-auto rounded-full"
         variant="outline"
@@ -64,8 +69,8 @@ const DesignDrawingCategoryBlock = ({
         description="No images have been created for this category yet."
         cardContent={
           <>
-            <ImageIcon className="size-4 text-neutral-700" />
-            <div className="h-2.5 w-24 min-w-0 rounded-sm bg-neutral-200" />
+            <ImageIcon className="size-4 text-muted-foreground" />
+            <div className="h-2.5 w-24 min-w-0 rounded-sm bg-muted" />
           </>
         }
         addButton={

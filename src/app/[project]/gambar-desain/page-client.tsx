@@ -45,7 +45,7 @@ const DesignDrawingClient: React.FC = () => {
           cardContent={
             <>
               <ImagesIcon className="size-4 text-muted-foreground" />
-              <div className="h-2.5 w-24 min-w-0 rounded-sm bg-neutral-200" />
+              <div className="h-2.5 w-24 min-w-0 rounded-sm bg-muted" />
             </>
           }
           addButton={<CreateDesignDrawingCategoryButton />}
