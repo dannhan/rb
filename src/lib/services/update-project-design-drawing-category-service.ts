@@ -9,7 +9,8 @@ export const updateDesignDrawingImageService = async (
   await projectRef(metadata.params)
     .collection("design-drawing-categories")
     .doc(metadata.categoryId)
-    .update({ images: FieldValue.arrayUnion(getFileUrl(key)) });
+    // TODO: not type safety
+    .update({ imageURLs: FieldValue.arrayUnion(getFileUrl(key)) });
 
   return { url: getFileUrl(key) };
 };

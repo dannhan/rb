@@ -41,26 +41,23 @@ const DesignDrawingCategoryBlock = ({
       </Button>
       <DesignDrawingCategoryActions id={category.id} onEdit={onEdit} />
     </div>
-    {Boolean()}
     {category.imageURLs && category.imageURLs?.length > 0 ? (
-      <Carousel className="h-[480px] rounded-xl bg-muted">
+      <Carousel className="rounded-xl bg-muted">
         <CarouselContent>
-          {category.imageURLs.map((url, index) => (
-            <CarouselItem
-              key={`${index}-${url}`}
-              className="relative h-[480px] w-full"
-            >
+          {category.imageURLs.map((url) => (
+            <CarouselItem key={url}>
               <Image
                 src={url}
                 alt="gambar-desain"
-                className="object-contain"
-                fill
+                className="h-full max-h-[640px] object-contain"
+                width={1200}
+                height={640}
               />
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-3" />
-        <CarouselNext className="right-3" />
+        <CarouselPrevious className="left-3 z-50" />
+        <CarouselNext className="right-3 z-50" />
       </Carousel>
     ) : (
       <AnimatedEmptyState

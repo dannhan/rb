@@ -51,20 +51,20 @@ const DesignDrawingImagesUploader: React.FC<Props> = ({ id, setShowModal }) => {
       });
 
       // WARN: too many things can go wrong here
-      const newAttachments: string[] = [];
+      const imageURLs: string[] = category.imageURLs ?? [];
       responses.forEach(({ serverData: { result } }) => {
         if (!result) return;
 
         const file = files.find((f) => f.name === result?.name);
-        newAttachments.push(file ? URL.createObjectURL(file) : result.url);
+        imageURLs.push(file ? URL.createObjectURL(file) : result.url);
       });
 
-      if (newAttachments.length > 0) {
+      if (imageURLs.length > 0) {
         setShowModal(false);
         toast.success("File have been uploaded.");
         dispatch({
           type: "update",
-          payload: { ...category, imageURLs: newAttachments },
+          payload: { ...category, imageURLs },
         });
       }
     } catch (error) {

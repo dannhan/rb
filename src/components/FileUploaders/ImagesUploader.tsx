@@ -7,6 +7,7 @@ import { UploadThingError } from "uploadthing/server";
 import { toast } from "sonner";
 import { UploadIcon } from "lucide-react";
 
+import type { Image } from "@/types";
 import { uploadFiles } from "@/lib/utils/uploadthing";
 
 import { useProjectImagesContext } from "@/components/Providers/ProjectImagesProvider";
@@ -21,7 +22,6 @@ import {
   FileUploadList,
   FileUploadTrigger,
 } from "@/components/ui/file-upload";
-import { Image } from "@/types";
 
 type Props = {
   // NOTE: is there a better type safety for this

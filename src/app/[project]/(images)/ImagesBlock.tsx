@@ -8,12 +8,13 @@ const ImagesBlock = () => {
   return (
     <div className="flex flex-col gap-4 pb-4">
       {projectImages.map(({ key, url }) => (
-        <div key={key} className="relative h-[480px] rounded-xl bg-muted">
+        <div key={key} className="overflow-hidden rounded-xl bg-muted">
           <Image
             src={url}
             alt="gambar-desain"
-            className="object-contain"
-            fill
+            className="mx-auto object-contain max-h-[720px]"
+            width={1200}
+            height={720}
           />
         </div>
       ))}
