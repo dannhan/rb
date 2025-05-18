@@ -1,7 +1,5 @@
 import Link from "next/link";
 
-import type { SidebarItem } from "@/types";
-
 import { HomeIcon } from "lucide-react";
 
 import {
@@ -13,25 +11,22 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 
-import { Header } from "@/layouts/header";
-import { Sidebar } from "@/layouts/sidebar";
-import { SidebarMobile } from "@/layouts/sidebar-mobile";
-import ThemeToggle from "@/components/Common/ThemeToggle";
+import { Sidebar } from "@/components/Sidebar/sidebar";
+import { SidebarMobile } from "@/components/Sidebar/sidebar-mobile";
+import MaxWidthWrapper from "@/components/MaxWidthWrapper";
+import Header from "@/components/Header";
 import ProjectBreadcrumbPage from "@/components/ProjectBreadcrumbPage";
-import { MaxWidthWrapper } from "./max-width-wrapper";
+import ThemeToggle from "@/components/Common/ThemeToggle";
 
-type Props = React.PropsWithChildren<{
-  items: SidebarItem[];
-  projectTitle: string;
-}>;
+type Props = React.PropsWithChildren<{ projectTitle: string }>;
 
-export function Dashboard({ children, items, projectTitle }: Props) {
+const DashboardLayout: React.FC<Props> = ({ children, projectTitle }) => {
   return (
     <div className="flex h-screen w-full">
       <Sidebar />
       <div className="relative flex flex-1 flex-col overflow-hidden">
         <Header className="sticky left-0 top-0 justify-normal gap-2">
-          <SidebarMobile items={items} />
+          <SidebarMobile />
           <Separator orientation="vertical" className="mr-2 h-4 md:hidden" />
           <Breadcrumb className="whitespace-nowrap">
             <BreadcrumbList className="md:text-base">
@@ -59,4 +54,6 @@ export function Dashboard({ children, items, projectTitle }: Props) {
       </div>
     </div>
   );
-}
+};
+
+export default DashboardLayout;

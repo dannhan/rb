@@ -14,7 +14,7 @@ import {
   FileIcon,
 } from "lucide-react";
 
-export const Icons = {
+const Icons = {
   document: FileIcon,
   progress: BarChart4,
   circle: Circle,
@@ -89,3 +89,4 @@ export const Icons = {
     </svg>
   ),
 };
+export default Icons;

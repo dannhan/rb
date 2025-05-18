@@ -2,7 +2,7 @@ import * as React from "react";
 import Link from "next/link";
 
 import { SidebarItem } from "@/types";
-import { Icons } from "@/components/icons";
+import Icons from "@/components/Common/Icons";
 
 const SidebarLink = React.memo(
   ({ item, active }: { item: SidebarItem; active: boolean }) => {

@@ -5,7 +5,7 @@ import { inter, satoshi } from "@/styles/fonts";
 import "@/styles/globals.css";
 
 import { cn } from "@/lib/utils/cn";
-import { BaseLayout } from "@/layouts/base";
+import BaseLayout from "@/components/Layouts/BaseLayout";
 
 export const metadata: Metadata = {
   title: "Ria Busana",

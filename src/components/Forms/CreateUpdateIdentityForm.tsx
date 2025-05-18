@@ -21,7 +21,7 @@ import {
   FormControl,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Icons } from "@/components/icons";
+import Icons from "@/components/Common/Icons";
 
 type Props = { id: string | null; setShowModal: (value: boolean) => void };
 

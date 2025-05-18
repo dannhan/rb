@@ -8,8 +8,7 @@ import { cn } from "@/lib/utils/cn";
 const cabin = Cabin({ subsets: ["latin"] });
 
 type Props = { className?: string };
-
-export function Logo({ className }: Props) {
+const Logo: React.FC<Props> = ({ className }) => {
   return (
     <Link
       href="/home"
@@ -30,4 +29,6 @@ export function Logo({ className }: Props) {
       </h1>
     </Link>
   );
-}
+};
+
+export default Logo;

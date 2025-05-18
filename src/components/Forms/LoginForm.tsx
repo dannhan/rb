@@ -20,7 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { Icons } from "@/components/icons";
+import Icons from "@/components/Common/Icons";
 
 type Props = { email: string };
 

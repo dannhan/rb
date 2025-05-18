@@ -19,7 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import { Icons } from "@/components/icons";
+import Icons from "@/components/Common/Icons";
 
 type Props = {
   id: string;

@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
+import Icons from "@/components/Common/Icons";
 
 const DeleteProjectModal: React.FC<{
   id: string;

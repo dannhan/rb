@@ -5,8 +5,8 @@ import { useSelectedLayoutSegment } from "next/navigation";
 import Link from "next/link";
 
 import { SidebarIcon } from "lucide-react";
+import { projectConfig } from "@/config/project";
 
-import type { SidebarItem } from "@/types";
 import { cn } from "@/lib/utils/cn";
 
 import { Button } from "@/components/ui/button";
@@ -18,10 +18,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Icons } from "@/components/icons";
-import { Logo } from "@/components/logo";
+import Icons from "@/components/Common/Icons";
+import HeaderLogo from "@/components/Common/HeaderLogo";
 
-export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
+export function SidebarMobile() {
   const segment = useSelectedLayoutSegment();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -49,8 +49,8 @@ export function SidebarMobile({ items }: { items?: SidebarItem[] }) {
           <SheetDescription>Sidebar Navigation for mobile.</SheetDescription>
         </SheetHeader>
         <nav className="relative bottom-5 grid gap-2 text-lg font-medium">
-          <Logo />
-          {items?.map((item, index) => {
+          <HeaderLogo />
+          {projectConfig.sidebarItems?.map((item, index) => {
             const Icon = Icons[item.icon || "arrowRight"];
             return (
               <Link

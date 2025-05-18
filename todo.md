@@ -13,6 +13,7 @@
 
 ### Not so important
 
+- [ ] search alternative for nb progress
 - [ ] refactor all actions database call into services folder lib
 - [ ] consider using promise.allsettled
 - [ ] why importing types using "@/types" instead of just "types"

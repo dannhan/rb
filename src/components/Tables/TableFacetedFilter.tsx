@@ -20,7 +20,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { Icons } from "@/components/icons";
+import Icons from "@/components/Common/Icons";
 
 interface TableFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>;

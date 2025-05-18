@@ -13,17 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Icons } from "@/components/icons";
-
-export function LogoutForm({ className }: { className?: string }) {
-  return (
-    <form action={logout}>
-      <SubmitButton size="sm" className={className}>
-        Sign Out
-      </SubmitButton>
-    </form>
-  );
-}
+import Icons from "@/components/Common/Icons";
 
 export function HomeLogoutForm(props: ButtonProps) {
   return (

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import * as React from "react";
 
 import { projectConfig } from "@/config/project";
-import { Logo } from "@/components/logo";
+import HeaderLogo from "@/components/Common/HeaderLogo";
 import SidebarLink from "./sidebar-link";
 
 export function Sidebar() {
@@ -13,7 +13,7 @@ export function Sidebar() {
   return (
     <div className="hidden w-[220px] border-r bg-surface md:block lg:w-[240px]">
       <div className="flex h-14 items-center border-b px-4 lg:h-14 lg:px-6">
-        <Logo />
+        <HeaderLogo />
       </div>
       <div className="p-3">
         <nav className="flex flex-col gap-0.5">

@@ -1,11 +1,7 @@
 import { cn } from "@/lib/utils/cn";
 
-type Props = {
-  children?: React.ReactNode;
-  className?: string;
-};
-
-export function Header({ children, className }: Props) {
+type Props = React.PropsWithChildren<{ className?: string }>;
+const Header: React.FC<Props> = ({ children, className }) => {
   return (
     <header
       className={cn(
@@ -16,4 +12,6 @@ export function Header({ children, className }: Props) {
       {children}
     </header>
   );
-}
+};
+
+export default Header;

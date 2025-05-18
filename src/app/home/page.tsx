@@ -4,10 +4,10 @@ import { PROJECT_COLLECTION } from "@/lib/utils/constants";
 import type { WithId, Project } from "@/types";
 import { projectSchema } from "@/config/dataSchema";
 
-import { Header } from "@/layouts/header";
 import { Separator } from "@/components/ui/separator";
-import { Logo } from "@/components/logo";
 import { HomeLogoutForm } from "@/components/logout-form";
+import Header from "@/components/Header";
+import HeaderLogo from "@/components/Common/HeaderLogo";
 import ThemeToggle from "@/components/Common/ThemeToggle";
 import ProjectSearchDialog from "@/components/Home/ProjectSearchDialog";
 import ProjectCardsList from "@/components/Home/ProjectCardsList";
@@ -33,7 +33,7 @@ export default async function Page() {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <Header className="border-none bg-background text-muted-foreground shadow-md">
-        <Logo />
+        <HeaderLogo />
         <div className="flex items-center gap-2">
           <ProjectSearchDialog projects={projects} />
           <ThemeToggle />

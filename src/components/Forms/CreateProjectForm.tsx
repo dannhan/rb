@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Icons } from "@/components/icons";
+import Icons from "@/components/Common/Icons";
 
 type Props = { defaultType?: "renovasi" | "konstruksi" };
 

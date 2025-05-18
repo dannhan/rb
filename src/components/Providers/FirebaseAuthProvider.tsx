@@ -18,7 +18,7 @@ async function syncFirebaseAuth(session: Session | null) {
   }
 }
 
-export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
+const FirebaseAuthProvider = ({ children }: { children: ReactNode }) => {
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -26,4 +26,6 @@ export function FirebaseAuthProvider({ children }: { children: ReactNode }) {
   }, [session]);
 
   return <>{children}</>;
-}
+};
+
+export default FirebaseAuthProvider;
