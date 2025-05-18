@@ -1,9 +1,11 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
+import { User } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { firebaseAuth } from "@/lib/firebase/client";
 
+// TODO: this is..., idk what to say
 export const { auth, handlers, signIn, signOut } = NextAuth({
   trustHost: true,
   providers: [
@@ -12,24 +14,25 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials): Promise<any> {
-        // todo: use firebase implementation
+      async authorize(credentials): Promise<User | null> {
         const { email, password } = credentials as Record<
           "email" | "password",
           string
         >;
-        const isAdmin = email === "admin@gmail.com";
+        const role = email === "admin@gmail.com" ? "admin" : "manager";
 
         return await signInWithEmailAndPassword(firebaseAuth, email, password)
           .then((userCredential) => {
             if (userCredential.user) {
-              return { ...userCredential.user, isAdmin };
+              return { ...userCredential.user, role };
             }
 
-            console.error("THIS SHOULD NOT BE LOGGED");
             return null;
           })
-          .catch((error) => console.log(error));
+          .catch((error) => {
+            console.log(error);
+            return null;
+          });
       },
     }),
   ],
@@ -37,7 +40,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   callbacks: {
     // Called whenever session is checked
     async session({ session, token }) {
-      session.user.isAdmin = !!(token.isAdmin as boolean);
+      session.user.role = token.role as "admin" | "manager";
 
       if (session?.user && token.sub) {
         session.user.id = token.sub;
@@ -54,7 +57,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         }
 
         token.sub = user.id;
-        token.isAdmin = user.isAdmin;
+        token.role = user.role;
       }
 
       return token;

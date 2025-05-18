@@ -14,5 +14,13 @@ export function ToastProvider() {
   const lastSegment = pathname?.split("/").pop() || "";
   const expand = routeWithExpandedToast.includes(lastSegment);
 
-  return <Toaster expand={expand} richColors closeButton visibleToasts={6} />;
+  return (
+    <Toaster
+      expand={expand}
+      richColors
+      closeButton
+      visibleToasts={3}
+      duration={3000}
+    />
+  );
 }

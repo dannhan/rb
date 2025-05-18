@@ -6,6 +6,14 @@ const nextConfig = {
         protocol: "https",
         hostname: "utfs.io",
       },
+      {
+        protocol: "https",
+        hostname: "ce1lqsyl4f.ufs.sh",
+      },
+      {
+        protocol: "https",
+        hostname: "assets.dub.co"
+      }
     ],
   },
   typescript: {
@@ -13,6 +21,9 @@ const nextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  experimental: {
+    reactCompiler: true,
   },
 };
 

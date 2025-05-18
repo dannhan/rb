@@ -75,10 +75,24 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+
+        // Infinite scroll animation
+        "infinite-scroll": {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(var(--scroll, -150%))" },
+        },
+        "infinite-scroll-y": {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(var(--scroll, -150%))" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+
+        // Infinite scroll animation
+        "infinite-scroll": "infinite-scroll 22s linear infinite",
+        "infinite-scroll-y": "infinite-scroll-y 22s linear infinite",
       },
     },
   },

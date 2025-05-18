@@ -1,38 +1,32 @@
 import { auth } from "@/auth";
 
-import { db } from "@/lib/firebase/admin";
-import { PROJECT_COLLECTION } from "@/lib/utils";
+import { projectRef } from "@/lib/firebase/utils";
 
 import type { WithId, TeamMember } from "@/types";
 import { teamMemberSchema } from "@/config/dataSchema";
 
-import TeamTable from "@/components/TeamTable/TeamTable";
-type Props = {
-  params: { project: string };
-};
+import { RoleProvider } from "@/components/Providers/UserRoleProvider";
+import { TeamProvider } from "@/components/Providers/TeamProvider";
+import TeamTable from "@/components/Tables/TeamTable/TeamTable";
 
-export default async function Page({ params }: Props) {
+type Props = { params: Promise<{ project: string }> };
+export default async function Page(props: Props) {
+  const params = await props.params;
   const team: WithId<TeamMember>[] = [];
 
-  const ref = db
-    .collection(PROJECT_COLLECTION)
-    .doc(params.project)
-    .collection("teams")
-    .orderBy("position");
+  const ref = projectRef(params).collection("teams").orderBy("position");
   const snapshot = await ref.get();
-  snapshot.docs.map((doc) => {
+  snapshot.docs.forEach((doc) => {
     const parsed = teamMemberSchema.safeParse(doc.data());
     if (!parsed.success) return;
-
     team.push({ id: doc.id, ...parsed.data });
   });
 
-  const session = await auth();
-  const admin = session?.user.isAdmin || false;
-
   return (
-    <div className="flex h-full flex-1 flex-col space-y-8">
-      <TeamTable data={team} admin={admin} />
-    </div>
+    <RoleProvider role={(await auth())?.user.role}>
+      <TeamProvider initialTeam={team}>
+        <TeamTable />
+      </TeamProvider>
+    </RoleProvider>
   );
 }

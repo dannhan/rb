@@ -10,10 +10,14 @@ import { Dashboard } from "@/layouts/dashboard";
 
 type Props = {
   children: React.ReactNode;
-  params: { project: string };
+  params: Promise<{ project: string }>;
 };
 
-export default async function Layout({ children, params }: Props) {
+export default async function Layout(props: Props) {
+  const params = await props.params;
+
+  const { children } = props;
+
   const ref = db.collection(PROJECT_COLLECTION).doc(params.project);
   const doc = await ref.get();
 

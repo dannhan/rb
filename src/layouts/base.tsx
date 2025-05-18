@@ -19,12 +19,7 @@ export function BaseLayout({ children }: Props) {
           enableSystem
           disableTransitionOnChange
         >
-          <NextTopLoader
-            color="#a1a1aa"
-            showSpinner={false}
-            initialPosition={0.3}
-            crawlSpeed={200}
-          />
+          <NextTopLoader color="#a1a1aa" showSpinner={false} />
           {children}
           <ToastProvider />
           <TailwindIndicator />

@@ -1,4 +1,11 @@
+import { PROJECT_COLLECTION } from "@/lib/utils";
 import { db } from "./admin";
+
+/**
+ * Get the firebase project document from params
+ */
+export const projectRef = (params: { project: string }) =>
+  db.collection(PROJECT_COLLECTION).doc(params.project);
 
 /**
  * Recursively deletes a collection and all its subcollections.

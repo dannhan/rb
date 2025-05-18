@@ -15,14 +15,13 @@ export function Logo({ className }: Props) {
       href="/home"
       className={cn("flex flex-row items-center gap-2", className)}
     >
-      <div className="relative -ml-1 h-12 w-8">
-        <Image
-          src="/images/logo.png"
-          alt="logo ria busana"
-          className="object-contain"
-          fill
-        />
-      </div>
+      <Image
+        src="/images/logo.png"
+        alt="logo ria busana"
+        className="object-contain"
+        width={32}
+        height={30}
+      />
       <h1
         className="hidden font-black uppercase text-[#004481] min-[300px]:block sm:text-xl"
         style={cabin.style}

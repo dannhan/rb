@@ -3,22 +3,19 @@ import {
   projectSchema,
   identitySchema,
   progressItemSchema,
-  attachmentSchema,
-  attachmentCategorySchema,
-  designImageSubcategorySchema,
   teamMemberSchema,
+  designDrawingCategorySchema,
   projectLocationSchema,
   progressWeekSchema,
 } from "@/config/dataSchema";
+import { attachmentSchema, imageSchema } from "@/config/fileSchema";
 
 export type Project = z.infer<typeof projectSchema>;
 export type Identity = z.infer<typeof identitySchema>;
-export type AttachmentCategory = z.infer<typeof attachmentCategorySchema>;
 export type Attachment = z.infer<typeof attachmentSchema>;
+export type Image = z.infer<typeof imageSchema>;
 export type TeamMember = z.infer<typeof teamMemberSchema>;
-export type DesignImageSubcategory = z.infer<
-  typeof designImageSubcategorySchema
->;
+export type DesignDrawingCategory = z.infer<typeof designDrawingCategorySchema>;
 export type ProgressItem = z.infer<typeof progressItemSchema>;
 export type ProgressWeek = z.infer<typeof progressWeekSchema>;
 export type Item = z.infer<typeof progressItemSchema>;

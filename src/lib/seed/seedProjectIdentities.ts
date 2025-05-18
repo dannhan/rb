@@ -8,18 +8,18 @@ export async function seedProjectIdentities() {
     .collection("identities");
 
   const identities: Identity[] = [
-    { no: 1, field: "Nama Proyek", value: "RB Yogyakarta" },
-    { no: 2, field: "Lokasi", value: "Kab. Yogyakarta" },
-    { no: 3, field: "No. SPK", value: "K001/SPK/PRO/IV/2023" },
-    { no: 4, field: "Pelaksana", value: "M Jamaludin" },
-    { no: 5, field: "Luas Tanah", value: "-m2" },
-    { no: 6, field: "Luas Bangunan", value: "-m2" },
-    { no: 7, field: "Jumlah Lantai", value: "4" },
-    { no: 8, field: "Struktur Bangunan", value: "Beton" },
-    { no: 9, field: "Tanggal Mulai", value: "2023" },
-    { no: 10, field: "Tanggal Selesai", value: "" },
-    { no: 11, field: "Grand Opening", value: "28 Februari 2024" },
-    { no: 12, field: "Serah Terima", value: "15 Februari 2024" },
+    { position: 1, field: "Nama Proyek", value: "RB Yogyakarta" },
+    { position: 2, field: "Lokasi", value: "Kab. Yogyakarta" },
+    { position: 3, field: "No. SPK", value: "K001/SPK/PRO/IV/2023" },
+    { position: 4, field: "Pelaksana", value: "M Jamaludin" },
+    { position: 5, field: "Luas Tanah", value: "-m2" },
+    { position: 6, field: "Luas Bangunan", value: "-m2" },
+    { position: 7, field: "Jumlah Lantai", value: "4" },
+    { position: 8, field: "Struktur Bangunan", value: "Beton" },
+    { position: 9, field: "Tanggal Mulai", value: "2023" },
+    { position: 10, field: "Tanggal Selesai", value: "" },
+    { position: 11, field: "Grand Opening", value: "28 Februari 2024" },
+    { position: 12, field: "Serah Terima", value: "15 Februari 2024" },
   ];
 
   // Batch write for Firestore

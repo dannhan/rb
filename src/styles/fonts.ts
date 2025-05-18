@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
+import { GeistMono } from "geist/font/mono";
 
 export const satoshi = localFont({
   src: "../styles/Satoshi-Variable.woff2",
@@ -14,3 +15,4 @@ export const inter = Inter({
   subsets: ["latin"],
 });
 
+export const geistMono = GeistMono;

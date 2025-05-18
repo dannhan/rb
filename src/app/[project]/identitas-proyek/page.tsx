@@ -1,37 +1,31 @@
 import { auth } from "@/auth";
 
-import { db } from "@/lib/firebase/admin";
-import { PROJECT_COLLECTION } from "@/lib/utils";
-
 import type { WithId, Identity } from "@/types";
 import { identitySchema } from "@/config/dataSchema";
+import { projectRef } from "@/lib/firebase/utils";
 
-import IdentityTable from "@/components/IdentityTable/IdentityTable";
+import { RoleProvider } from "@/components/Providers/UserRoleProvider";
+import { IdentitiesProvider } from "@/components/Providers/IdentityProvider";
+import IdentityTable from "@/components/Tables/IdentityTable/IdentityTable";
 
-// TODO: add loading.tsx
-type Props = { params: { project: string } };
-export default async function Page({ params }: Props) {
+type Props = { params: Promise<{ project: string }> };
+export default async function Page(props: Props) {
+  const params = await props.params;
   const identities: WithId<Identity>[] = [];
 
-  const ref = db
-    .collection(PROJECT_COLLECTION)
-    .doc(params.project)
-    .collection("identities")
-    .orderBy("no");
+  const ref = projectRef(params).collection("identities").orderBy("position");
   const snapshot = await ref.get();
-  snapshot.docs.map((doc) => {
+  snapshot.docs.forEach((doc) => {
     const parsed = identitySchema.safeParse(doc.data());
     if (!parsed.success) return;
-
     identities.push({ id: doc.id, ...parsed.data });
   });
 
-  const session = await auth();
-  const admin = session?.user.isAdmin || false;
-
   return (
-    <div className="flex h-full min-h-screen flex-1 flex-col items-center space-y-8">
-      <IdentityTable data={identities} admin={admin} />
-    </div>
+    <RoleProvider role={(await auth())?.user.role}>
+      <IdentitiesProvider initialIdentities={identities}>
+        <IdentityTable />
+      </IdentitiesProvider>
+    </RoleProvider>
   );
 }

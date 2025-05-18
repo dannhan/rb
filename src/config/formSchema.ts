@@ -21,11 +21,12 @@ export const addTeamMemberFormSchema = z.object({
   // TODO: might add file schema here
 });
 
-export const createDesignImageSubcategoryFormSchema = z.object({
+export const addDesignDrawingCategoryFormSchema = z.object({
   title: z.string().min(1, "Required").trim(),
 });
 
 export const addProgressWeekFormSchema = z.object({
+  // coerce to change from string to number on an input
   weekCount: z.coerce.number(),
   date: z.date(),
 });

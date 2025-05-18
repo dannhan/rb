@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import LoginForm from "@/components/Form/LoginForm";
+import LoginForm from "@/components/Forms/LoginForm";
 
 export default function Page() {
   return (

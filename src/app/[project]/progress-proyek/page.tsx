@@ -1,52 +1,33 @@
 import { auth } from "@/auth";
 
-import { db } from "@/lib/firebase/admin";
-import { PROJECT_COLLECTION } from "@/lib/utils";
-
-import type { WithId, ProgressItem, ProgressWeek } from "@/types";
 import { progressItemSchema, progressWeekSchema } from "@/config/dataSchema";
+import { projectRef } from "@/lib/firebase/utils";
+import { parseCollection } from "@/lib/parse-collection";
 
-import ProgressTable from "@/components/ProgressTable/ProgressTable";
+import { RoleProvider } from "@/components/Providers/UserRoleProvider";
 import { ProgressItemsProvider } from "@/components/Providers/ProgressItemsProvider";
 import { ProgressWeeksProvider } from "@/components/Providers/ProgressWeeksProvider";
+import ProgressTable from "@/components/Tables/ProgressTable/ProgressTable";
 
-type Props = {
-  params: { project: string };
-};
+type Props = { params: Promise<{ project: string }> };
+export default async function Page(props: Props) {
+  const params = await props.params;
 
-export default async function Page({ params }: Props) {
-  const session = await auth();
-  const admin = session?.user.isAdmin || false;
+  const [weeksSnap, itemsSnap] = await Promise.all([
+    projectRef(params).collection("progress-weeks").orderBy("weekCount").get(),
+    projectRef(params).collection("progress-items").orderBy("position").get(),
+  ]);
 
-  const projectRef = db.collection(PROJECT_COLLECTION).doc(params.project);
-
-  const items: WithId<ProgressItem>[] = [];
-  const itemsRef = projectRef.collection("progress-items").orderBy("position");
-  const itemsSnap = await itemsRef.get();
-  itemsSnap.docs.map((doc) => {
-    const parsed = progressItemSchema.safeParse(doc.data());
-    if (!parsed.success) return;
-
-    items.push({ id: doc.id, ...parsed.data });
-  });
-  const weeks: WithId<ProgressWeek>[] = [];
-  const weeksRef = projectRef.collection("progress-weeks").orderBy("weekCount");
-  const weeksSnap = await weeksRef.get();
-  weeksSnap.docs.map((doc) => {
-    const parsed = progressWeekSchema.safeParse(doc.data());
-    if (!parsed.success) return;
-
-    weeks.push({ id: doc.id, ...parsed.data });
-  });
+  const weeks = parseCollection(weeksSnap, progressWeekSchema);
+  const items = parseCollection(itemsSnap, progressItemSchema);
 
   return (
-    <ProgressWeeksProvider initialWeeks={weeks}>
-      <ProgressItemsProvider initialItems={items}>
-        {/* using weird value for width so that the week column looks nice */}
-        <div className="mx-auto max-w-[881.65px] space-y-4">
-          <ProgressTable admin={admin} />
-        </div>
-      </ProgressItemsProvider>
-    </ProgressWeeksProvider>
+    <RoleProvider role={(await auth())?.user.role}>
+      <ProgressWeeksProvider initialWeeks={weeks}>
+        <ProgressItemsProvider initialItems={items}>
+          <ProgressTable />
+        </ProgressItemsProvider>
+      </ProgressWeeksProvider>
+    </RoleProvider>
   );
 }

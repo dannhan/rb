@@ -1,34 +1,10 @@
-// TODO: might just change the createdAt to be an ISO string
-
 import { z } from "zod";
-
-export const attachmentCategorySchema = z.enum([
-  "teamMemberFile",
-  "progressFile",
-  "designImage",
-  "rabFile",
-  "projectSchedule",
-  "costRealization",
-  "locationMap",
-]);
-
-export const attachmentSchema = z.object({
-  name: z.string(),
-  size: z.number(),
-  type: z.string(),
-  key: z.string(),
-  url: z.string(),
-  appUrl: z.string(),
-  category: attachmentCategorySchema,
-  subCategory: z.string().optional(),
-  description: z.string().optional(),
-  createdAt: z.string().datetime(),
-});
+import { attachmentSchema, imageSchema } from "./fileSchema";
 
 export const projectLocationSchema = z.object({
   detailAddress: z.string(),
   link: z.string().url().or(z.string().min(0).max(0)),
-  image: attachmentSchema.optional(),
+  image: z.array(imageSchema).optional(),
 });
 
 export const projectSchema = z.object({
@@ -39,24 +15,24 @@ export const projectSchema = z.object({
 });
 
 export const identitySchema = z.object({
-  // TODO: might change no to position instead
-  no: z.number(),
+  position: z.number().int(),
   field: z.string(),
   value: z.string(),
 });
 
 export const teamMemberSchema = z.object({
-  position: z.number().int().positive(),
+  position: z.number().int(),
   pekerjaan: z.string(),
   spk: z.string(),
   pelaksana: z.string(),
   status: z.string(),
-  attachment: attachmentSchema.optional(),
+  attachments: z.array(attachmentSchema).optional(),
 });
 
-export const designImageSubcategorySchema = z.object({
+export const designDrawingCategorySchema = z.object({
   title: z.string(),
-  createAt: z.string().datetime(),
+  createdAt: z.string().datetime(),
+  imageURLs: z.array(z.string()).optional(),
 });
 
 export const progressWeekSchema = z.object({
@@ -65,10 +41,8 @@ export const progressWeekSchema = z.object({
 });
 
 export const progressItemSchema = z.object({
-  position: z.number().int().positive(),
-  attachment: z
-    .record(z.enum(["before", "after"]), attachmentSchema)
-    .optional(),
+  position: z.number().int(),
   description: z.string(),
-  progress: z.record(z.string(), z.number().min(0).max(100)), // Maps week identifiers to percentage values (0-100)
+  progress: z.record(z.string(), z.number().min(0).max(100)),
+  attachment: z.array(attachmentSchema).optional(),
 });

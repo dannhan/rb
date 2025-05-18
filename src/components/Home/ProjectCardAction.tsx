@@ -1,23 +1,13 @@
+"use client";
+
 import * as React from "react";
 
-import { toast } from "sonner";
 import { EditIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 
 import type { WithId, Project } from "@/types";
-import { deleteProjectAction } from "@/actions/delete";
 
 import { cn } from "@/lib/utils";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { useDeleteProjectModal } from "@/components/Dialogs/DeleteProjectDialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -32,7 +22,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import UpdateProjectForm from "@/components/Form/UpdateProjectNameForm";
+import UpdateProjectForm from "@/components/Forms/UpdateProjectForm";
 
 type Props = {
   project: WithId<Project>;
@@ -41,107 +31,63 @@ type Props = {
 const ProjectCardAction: React.FC<Props> = ({ project }) => {
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
-
-  const handleDelete = async () => {
-    const toastId = toast.loading("Deleting data.");
-    try {
-      const result = await deleteProjectAction(project.id);
-
-      if (result?.error) {
-        toast.error("Failed to delete data.", { id: toastId });
-      } else {
-        toast.success("Data deleted successfully", { id: toastId });
-      }
-    } catch (error) {
-      // NOTE: track error
-      toast.error("Failed to delete data.", { id: toastId });
-    }
-  };
+  const { setShowDeleteProjectModal, DeleteProjectModal } =
+    useDeleteProjectModal({ id: project.id });
 
   return (
-    <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
-      <DropdownMenuTrigger asChild>
-        {/* TODO: try to change the variant to outline */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            ":bg-muted absolute right-3 top-5 z-10 h-fit w-fit rounded-full p-2 text-muted-foreground opacity-100 transition-all duration-200 focus-visible:border-none focus-visible:ring-0 group-hover:opacity-100 lg:opacity-0",
-            dropdownOpen && "opacity-100",
-          )}
+    <>
+      <DeleteProjectModal />
+      <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "absolute right-3 top-5 z-10 h-fit w-fit rounded-full p-2 text-muted-foreground opacity-100 transition-all duration-200 hover:bg-muted focus-visible:border-none focus-visible:ring-0 group-hover:opacity-100 lg:opacity-0",
+              dropdownOpen && "lg:opacity-100",
+            )}
+          >
+            <MoreHorizontalIcon className="h-6 w-6" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          className="z-50 w-40 rounded-xl px-1.5 py-1 shadow-xl"
+          align="end"
         >
-          <MoreHorizontalIcon className="h-6 w-6" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="z-50 w-40 rounded-xl px-1.5 py-1 shadow-xl"
-        align="end"
-      >
-        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-          <DialogTrigger asChild>
-            <DropdownMenuItem
-              onSelect={(event) => {
-                event.preventDefault();
-                setEditDialogOpen(true);
-              }}
-              className="rounded-md font-medium"
-            >
-              <EditIcon className="mr-2 h-4 w-4" />
-              <span>Ganti Nama</span>
-            </DropdownMenuItem>
-          </DialogTrigger>
-          <DialogContent className="w-full max-w-xl">
-            <DialogHeader>
-              <DialogTitle>Ganti Nama Proyek</DialogTitle>
-            </DialogHeader>
-            <UpdateProjectForm
-              projectId={project.id}
-              defaultValues={{ title: project.title }}
-              onSuccess={() => {
-                setEditDialogOpen(false);
-                setDropdownOpen(false);
-              }}
-              onCancel={() => setEditDialogOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
-        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <AlertDialogTrigger asChild>
-            <DropdownMenuItem
-              className="rounded-md font-medium"
-              onSelect={(event) => {
-                event.preventDefault();
-                setDeleteDialogOpen(true);
-              }}
-            >
-              <Trash2Icon className="mr-2 h-4 w-4" />
-              Hapus Proyek
-            </DropdownMenuItem>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  handleDelete();
-                  setDeleteDialogOpen(false);
-                  setDropdownOpen(false);
+          <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+            <DialogTrigger asChild>
+              <DropdownMenuItem
+                onSelect={(event) => {
+                  event.preventDefault();
+                  setEditDialogOpen(true);
                 }}
+                className="rounded-md font-medium"
               >
-                Continue
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </DropdownMenuContent>
-    </DropdownMenu>
+                <EditIcon className="mr-2 h-4 w-4" />
+                <span>Ganti Nama</span>
+              </DropdownMenuItem>
+            </DialogTrigger>
+            <DialogContent className="w-full max-w-xl">
+              <DialogHeader>
+                <DialogTitle>Ganti Nama Proyek</DialogTitle>
+              </DialogHeader>
+              <UpdateProjectForm
+                id={project.id}
+                title={project.title}
+                setDialogOpen={setEditDialogOpen}
+              />
+            </DialogContent>
+          </Dialog>
+          <DropdownMenuItem
+            onSelect={() => setShowDeleteProjectModal(true)}
+            className="rounded-md font-medium"
+          >
+            <Trash2Icon className="mr-2 h-4 w-4" />
+            Hapus Proyek
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 };
 

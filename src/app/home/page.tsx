@@ -23,7 +23,7 @@ export default async function Page() {
     .orderBy("createdAt", "desc")
     .select("title", "type", "createdAt");
   const snapshot = await ref.get();
-  snapshot.docs.map((doc) => {
+  snapshot.docs.forEach((doc) => {
     const parsed = projectSchema.safeParse(doc.data());
     if (!parsed.success) return;
 
@@ -40,10 +40,9 @@ export default async function Page() {
           <HomeLogoutForm />
         </div>
       </Header>
-      <main className="flex flex-col items-center gap-4 p-4 md:flex-1 lg:p-6 lg:pb-10">
-        {/* NOTE: might merge this into one single component */}
+      <main className="mx-auto flex w-full max-w-screen-xl flex-col items-center gap-4 p-4 md:flex-1 lg:p-6 lg:pb-10">
         <ProjectCardsList type="konstruksi" projects={projects.konstruksi} />
-        <Separator className="my-2 w-full max-w-screen-lg xl:max-w-screen-xl" />
+        <Separator className="my-2 w-full" />
         <ProjectCardsList type="renovasi" projects={projects.renovasi} />
       </main>
     </div>

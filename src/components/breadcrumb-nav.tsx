@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSelectedLayoutSegment } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import {
   Breadcrumb,
@@ -12,12 +12,11 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { HomeIcon } from "lucide-react";
+import { projectConfig } from "@/config/project";
 
 type Props = { projectTitle: string };
 
 export function BreadcrumbNav({ projectTitle }: Props) {
-  const segment = useSelectedLayoutSegment();
-
   return (
     <Breadcrumb className="whitespace-nowrap">
       <BreadcrumbList className="md:text-base">
@@ -33,11 +32,18 @@ export function BreadcrumbNav({ projectTitle }: Props) {
         <BreadcrumbItem>{projectTitle}</BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbPage className="capitalize">
-            {segment?.split("-").join(" ") || ""}
-          </BreadcrumbPage>
+          <PageNameBreadcrumb />
         </BreadcrumbItem>
       </BreadcrumbList>
     </Breadcrumb>
   );
+}
+
+function PageNameBreadcrumb() {
+  const pathname = usePathname();
+  const pageTitle = projectConfig.sidebarItems.find(
+    (item) => item.href === pathname.split("/")[2],
+  )?.title;
+
+  return <BreadcrumbPage>{pageTitle}</BreadcrumbPage>;
 }

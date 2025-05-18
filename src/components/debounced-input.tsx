@@ -1,5 +1,5 @@
-import { Input } from "@/components/ui/input";
 import React from "react";
+import { Input } from "@/components/ui/input";
 
 export function DebouncedInput({
   value: initialValue,
@@ -23,7 +23,7 @@ export function DebouncedInput({
     }, debounce);
 
     return () => clearTimeout(timeout);
-  }, [value]);
+  }, [value, debounce, onChange]);
 
   return (
     <Input

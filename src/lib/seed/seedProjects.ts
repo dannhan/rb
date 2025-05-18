@@ -16,7 +16,7 @@ export async function seedProjects() {
     createdAt: new Date().toISOString(),
   } satisfies Project);
   await ref.doc("ria-busana-semarang").set({
-    title: "Ria Busana Semarang",
+    title: "Ria Busana Renovasi",
     type: "renovasi",
     createdAt: new Date().toISOString(),
   } satisfies Project);

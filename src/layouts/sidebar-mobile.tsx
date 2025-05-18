@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useSelectedLayoutSegment } from "next/navigation";
 import Link from "next/link";
 
-import { Menu, SidebarIcon } from "lucide-react";
+import { SidebarIcon } from "lucide-react";
 
 import type { SidebarItem } from "@/types";
 import { cn } from "@/lib/utils";

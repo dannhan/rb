@@ -17,13 +17,14 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn(satoshi.variable, inter.variable)}
+      className={cn(satoshi.className, inter.variable)}
     >
       {process.env.NODE_ENV === "development" && (
         <head>
           <script
             crossOrigin="anonymous"
             src="//unpkg.com/react-scan/dist/auto.global.js"
+            defer
           />
         </head>
       )}

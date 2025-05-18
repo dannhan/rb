@@ -19,7 +19,7 @@ export const projectConfig: ProjectConfig = {
     },
     {
       title: "RAB",
-      href: "RAB",
+      href: "rab",
       icon: "document",
     },
     {
