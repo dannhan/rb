@@ -1,18 +1,10 @@
-import Image from "next/image";
-
 import { ImageIcon, ImagesIcon, PlusIcon } from "lucide-react";
 import type { WithId, DesignDrawingCategory } from "@/types";
 
 import { Button } from "@/components/ui/button";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import AnimatedEmptyState from "@/components/Common/AnimatedEmptyState";
 import DesignDrawingCategoryActions from "./DesignDrawingCategoryActions";
+import DesignDrawingCategoryImagesCarousel from "./DesignDrawingCategoryImagesCarousel";
 
 const DesignDrawingCategoryBlock = ({
   category,
@@ -42,23 +34,7 @@ const DesignDrawingCategoryBlock = ({
       <DesignDrawingCategoryActions id={category.id} onEdit={onEdit} />
     </div>
     {category.imageURLs && category.imageURLs?.length > 0 ? (
-      <Carousel className="rounded-xl bg-muted">
-        <CarouselContent>
-          {category.imageURLs.map((url) => (
-            <CarouselItem key={url}>
-              <Image
-                src={url}
-                alt="gambar-desain"
-                className="h-full max-h-[640px] object-contain"
-                width={1200}
-                height={640}
-              />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious className="left-3 z-50" />
-        <CarouselNext className="right-3 z-50" />
-      </Carousel>
+      <DesignDrawingCategoryImagesCarousel imageURLs={category.imageURLs} />
     ) : (
       <AnimatedEmptyState
         title="No images found"
