@@ -4,7 +4,7 @@ import { projectSchema } from "@/config/dataSchema";
 import { projectConfig } from "@/config/project";
 
 import { db } from "@/lib/firebase/admin";
-import { PROJECT_COLLECTION } from "@/lib/utils";
+import { PROJECT_COLLECTION } from "@/lib/utils/constants";
 
 import { Dashboard } from "@/layouts/dashboard";
 

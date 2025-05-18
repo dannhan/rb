@@ -4,7 +4,7 @@ import { UTApi } from "uploadthing/server";
 import { z } from "zod";
 
 import { db } from "@/lib/firebase/admin";
-import { adminAction } from "@/lib/safe-action";
+import { adminAction } from "@/lib/utils/safe-action";
 import { projectRef as getProjectRef } from "@/lib/firebase/utils";
 
 const utapi = new UTApi();

@@ -3,8 +3,8 @@ import * as React from "react";
 import { type Row, flexRender } from "@tanstack/react-table";
 import type { WithId, TeamMember } from "@/types";
 
-import { isClickOnInteractiveChild } from "@/lib/is-click-on-interactive-child";
-import { cn } from "@/lib/utils";
+import { isClickOnInteractiveChild } from "@/lib/utils/is-click-on-interactive-child";
+import { cn } from "@/lib/utils/cn";
 import { TableRow, TableCell } from "@/components/ui/table";
 
 const TeamTableRow: React.FC<{

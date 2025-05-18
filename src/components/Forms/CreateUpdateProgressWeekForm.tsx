@@ -14,7 +14,7 @@ import { addProgressWeekFormSchema } from "@/config/formSchema";
 import { createProgressWeekAction } from "@/actions/create-project-progress";
 import { updateProgressWeekAction } from "@/actions/update-project-progress";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { useProgressWeeksContext } from "@/components/Providers/ProgressWeeksProvider";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";

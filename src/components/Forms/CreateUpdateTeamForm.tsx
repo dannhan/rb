@@ -11,7 +11,7 @@ import { addTeamMemberFormSchema } from "@/config/formSchema";
 import { createTeamMemberAction } from "@/actions/create-project-team";
 import { updateTeamMemberAction } from "@/actions/update-project-team";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { useTeamContext } from "@/components/Providers/TeamProvider";
 import { Button } from "@/components/ui/button";
 import {

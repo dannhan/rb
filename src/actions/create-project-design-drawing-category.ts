@@ -3,9 +3,9 @@
 import { z } from "zod";
 
 import { DesignDrawingCategory } from "@/types";
-import { adminAction } from "@/lib/safe-action";
+import { adminAction } from "@/lib/utils/safe-action";
 import { projectRef } from "@/lib/firebase/utils";
-import { nanoid } from "@/lib/nanoid";
+import { nanoid } from "@/lib/utils/nanoid";
 
 export const createDesignDrawingCategoryAction = adminAction
   .schema(z.object({ title: z.string() }))

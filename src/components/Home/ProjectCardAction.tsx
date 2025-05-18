@@ -6,7 +6,7 @@ import { EditIcon, MoreHorizontalIcon, Trash2Icon } from "lucide-react";
 
 import type { WithId, Project } from "@/types";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { useDeleteProjectModal } from "@/components/Dialogs/DeleteProjectDialog";
 import { Button } from "@/components/ui/button";
 import {

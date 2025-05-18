@@ -23,7 +23,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { WithId, TeamMember } from "@/types";
 
 import { teamTableConfig } from "@/config/table";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { useRoleContext } from "@/components/Providers/UserRoleProvider";
 import { useTeamContext } from "@/components/Providers/TeamProvider";
 import { useCreateUpdateTeamModal } from "@/components/Dialogs/CreateUpdateTeamDialog";

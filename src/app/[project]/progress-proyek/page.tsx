@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 
 import { progressItemSchema, progressWeekSchema } from "@/config/dataSchema";
 import { projectRef } from "@/lib/firebase/utils";
-import { parseCollection } from "@/lib/parse-collection";
+import { parseCollection } from "@/lib/utils/parse-collection";
 
 import { RoleProvider } from "@/components/Providers/UserRoleProvider";
 import { ProgressItemsProvider } from "@/components/Providers/ProgressItemsProvider";

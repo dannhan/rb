@@ -12,9 +12,9 @@ import {
 
 import type { ColumnDef, Row } from "@tanstack/react-table";
 import type { Identity, WithId } from "@/types";
-import { isClickOnInteractiveChild } from "@/lib/is-click-on-interactive-child";
+import { isClickOnInteractiveChild } from "@/lib/utils/is-click-on-interactive-child";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { useRoleContext } from "@/components/Providers/UserRoleProvider";
 import { useIdentitiesContext } from "@/components/Providers/IdentityProvider";
 import { useCreateUpdateIdentityModal } from "@/components/Dialogs/CreateUpdateIdentityDialog";

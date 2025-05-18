@@ -4,11 +4,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { z } from "zod";
-import { adminAction } from "@/lib/safe-action";
+import { adminAction } from "@/lib/utils/safe-action";
 
 import { db } from "@/lib/firebase/admin";
-import { PROJECT_COLLECTION } from "@/lib/utils";
-import { nanoid } from "@/lib/nanoid";
+import { PROJECT_COLLECTION } from "@/lib/utils/constants";
+import { nanoid } from "@/lib/utils/nanoid";
 
 const schema = z.object({
   title: z.string().min(1),

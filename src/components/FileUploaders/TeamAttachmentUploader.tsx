@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { UploadIcon } from "lucide-react";
 
 import type { Attachment } from "@/types";
-import { uploadFiles } from "@/lib/uploadthing";
+import { uploadFiles } from "@/lib/utils/uploadthing";
 
 import { useTeamContext } from "@/components/Providers/TeamProvider";
 import { Button } from "@/components/ui/button";

@@ -1,9 +1,9 @@
 "use server";
 
 import { z } from "zod";
-import { adminAction } from "@/lib/safe-action";
+import { adminAction } from "@/lib/utils/safe-action";
 import { projectRef } from "@/lib/firebase/utils";
-import { nanoid } from "@/lib/nanoid";
+import { nanoid } from "@/lib/utils/nanoid";
 import { Identity } from "@/types";
 
 export const createIdentityAction = adminAction

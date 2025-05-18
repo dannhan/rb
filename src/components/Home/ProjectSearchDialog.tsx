@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { SearchIcon } from "lucide-react";
 
 import type { WithId, Project } from "@/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 import {
   CommandDialog,

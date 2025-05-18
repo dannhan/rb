@@ -6,7 +6,7 @@ import { useReactToPrint } from "react-to-print";
 import { format } from "date-fns";
 import { PrinterIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { useProgressWeeksContext } from "@/components/Providers/ProgressWeeksProvider";
 import { useProgressItemsContext } from "@/components/Providers/ProgressItemsProvider";
 import { Button } from "@/components/ui/button";

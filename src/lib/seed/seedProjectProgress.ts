@@ -2,7 +2,7 @@ import { db } from "@/lib/firebase/admin";
 
 import type { WithId, ProgressItem, ProgressWeek } from "@/types";
 
-import { nanoid } from "@/lib/nanoid";
+import { nanoid } from "@/lib/utils/nanoid";
 
 export async function seedProjectProgress() {
   const progressItemsRef = db

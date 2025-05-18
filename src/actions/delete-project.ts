@@ -5,8 +5,8 @@ import { UTApi } from "uploadthing/server";
 import { z } from "zod";
 
 import { db } from "@/lib/firebase/admin";
-import { adminAction } from "@/lib/safe-action";
-import { PROJECT_COLLECTION } from "@/lib/utils";
+import { adminAction } from "@/lib/utils/safe-action";
+import { PROJECT_COLLECTION } from "@/lib/utils/constants";
 import { deleteDocumentWithSubcollections } from "@/lib/firebase/utils";
 
 const utapi = new UTApi();

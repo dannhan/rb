@@ -14,7 +14,7 @@ import { EllipsisIcon, PaperclipIcon } from "lucide-react";
 
 import type { WithId, ProgressItem } from "@/types";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { useRoleContext } from "@/components/Providers/UserRoleProvider";
 import { useProgressWeeksContext } from "@/components/Providers/ProgressWeeksProvider";
 import { useProgressItemsContext } from "@/components/Providers/ProgressItemsProvider";

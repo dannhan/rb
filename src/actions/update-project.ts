@@ -3,10 +3,10 @@
 import { revalidatePath } from "next/cache";
 
 import { z } from "zod";
-import { adminAction } from "@/lib/safe-action";
+import { adminAction } from "@/lib/utils/safe-action";
 
 import { db } from "@/lib/firebase/admin";
-import { PROJECT_COLLECTION } from "@/lib/utils";
+import { PROJECT_COLLECTION } from "@/lib/utils/constants";
 
 const schema = z.object({
   title: z.string().min(1),

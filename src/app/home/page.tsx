@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase/admin";
-import { PROJECT_COLLECTION } from "@/lib/utils";
+import { PROJECT_COLLECTION } from "@/lib/utils/constants";
 
 import type { WithId, Project } from "@/types";
 import { projectSchema } from "@/config/dataSchema";

@@ -7,7 +7,7 @@ import { CheckIcon, CheckCircleIcon, TimerIcon } from "lucide-react";
 
 import { updateTeamMemberStatusAction } from "@/actions/update-project-team";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { useRoleContext } from "@/components/Providers/UserRoleProvider";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

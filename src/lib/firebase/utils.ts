@@ -1,4 +1,4 @@
-import { PROJECT_COLLECTION } from "@/lib/utils";
+import { PROJECT_COLLECTION } from "@/lib/utils/constants";
 import { db } from "./admin";
 
 /**

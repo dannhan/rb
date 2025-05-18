@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks";
 import { PlusCircleIcon } from "lucide-react";
 
-import { nanoid } from "@/lib/nanoid";
+import { nanoid } from "@/lib/utils/nanoid";
 import { createProgressItemAction } from "@/actions/create-project-progress";
 
 import { useProgressItemsContext } from "@/components/Providers/ProgressItemsProvider";

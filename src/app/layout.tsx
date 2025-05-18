@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { inter, satoshi } from "@/styles/fonts";
 import "@/styles/globals.css";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 import { BaseLayout } from "@/layouts/base";
 
 export const metadata: Metadata = {

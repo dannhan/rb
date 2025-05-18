@@ -1,7 +1,7 @@
 import type { UploadedFileData } from "uploadthing/types";
 
 import { projectRef } from "@/lib/firebase/utils";
-import { getFileUrl } from "@/lib/get-file-url";
+import { getFileUrl } from "@/lib/utils/get-file-url";
 
 export const createProjectAttachmentService = async (
   { name, size, type, key }: UploadedFileData,

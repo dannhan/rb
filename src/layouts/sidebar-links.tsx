@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { SidebarItem } from "@/types";
 import { projectConfig } from "@/config/project";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 type Props = { items?: SidebarItem[] };
 

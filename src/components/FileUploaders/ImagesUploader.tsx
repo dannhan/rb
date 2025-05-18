@@ -7,7 +7,7 @@ import { UploadThingError } from "uploadthing/server";
 import { toast } from "sonner";
 import { UploadIcon } from "lucide-react";
 
-import { uploadFiles } from "@/lib/uploadthing";
+import { uploadFiles } from "@/lib/utils/uploadthing";
 
 import { useProjectImagesContext } from "@/components/Providers/ProjectImagesProvider";
 import { Button } from "@/components/ui/button";

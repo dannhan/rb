@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { adminAction } from "@/lib/safe-action";
+import { adminAction } from "@/lib/utils/safe-action";
 import { projectRef } from "@/lib/firebase/utils";
 
 export const updateIdentityAction = adminAction

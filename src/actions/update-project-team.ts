@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { adminAction, managerAction } from "@/lib/safe-action";
+import { adminAction, managerAction } from "@/lib/utils/safe-action";
 import { projectRef } from "@/lib/firebase/utils";
 
 const schema = z.object({

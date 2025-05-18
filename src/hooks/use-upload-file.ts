@@ -8,7 +8,7 @@ import { UploadThingError } from "uploadthing/server";
 import { toast } from "sonner";
 
 import type { OurFileRouter } from "@/app/api/uploadthing/core";
-import { uploadFiles } from "@/lib/uploadthing";
+import { uploadFiles } from "@/lib/utils/uploadthing";
 
 type UploadEndpoint = keyof OurFileRouter;
 type UploadedFile<T = unknown> = ClientUploadedFileData<T>;

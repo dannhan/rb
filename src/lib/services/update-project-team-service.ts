@@ -2,7 +2,7 @@ import type { UploadedFileData } from "uploadthing/types";
 import type { Attachment } from "@/types";
 
 import { projectRef } from "@/lib/firebase/utils";
-import { getFileUrl } from "@/lib/get-file-url";
+import { getFileUrl } from "@/lib/utils/get-file-url";
 import { FieldValue } from "firebase-admin/firestore";
 
 export const updateTeamAttachmentService = async (
