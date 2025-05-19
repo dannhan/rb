@@ -2,9 +2,10 @@
 
 ## TODO
 
+- [ ] image card, image dialog
+
 - [ ] fix all bugs
 - [ ] project location page
-- [ ] image card, image dialog
 - [ ] search query for some states
 - [ ] create your own file uploader primtives
 - [ ] fix sidebar

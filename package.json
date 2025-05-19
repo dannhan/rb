@@ -45,7 +45,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.510.0",
     "nanoid": "^5.0.7",
-    "next": "15.3.1",
+    "next": "^15.3.2",
     "next-auth": "^5.0.0-beta.27",
     "next-safe-action": "^7.10.8",
     "next-themes": "^0.3.0",

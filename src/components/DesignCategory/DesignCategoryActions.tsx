@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { Edit3Icon, EllipsisIcon, Trash2Icon } from "lucide-react";
 
+import { useCreateUpdateDesignDrawingCategoryModal } from "@/components/Dialogs/CreateUpdateDesignDrawingCategoryDialog";
 import { useDeleteDesignDrawingCategoryModal } from "@/components/Dialogs/DeleteDesignDrawingCategoryDialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,16 +12,21 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 
-type Props = { id: string; onEdit: () => void };
-const DesignDrawingCategoryAction: React.FC<Props> = ({ id, onEdit }) => {
+type Props = { id: string; imageURLs: string[] | undefined };
+const DesignDrawingCategoryAction: React.FC<Props> = ({ id, imageURLs }) => {
   const [dropdownOpen, setDropdownOpen] = React.useState(false);
+  const {
+    setShowCreateUpdateDesignDrawingCategoryModal,
+    CreateUpdateDesignDrawingCategoryModal,
+  } = useCreateUpdateDesignDrawingCategoryModal({ id });
   const {
     setShowDeleteDesignDrawingCategoryModal,
     DeleteDesignDrawingCategoryModal,
-  } = useDeleteDesignDrawingCategoryModal({ id });
+  } = useDeleteDesignDrawingCategoryModal({ id, imageURLs });
 
   return (
     <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
+      <CreateUpdateDesignDrawingCategoryModal />
       <DeleteDesignDrawingCategoryModal />
       <DropdownMenuTrigger asChild>
         <Button
@@ -37,7 +43,10 @@ const DesignDrawingCategoryAction: React.FC<Props> = ({ id, onEdit }) => {
         className="w-[160px]"
         collisionPadding={{ bottom: 80 }}
       >
-        <DropdownMenuItem onSelect={onEdit} className="cursor-pointer">
+        <DropdownMenuItem
+          onSelect={() => setShowCreateUpdateDesignDrawingCategoryModal(true)}
+          className="cursor-pointer"
+        >
           <Edit3Icon className="mr-2.5 size-3.5" />
           Edit Kategori
         </DropdownMenuItem>

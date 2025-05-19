@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from "react";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -7,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import DesignDrawingImagesUploader from "@/components/FileUploaders/DesignDrawingImagesUploader";
+import { PlusIcon } from "lucide-react";
 
 const UploadDesignDrawingImagesModal: React.FC<{
   id: string | null;
@@ -30,12 +32,27 @@ const UploadDesignDrawingImagesModal: React.FC<{
   </Dialog>
 );
 
+const UploadDesignDrawingImagesButton: React.FC<{
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+}> = ({ setShowModal }) => {
+  return (
+    <Button
+      className="ml-auto rounded-full"
+      variant="outline"
+      onClick={() => setShowModal(true)}
+    >
+      <PlusIcon className="mr-2 size-4" />
+      Add Image
+    </Button>
+  );
+};
+
 export const useUploadDesignDrawingImagesModal = ({
   id,
   setSelectedId,
 }: {
   id: string | null;
-  setSelectedId: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedId?: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
   const [
     showUploadDesignDrawingImagesModal,
@@ -48,7 +65,7 @@ export const useUploadDesignDrawingImagesModal = ({
         id={id}
         showModal={showUploadDesignDrawingImagesModal}
         setShowModal={(open) => {
-          setSelectedId(null);
+          setSelectedId?.(null);
           setShowUploadDesignDrawingImagesModal(open);
         }}
       />
@@ -56,14 +73,25 @@ export const useUploadDesignDrawingImagesModal = ({
     [id, setSelectedId, showUploadDesignDrawingImagesModal],
   );
 
+  const UploadDesignDrawingImagesButtonCallback = useCallback(
+    () => (
+      <UploadDesignDrawingImagesButton
+        setShowModal={setShowUploadDesignDrawingImagesModal}
+      />
+    ),
+    [],
+  );
+
   return useMemo(
     () => ({
       setShowUploadDesignDrawingImagesModal,
       UploadDesignDrawingImagesModal: UploadDesignDrawingImagesModalCallback,
+      UploadDesignDrawingImagesButton: UploadDesignDrawingImagesButtonCallback,
     }),
     [
       setShowUploadDesignDrawingImagesModal,
       UploadDesignDrawingImagesModalCallback,
+      UploadDesignDrawingImagesButtonCallback,
     ],
   );
 };

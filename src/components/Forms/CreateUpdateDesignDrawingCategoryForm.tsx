@@ -30,12 +30,10 @@ const CreateUpdateDesignDrawingCategoryForm: React.FC<Props> = ({
   setShowModal,
 }) => {
   const params = useParams() as { project: string };
-  const { designDrawingCategories, dispatch } = useDesignDrawingsContext();
+  const { categories, dispatch } = useDesignDrawingsContext();
 
   const isUpdate = Boolean(id);
-  const category = isUpdate
-    ? designDrawingCategories.find((c) => c.id === id)
-    : undefined;
+  const category = isUpdate ? categories.find((c) => c.id === id) : undefined;
   if (isUpdate && !category) {
     toast.error("Error showing dialog.");
   }
@@ -58,6 +56,7 @@ const CreateUpdateDesignDrawingCategoryForm: React.FC<Props> = ({
               type: isUpdate ? "update" : "create",
               payload: {
                 ...data.result,
+                imageURLs: category?.imageURLs,
                 createdAt: isUpdate
                   ? category!.createdAt
                   : new Date().toISOString(),

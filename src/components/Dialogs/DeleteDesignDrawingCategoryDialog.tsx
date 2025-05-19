@@ -20,10 +20,10 @@ import Icons from "@/components/Common/Icons";
 
 const DeleteDesignDrawingCategoryModal: React.FC<{
   id: string;
-  fileKeys?: string[];
+  imageURLs?: string[];
   modalOpen: boolean;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}> = ({ id, fileKeys, modalOpen, setModalOpen }) => {
+}> = ({ id, imageURLs, modalOpen, setModalOpen }) => {
   const params = useParams() as { project: string };
   const { dispatch } = useDesignDrawingsContext();
 
@@ -57,7 +57,7 @@ const DeleteDesignDrawingCategoryModal: React.FC<{
           </Button>
           <Button
             disabled={isPending}
-            onClick={() => execute({ id, fileKeys })}
+            onClick={() => execute({ id, imageURLs })}
           >
             {isPending && (
               <Icons.spinnerIcon className="mr-2 h-4 w-4 animate-spin [animation-duration:1250ms]" />
@@ -70,10 +70,10 @@ const DeleteDesignDrawingCategoryModal: React.FC<{
   );
 };
 
-type Props = { id: string; fileKeys?: string[] };
+type Props = { id: string; imageURLs?: string[] };
 export const useDeleteDesignDrawingCategoryModal = ({
   id,
-  fileKeys,
+  imageURLs,
 }: Props) => {
   const [
     showDeleteDesignDrawingCategoryModal,
@@ -84,12 +84,12 @@ export const useDeleteDesignDrawingCategoryModal = ({
     () => (
       <DeleteDesignDrawingCategoryModal
         id={id}
-        fileKeys={fileKeys}
+        imageURLs={imageURLs}
         modalOpen={showDeleteDesignDrawingCategoryModal}
         setModalOpen={setShowDeleteDesignDrawingCategoryModal}
       />
     ),
-    [id, fileKeys, showDeleteDesignDrawingCategoryModal],
+    [id, imageURLs, showDeleteDesignDrawingCategoryModal],
   );
 
   return useMemo(

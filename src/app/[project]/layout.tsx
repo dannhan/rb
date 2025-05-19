@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { projectSchema } from "@/config/dataSchema";
 import { projectRef } from "@/lib/firebase/utils";
@@ -14,8 +15,10 @@ export default async function Layout(props: Props) {
   if (!success) return notFound();
 
   return (
-    <DashboardLayout projectTitle={data.title}>
-      {props.children}
-    </DashboardLayout>
+    <NuqsAdapter>
+      <DashboardLayout projectTitle={data.title}>
+        {props.children}
+      </DashboardLayout>
+    </NuqsAdapter>
   );
 }

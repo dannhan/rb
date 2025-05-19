@@ -53,31 +53,31 @@ export const useCreateUpdateDesignDrawingCategoryModal = ({
   setSelectedId,
 }: {
   id: string | null;
-  setSelectedId: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedId?: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
   const [
-    showCreateUpdateDesignDrawingModal,
-    setShowCreateUpdateDesignDrawingModal,
+    showCreateUpdateDesignDrawingCategoryModal,
+    setShowCreateUpdateDesignDrawingCategoryModal,
   ] = React.useState(false);
 
   const CreateUpdateDesignDrawingCategoryModalCallback = React.useCallback(
     () => (
       <CreateUpdateDesignDrawingCategoryModal
         id={id}
-        showModal={showCreateUpdateDesignDrawingModal}
+        showModal={showCreateUpdateDesignDrawingCategoryModal}
         setShowModal={(open) => {
-          setSelectedId(null);
-          setShowCreateUpdateDesignDrawingModal(open);
+          setSelectedId?.(null);
+          setShowCreateUpdateDesignDrawingCategoryModal(open);
         }}
       />
     ),
-    [id, setSelectedId, showCreateUpdateDesignDrawingModal],
+    [id, setSelectedId, showCreateUpdateDesignDrawingCategoryModal],
   );
 
   const CreateDesignDrawingCategoryButtonCallback = React.useCallback(
     () => (
       <CreateDesignDrawingCategoryButton
-        setShowModal={setShowCreateUpdateDesignDrawingModal}
+        setShowModal={setShowCreateUpdateDesignDrawingCategoryModal}
       />
     ),
     [],
@@ -85,14 +85,14 @@ export const useCreateUpdateDesignDrawingCategoryModal = ({
 
   return React.useMemo(
     () => ({
-      setShowCreateUpdateDesignDrawingModal,
+      setShowCreateUpdateDesignDrawingCategoryModal,
       CreateUpdateDesignDrawingCategoryModal:
         CreateUpdateDesignDrawingCategoryModalCallback,
       CreateDesignDrawingCategoryButton:
         CreateDesignDrawingCategoryButtonCallback,
     }),
     [
-      setShowCreateUpdateDesignDrawingModal,
+      setShowCreateUpdateDesignDrawingCategoryModal,
       CreateUpdateDesignDrawingCategoryModalCallback,
       CreateDesignDrawingCategoryButtonCallback,
     ],

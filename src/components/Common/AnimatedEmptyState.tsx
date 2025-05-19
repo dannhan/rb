@@ -1,22 +1,19 @@
 "use client";
 
-import { CSSProperties, PropsWithChildren, ReactNode } from "react";
+import { type ReactNode, type CSSProperties } from "react";
 
 import { cn } from "@/lib/utils/cn";
+import Cards from "./AnimatedEmptyStateCards";
 
-export default function AnimatedEmptyState({
-  title,
-  description,
-  cardContent,
-  addButton,
-  className,
-}: {
+type Props = {
   title: string;
   description: string;
-  cardContent: ReactNode | ((index: number) => ReactNode);
+  icon: ReactNode;
   addButton?: ReactNode;
   className?: string;
-}) {
+};
+const AnimatedEmptyState: React.FC<Props> = (props) => {
+  const { title, description, icon, addButton, className } = props;
   return (
     <div
       className={cn(
@@ -29,13 +26,7 @@ export default function AnimatedEmptyState({
           style={{ "--scroll": "-50%" } as CSSProperties}
           className="flex animate-infinite-scroll-y flex-col [animation-duration:10s]"
         >
-          {[...Array(6)].map((_, index) => (
-            <Card key={index}>
-              {typeof cardContent === "function"
-                ? cardContent(index % 3)
-                : cardContent}
-            </Card>
-          ))}
+          <Cards icon={icon} />
         </div>
       </div>
       <div className="max-w-sm text-pretty text-center">
@@ -47,12 +38,5 @@ export default function AnimatedEmptyState({
       <div className="flex items-center gap-2">{addButton}</div>
     </div>
   );
-}
-
-function Card({ children }: PropsWithChildren) {
-  return (
-    <div className="mt-4 flex items-center gap-3 rounded-lg border p-4 shadow-[0_4px_12px_0_#0000000D]">
-      {children}
-    </div>
-  );
-}
+};
+export default AnimatedEmptyState;

@@ -7,7 +7,8 @@ import type { WithId, DesignDrawingCategory } from "@/types";
 type Action =
   | { type: "create"; payload: WithId<DesignDrawingCategory> }
   | { type: "update"; payload: WithId<DesignDrawingCategory> }
-  | { type: "delete"; payload: string };
+  | { type: "delete"; payload: string }
+  | { type: "delete-image"; payload: { id: string; imageURL: string } };
 
 const designDrawingCategoriesReducer = (
   state: WithId<DesignDrawingCategory>[],
@@ -15,16 +16,23 @@ const designDrawingCategoriesReducer = (
 ) => {
   switch (type) {
     case "create":
-      return [...state, payload];
+      return [payload, ...state];
     case "update":
-      return state.map((designDrawingCategory) =>
-        designDrawingCategory.id === payload.id
-          ? payload
-          : designDrawingCategory,
+      return state.map((category) =>
+        category.id === payload.id ? payload : category,
       );
     case "delete":
-      return state.filter(
-        (designDrawingCategory) => designDrawingCategory.id !== payload,
+      return state.filter((category) => category.id !== payload);
+    case "delete-image":
+      return state.map((category) =>
+        category.id === payload.id
+          ? {
+              ...category,
+              imageURLs:
+                category.imageURLs?.filter((url) => url !== payload.imageURL) ??
+                [],
+            }
+          : category,
       );
     default:
       return state;
@@ -32,7 +40,7 @@ const designDrawingCategoriesReducer = (
 };
 
 type DesignDrawingsContext = {
-  designDrawingCategories: WithId<DesignDrawingCategory>[];
+  categories: WithId<DesignDrawingCategory>[];
   dispatch: React.Dispatch<Action>;
 };
 
@@ -45,15 +53,13 @@ type Props = React.PropsWithChildren<{
 }>;
 export const DesignDrawingsProvider: React.FC<Props> = (props) => {
   const { children, initialDesignDrawingCategories } = props;
-  const [designDrawingCategories, dispatch] = React.useReducer(
+  const [categories, dispatch] = React.useReducer(
     designDrawingCategoriesReducer,
     initialDesignDrawingCategories,
   );
 
   return (
-    <DesignDrawingsContext.Provider
-      value={{ designDrawingCategories, dispatch }}
-    >
+    <DesignDrawingsContext.Provider value={{ categories, dispatch }}>
       {children}
     </DesignDrawingsContext.Provider>
   );

@@ -28,9 +28,9 @@ const DesignDrawingImagesUploader: React.FC<Props> = ({ id, setShowModal }) => {
   const [files, setFiles] = React.useState<File[]>([]);
 
   const params = useParams() as { project: string };
-  const { designDrawingCategories, dispatch } = useDesignDrawingsContext();
+  const { categories, dispatch } = useDesignDrawingsContext();
 
-  const category = designDrawingCategories.find((c) => c.id === id);
+  const category = categories.find((c) => c.id === id);
   if (!category || !id) {
     toast.error("Error showing dialog.");
     return;
@@ -56,7 +56,7 @@ const DesignDrawingImagesUploader: React.FC<Props> = ({ id, setShowModal }) => {
         if (!result) return;
 
         const file = files.find((f) => f.name === result?.name);
-        imageURLs.push(file ? URL.createObjectURL(file) : result.url);
+        imageURLs.push(result.url);
       });
 
       if (imageURLs.length > 0) {
