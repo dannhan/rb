@@ -155,9 +155,9 @@ const ProgressTable: React.FC = () => {
     <div className="space-y-4 pb-16">
       <CreateUpdateProgressWeekModal />
       <div className="flex items-center gap-2">
-        <h2 className="hidden flex-1 text-xl font-semibold leading-none tracking-tight sm:block">
+        <h1 className="flex-1 text-xl font-semibold leading-7 md:text-2xl">
           Progress Proyek
-        </h2>
+        </h1>
         <CreateProgressWeekButton />
         <ProgressTablePrint className="ml-auto flex justify-end sm:ml-0" />
       </div>

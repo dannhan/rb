@@ -18,8 +18,8 @@ const DesignCategorySection: React.FC<Props> = ({ category }) => {
   return (
     <section className="border-t">
       <UploadDesignDrawingImagesModal />
-      <div className="p-4">
-        <div className="flex justify-between gap-1 pb-2">
+      <div className="py-4 lg:px-4">
+        <div className="flex justify-between gap-1 pb-2 items-center">
           <h1 className="text-lg font-medium md:text-xl">{category.title}</h1>
           <UploadDesignDrawingImagesButton />
           <DesignCategoryActions

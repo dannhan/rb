@@ -7,6 +7,7 @@ import { parseCollection } from "@/lib/utils/parse-collection";
 import { RoleProvider } from "@/components/Providers/UserRoleProvider";
 import { ProgressItemsProvider } from "@/components/Providers/ProgressItemsProvider";
 import { ProgressWeeksProvider } from "@/components/Providers/ProgressWeeksProvider";
+import PageContent from "@/components/Layouts/PageContent";
 import ProgressTable from "@/components/Tables/ProgressTable/ProgressTable";
 
 type Props = { params: Promise<{ project: string }> };

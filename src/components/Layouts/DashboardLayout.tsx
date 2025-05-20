@@ -48,7 +48,7 @@ const DashboardLayout: React.FC<Props> = ({ children, projectTitle }) => {
           </Breadcrumb>
           <ThemeToggle className="ml-auto hidden md:flex" />
         </Header>
-        <main className="flex-1 overflow-auto p-3 md:p-4">
+        <main className="flex-1 overflow-auto p-3 sm:px-4 md:p-4 lg:px-10">
           <MaxWidthWrapper>{children}</MaxWidthWrapper>
         </main>
       </div>

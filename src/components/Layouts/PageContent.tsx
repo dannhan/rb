@@ -21,7 +21,7 @@ const PageContent: React.FC<Props> = ({
           <div>
             {hasTitle && (
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-semibold leading-7 text-neutral-900 md:text-2xl">
+                <h1 className="text-xl font-semibold leading-7 md:text-2xl">
                   {title}
                 </h1>
               </div>
