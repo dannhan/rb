@@ -4,10 +4,11 @@
 import { useState } from "react";
 import { geistMono } from "@/styles/fonts";
 
+import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 import {
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
+  type ColumnFiltersState,
+  type SortingState,
+  type VisibilityState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
@@ -17,19 +18,16 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { XIcon } from "lucide-react";
 
 import type { ColumnDef } from "@tanstack/react-table";
 import type { WithId, TeamMember } from "@/types";
 
-import { teamTableConfig } from "@/config/table";
 import { cn } from "@/lib/utils/cn";
 import { useRoleContext } from "@/components/Providers/UserRoleProvider";
 import { useTeamContext } from "@/components/Providers/TeamProvider";
 import { useCreateUpdateTeamModal } from "@/components/Dialogs/CreateUpdateTeamDialog";
 import { useUploadTeamAttachmentModal } from "@/components/Dialogs/UploadTeamAttachmentDialog";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -38,31 +36,38 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DebouncedInput } from "@/components/debounced-input";
 import TablePagination from "@/components/Tables/TablePagination";
 import TableColumnHeader from "@/components/Tables/TableColumnHeader";
-import TableFacetedFilter from "@/components/Tables/TableFacetedFilter";
-import TableViewOptions from "@/components/Tables/TableViewOptions";
-import TeamTableRow from "./TeamTableRow";
-import TeamTablePrint from "./TeamTablePrint";
 import TeamTableStatusColumn from "./TeamTableStatusColumn";
+import TeamTableRow from "./TeamTableRow";
 import TeamTableActionColumn from "./TeamTableActionColumn";
 import TeamTableAttachmentColumn from "./TeamTableAttachmentColumn";
 
-const TeamTable: React.FC = () => {
+const TeamTableContent: React.FC = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState<string>("");
   const [sorting, setSorting] = useState<SortingState>([]);
+
+  const [globalFilter] = useQueryState("search");
+
+  const [selectedStatus] = useQueryState("status", {
+    ...parseAsArrayOf(parseAsString),
+  });
+  const columnFilters: ColumnFiltersState = [
+    ...(selectedStatus ? [{ id: "status", value: selectedStatus }] : []),
+  ];
+
+  const [hiddenColumns] = useQueryState("hide", {
+    ...parseAsArrayOf(parseAsString),
+    defaultValue: [],
+  });
+  const columnVisibility: VisibilityState = Object.fromEntries(
+    hiddenColumns.map((key) => [key, false]),
+  );
 
   const { admin } = useRoleContext();
   const { team } = useTeamContext();
-  const {
-    setShowCreateUpdateTeamModal,
-    CreateUpdateTeamModal,
-    CreateTeamButton,
-  } = useCreateUpdateTeamModal({ id: selectedId, setSelectedId });
+  const { setShowCreateUpdateTeamModal, CreateUpdateTeamModal } =
+    useCreateUpdateTeamModal({ id: selectedId, setSelectedId });
   const { setShowUploadTeamAttachmentModal, UploadTeamAttachmentModal } =
     useUploadTeamAttachmentModal({ id: selectedId, setSelectedId });
 
@@ -182,9 +187,6 @@ const TeamTable: React.FC = () => {
     ],
     state: { sorting, columnVisibility, columnFilters, globalFilter },
     onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -194,104 +196,70 @@ const TeamTable: React.FC = () => {
     autoResetPageIndex: false,
   });
 
-  const isFiltered = table.getState().columnFilters.length > 0;
-
   return (
-    <div className="space-y-4 pb-16">
+    <div className="rounded-md border">
       <CreateUpdateTeamModal />
       <UploadTeamAttachmentModal />
-      <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
-        <div className="flex w-full flex-1 items-center space-x-2 sm:max-w-[500px]">
-          <DebouncedInput
-            debounce={200}
-            placeholder="Search"
-            value={table.getState().globalFilter}
-            onChange={(value) => table.setGlobalFilter(String(value))}
-            className="flex-1 sm:max-w-[150px] sm:flex-initial lg:max-w-[225px]"
-          />
-          <TableFacetedFilter
-            column={table.getColumn("status")}
-            title="Status"
-            options={teamTableConfig.statuses}
-          />
-          {isFiltered && (
-            <Button
-              variant="ghost"
-              onClick={() => table.resetColumnFilters()}
-              className="hidden h-8 px-2 lg:flex lg:px-3"
-            >
-              Reset
-              <XIcon className="ml-2 h-4 w-4" />
-            </Button>
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id} className="h-[50px]">
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className={header.column.columnDef.meta?.headerClassName}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            <>
+              {table.getRowModel().rows.map((row) => (
+                <TeamTableRow
+                  key={row.id}
+                  row={row}
+                  visibleRowLength={row.getVisibleCells().length}
+                  onSelect={(id) => {
+                    setSelectedId(id);
+                    setShowCreateUpdateTeamModal(true);
+                  }}
+                />
+              ))}
+              {[
+                ...Array(
+                  table.getState().pagination.pageSize -
+                    table.getRowModel().rows.length,
+                ),
+              ].map((_, i) => (
+                <tr key={i} className="h-[50px]"></tr>
+              ))}
+            </>
+          ) : (
+            <TableRow>
+              <TableCell className="h-96 text-center text-lg" colSpan={6}>
+                No data found.
+              </TableCell>
+            </TableRow>
           )}
-        </div>
-        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-fit">
-          <CreateTeamButton />
-          <TeamTablePrint />
-          <TableViewOptions table={table} />
-        </div>
-      </div>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="h-[50px]">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      className={header.column.columnDef.meta?.headerClassName}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              <>
-                {table.getRowModel().rows.map((row) => (
-                  <TeamTableRow
-                    key={row.id}
-                    row={row}
-                    onSelect={(id) => {
-                      setSelectedId(id);
-                      setShowCreateUpdateTeamModal(true);
-                    }}
-                  />
-                ))}
-                {[
-                  ...Array(
-                    table.getState().pagination.pageSize -
-                      table.getRowModel().rows.length,
-                  ),
-                ].map((_, i) => (
-                  <tr key={i} className="h-[50px]"></tr>
-                ))}
-              </>
-            ) : (
-              <TableRow>
-                <TableCell className="h-96 text-center text-lg" colSpan={6}>
-                  No data found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        <div className="sticky -bottom-4 z-50 border-t bg-background p-3">
-          <TablePagination table={table} />
-        </div>
+        </TableBody>
+      </Table>
+      <div className="sticky -bottom-4 z-20 rounded-b-md border-t bg-background p-3">
+        <TablePagination table={table} />
       </div>
     </div>
   );
 };
 
-export default TeamTable;
+export default TeamTableContent;

@@ -9,6 +9,7 @@ import { TableRow, TableCell } from "@/components/ui/table";
 
 const TeamTableRow: React.FC<{
   row: Row<WithId<TeamMember>>;
+  visibleRowLength?: number;
   onSelect: (id: string) => void;
 }> = React.memo(
   ({ row, onSelect }) => {
@@ -18,7 +19,6 @@ const TeamTableRow: React.FC<{
           if (isClickOnInteractiveChild(e)) return;
           onSelect(row.original.id);
         }}
-        key={row.id}
         className="group/row cursor-pointer select-none"
       >
         {row.getVisibleCells().map((cell) => (
@@ -37,7 +37,11 @@ const TeamTableRow: React.FC<{
   },
   (prevProps, nextProps) => {
     // Only re-render if the row id or data changes
-    return prevProps.row.original === nextProps.row.original;
+    // return prevProps.row.original === nextProps.row.original;
+    return (
+      prevProps.row.original === nextProps.row.original &&
+      prevProps.visibleRowLength === nextProps.visibleRowLength
+    );
   },
 );
 TeamTableRow.displayName = "TeamTableRow";

@@ -53,7 +53,7 @@ export const useCreateUpdateIdentityModal = ({
   setSelectedId,
 }: {
   id: string | null;
-  setSelectedId: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedId?: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
   const [showCreateUpdateIdentityModal, setShowCreateUpdateIdentityModal] =
     useState(false);
@@ -64,7 +64,7 @@ export const useCreateUpdateIdentityModal = ({
         id={id}
         showModal={showCreateUpdateIdentityModal}
         setShowModal={(open) => {
-          setSelectedId(null);
+          setSelectedId?.(null);
           setShowCreateUpdateIdentityModal(open);
         }}
       />

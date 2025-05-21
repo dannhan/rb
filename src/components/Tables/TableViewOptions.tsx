@@ -1,8 +1,8 @@
 "use client";
 
-import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { useQueryState, parseAsArrayOf, parseAsString } from "nuqs";
+
 import { SlidersHorizontalIcon } from "lucide-react";
-import { Table } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,45 +11,53 @@ import {
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-interface TableViewOptionsProps<TData> {
-  table: Table<TData>;
+interface Props {
+  columnNames: string[];
 }
 
-const TableViewOptions = <TData,>({ table }: TableViewOptionsProps<TData>) => (
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button variant="outline">
-        <SlidersHorizontalIcon className="mr-2 size-4 sm:mr-0" />
-        <span className="sm:hidden">Toggle</span>
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end" className="w-[150px]">
-      <DropdownMenuLabel className="hidden sm:block">
-        Toggle columns
-      </DropdownMenuLabel>
-      <DropdownMenuSeparator className="hidden sm:block" />
-      {table
-        .getAllColumns()
-        .filter(
-          (column) =>
-            typeof column.accessorFn !== "undefined" && column.getCanHide(),
-        )
-        .map((column) => {
+const TableViewOptions: React.FC<Props> = ({ columnNames }) => {
+  const [hiddenColumns, setHiddenColumns] = useQueryState("hide", {
+    ...parseAsArrayOf(parseAsString),
+    defaultValue: [],
+  });
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline">
+          <SlidersHorizontalIcon className="mr-2 size-4 sm:mr-0" />
+          <span className="sm:hidden">Toggle</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-[150px]">
+        <DropdownMenuLabel className="hidden sm:block">
+          Toggle columns
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator className="hidden sm:block" />
+        {columnNames.map((columnName) => {
+          const lowerCasedColumnName = columnName.toLowerCase();
           return (
             <DropdownMenuCheckboxItem
-              key={column.id}
-              className="capitalize"
-              checked={column.getIsVisible()}
-              onCheckedChange={(value) => column.toggleVisibility(!!value)}
+              key={lowerCasedColumnName}
+              checked={!hiddenColumns.includes(lowerCasedColumnName)}
+              onCheckedChange={(checked) =>
+                setHiddenColumns((prev) =>
+                  checked
+                    ? prev.filter((col) => col !== lowerCasedColumnName)
+                    : [...prev, lowerCasedColumnName],
+                )
+              }
             >
-              {column.id}
+              {columnName}
             </DropdownMenuCheckboxItem>
           );
         })}
-    </DropdownMenuContent>
-  </DropdownMenu>
-);
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 export default TableViewOptions;

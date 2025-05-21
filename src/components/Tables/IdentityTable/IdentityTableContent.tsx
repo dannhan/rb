@@ -9,6 +9,8 @@ import {
   getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useQueryState } from "nuqs";
+import { InfoIcon } from "lucide-react";
 
 import type { ColumnDef, Row } from "@tanstack/react-table";
 import type { Identity, WithId } from "@/types";
@@ -27,13 +29,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DebouncedInput } from "@/components/debounced-input";
-import IdentityTablePrint from "./IdentityTablePrint";
+import AnimatedEmptyState from "@/components/Common/AnimatedEmptyState";
 import IdentityTableActionColumn from "./IdentityTableActionColumn";
 
-const IdentityTable: React.FC = () => {
+const IdentityTableContent: React.FC = () => {
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
-  const [globalFilter, setGlobalFilter] = React.useState<string>("");
+  const [search, setSearch] = useQueryState("search", { defaultValue: "" });
+  const isFiltered = React.useMemo(() => !!search.length, [search]);
+
   const { admin } = useRoleContext();
   const { identities: data } = useIdentitiesContext();
   const {
@@ -95,74 +98,69 @@ const IdentityTable: React.FC = () => {
           ] as ColumnDef<WithId<Identity>>[])
         : []),
     ],
-    state: { globalFilter },
-    onGlobalFilterChange: setGlobalFilter,
+    state: { globalFilter: search },
+    onGlobalFilterChange: setSearch,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     globalFilterFn: "includesString",
   });
 
   return (
-    <div className="space-y-4 pb-16">
+    <div className="rounded-md border shadow-sm">
       <CreateUpdateIdentityModal />
-      <div className="flex items-center gap-2">
-        <DebouncedInput
-          debounce={200}
-          placeholder="Search"
-          value={table.getState().globalFilter}
-          onChange={(value) => table.setGlobalFilter(String(value))}
-          className="mr-auto flex-1 sm:max-w-[250px] sm:flex-initial lg:max-w-[400px]"
-        />
-        <CreateIdentityButton />
-        <IdentityTablePrint />
-      </div>
-      <div className="rounded-md border shadow-sm">
-        <Table>
-          <TableHeader className="sr-only">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <IdentityTableRow
-                  key={row.id}
-                  row={row}
-                  onSelect={(id) => {
-                    setSelectedId(id);
-                    setShowCreateUpdateIdentityModal(true);
-                  }}
+      <Table>
+        <TableHeader className="sr-only">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id} colSpan={header.colSpan}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <IdentityTableRow
+                key={row.id}
+                row={row}
+                onSelect={(id) => {
+                  setSelectedId(id);
+                  setShowCreateUpdateIdentityModal(true);
+                }}
+              />
+            ))
+          ) : (
+            <TableRow>
+              <TableCell className="h-96 p-0 text-center text-lg">
+                <AnimatedEmptyState
+                  className="border-none"
+                  title={`No ${isFiltered ? "matching data" : "data found"}`}
+                  description={`No data ${isFiltered ? `match “${search}”.` : "have been created for this project yet."}`}
+                  icon={<InfoIcon className="size-4 text-muted-foreground" />}
+                  {...(!isFiltered && {
+                    addButton: <CreateIdentityButton />,
+                  })}
                 />
-              ))
-            ) : (
-              <TableRow>
-                <TableCell className="h-96 text-center text-lg">
-                  No data found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
 };
 
-export default IdentityTable;
+export default IdentityTableContent;
 
 const IdentityTableRow: React.FC<{
   row: Row<WithId<Identity>>;

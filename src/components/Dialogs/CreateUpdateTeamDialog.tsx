@@ -53,7 +53,7 @@ export const useCreateUpdateTeamModal = ({
   setSelectedId,
 }: {
   id: string | null;
-  setSelectedId: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedId?: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
   const [showCreateUpdateTeamModal, setShowCreateUpdateTeamModal] =
     useState(false);
@@ -64,7 +64,7 @@ export const useCreateUpdateTeamModal = ({
         id={id}
         showModal={showCreateUpdateTeamModal}
         setShowModal={(open) => {
-          setSelectedId(null);
+          setSelectedId?.(null);
           setShowCreateUpdateTeamModal(open);
         }}
       />

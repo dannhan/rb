@@ -7,7 +7,7 @@ import { projectRef } from "@/lib/firebase/utils";
 import { RoleProvider } from "@/components/Providers/UserRoleProvider";
 import { IdentitiesProvider } from "@/components/Providers/IdentityProvider";
 import PageContent from "@/components/Layouts/PageContent";
-import IdentityTable from "@/components/Tables/IdentityTable/IdentityTable";
+import IdentityTable from "@/components/Tables/IdentityTable";
 
 type Props = { params: Promise<{ project: string }> };
 export default async function Page(props: Props) {

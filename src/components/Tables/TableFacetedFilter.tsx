@@ -1,6 +1,8 @@
 import * as React from "react";
+
+import type { Column } from "@tanstack/react-table";
+import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
 import { CheckIcon, CirclePlusIcon } from "lucide-react";
-import { Column } from "@tanstack/react-table";
 
 import { cn } from "@/lib/utils/cn";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import Icons from "@/components/Common/Icons";
 
 interface TableFacetedFilterProps<TData, TValue> {
+  colName: string;
   column?: Column<TData, TValue>;
   title?: string;
   options: {
@@ -33,12 +36,17 @@ interface TableFacetedFilterProps<TData, TValue> {
 }
 
 const TableFacetedFilter = <TData, TValue>({
+  colName,
   column,
   title,
   options,
 }: TableFacetedFilterProps<TData, TValue>) => {
+  const [rawSelectedValues, setRawSelectedValue] = useQueryState(
+    colName,
+    parseAsArrayOf(parseAsString),
+  );
   const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(column?.getFilterValue() as string[]);
+  const selectedValues = new Set(rawSelectedValues);
 
   return (
     <Popover>
@@ -81,7 +89,7 @@ const TableFacetedFilter = <TData, TValue>({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" align="end">
+      <PopoverContent className="w-[200px] p-0" align="start">
         <Command>
           <CommandInput placeholder={title} />
           <CommandList>
@@ -102,6 +110,9 @@ const TableFacetedFilter = <TData, TValue>({
                       const filterValues = Array.from(selectedValues);
                       column?.setFilterValue(
                         filterValues.length ? filterValues : undefined,
+                      );
+                      setRawSelectedValue(
+                        filterValues.length ? filterValues : null,
                       );
                     }}
                   >
@@ -133,7 +144,10 @@ const TableFacetedFilter = <TData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={() => column?.setFilterValue(undefined)}
+                    onSelect={() => {
+                      column?.setFilterValue(undefined);
+                      setRawSelectedValue(null);
+                    }}
                     className="justify-center text-center"
                   >
                     Clear filters

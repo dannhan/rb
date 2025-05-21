@@ -8,7 +8,7 @@ import { teamMemberSchema } from "@/config/dataSchema";
 import { RoleProvider } from "@/components/Providers/UserRoleProvider";
 import { TeamProvider } from "@/components/Providers/TeamProvider";
 import PageContent from "@/components/Layouts/PageContent";
-import TeamTable from "@/components/Tables/TeamTable/TeamTable";
+import TeamTable from "@/components/Tables/TeamTable";
 
 type Props = { params: Promise<{ project: string }> };
 export default async function Page(props: Props) {
