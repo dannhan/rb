@@ -4,9 +4,7 @@ import { ReactNode } from "react";
 type Props = { className?: string; children: ReactNode };
 const MaxWidthWrapper: React.FC<Props> = ({ className, children }) => {
   return (
-    <div
-      className={cn("mx-auto w-full max-w-screen-xl", className)}
-    >
+    <div className={cn("mx-auto w-full max-w-screen-xl lg:px-10", className)}>
       {children}
     </div>
   );
