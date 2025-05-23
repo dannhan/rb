@@ -18,7 +18,7 @@ const BaseLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
           enableSystem
           disableTransitionOnChange
         >
-          <NextTopLoader color="#a1a1aa" showSpinner={false} />
+          <NextTopLoader color="#a1a1aa" showSpinner={false} height={2} />
           {children}
           <Toaster richColors closeButton visibleToasts={3} duration={3000} />
           <TailwindIndicator />
