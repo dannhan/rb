@@ -1,7 +1,7 @@
 "use client";
 "use no memo";
 
-import { useState } from "react";
+import * as React from "react";
 import { geistMono } from "@/styles/fonts";
 
 import { parseAsArrayOf, parseAsString, useQueryState } from "nuqs";
@@ -18,6 +18,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { UserIcon } from "lucide-react";
 
 import type { ColumnDef } from "@tanstack/react-table";
 import type { WithId, TeamMember } from "@/types";
@@ -36,6 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import AnimatedEmptyState from "@/components/Common/AnimatedEmptyState";
 import TablePagination from "@/components/Tables/TablePagination";
 import TableColumnHeader from "@/components/Tables/TableColumnHeader";
 import TeamTableStatusColumn from "./TeamTableStatusColumn";
@@ -44,8 +46,8 @@ import TeamTableActionColumn from "./TeamTableActionColumn";
 import TeamTableAttachmentColumn from "./TeamTableAttachmentColumn";
 
 const TeamTableContent: React.FC = () => {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const [globalFilter] = useQueryState("search");
 
@@ -55,6 +57,10 @@ const TeamTableContent: React.FC = () => {
   const columnFilters: ColumnFiltersState = [
     ...(selectedStatus ? [{ id: "status", value: selectedStatus }] : []),
   ];
+  const isFiltered = React.useMemo(
+    () => !!globalFilter || (selectedStatus?.length ?? 0) > 0,
+    [globalFilter, selectedStatus],
+  );
 
   const [hiddenColumns] = useQueryState("hide", {
     ...parseAsArrayOf(parseAsString),
@@ -66,8 +72,11 @@ const TeamTableContent: React.FC = () => {
 
   const { admin } = useRoleContext();
   const { team } = useTeamContext();
-  const { setShowCreateUpdateTeamModal, CreateUpdateTeamModal } =
-    useCreateUpdateTeamModal({ id: selectedId, setSelectedId });
+  const {
+    setShowCreateUpdateTeamModal,
+    CreateUpdateTeamModal,
+    CreateTeamButton,
+  } = useCreateUpdateTeamModal({ id: selectedId, setSelectedId });
   const { setShowUploadTeamAttachmentModal, UploadTeamAttachmentModal } =
     useUploadTeamAttachmentModal({ id: selectedId, setSelectedId });
 
@@ -196,12 +205,14 @@ const TeamTableContent: React.FC = () => {
     autoResetPageIndex: false,
   });
 
+  const isEmpty = !table.getRowModel().rows?.length;
+
   return (
     <div className="rounded-md border">
       <CreateUpdateTeamModal />
       <UploadTeamAttachmentModal />
       <Table>
-        <TableHeader>
+        <TableHeader className={cn(isEmpty && "hidden")}>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="h-[50px]">
               {headerGroup.headers.map((header) => {
@@ -248,14 +259,31 @@ const TeamTableContent: React.FC = () => {
             </>
           ) : (
             <TableRow>
-              <TableCell className="h-96 text-center text-lg" colSpan={6}>
-                No data found.
+              <TableCell className="h-96 p-0 text-center text-lg" colSpan={6}>
+                <AnimatedEmptyState
+                  className="border-none"
+                  title={`No ${isFiltered ? "data found" : "data yet"}.`}
+                  description={
+                    isFiltered
+                      ? "There are no data that match your filters. Adjust your filters to yield more results."
+                      : "No data have been created for this project yet."
+                  }
+                  icon={<UserIcon className="size-4 text-muted-foreground" />}
+                  {...(!isFiltered && {
+                    addButton: <CreateTeamButton />,
+                  })}
+                />
               </TableCell>
             </TableRow>
           )}
         </TableBody>
       </Table>
-      <div className="sticky -bottom-4 z-20 rounded-b-md border-t bg-background p-3">
+      <div
+        className={cn(
+          "sticky -bottom-4 z-20 rounded-b-md border-t bg-background p-3",
+          isEmpty && "hidden",
+        )}
+      >
         <TablePagination table={table} />
       </div>
     </div>

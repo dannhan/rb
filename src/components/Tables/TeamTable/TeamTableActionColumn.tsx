@@ -5,7 +5,7 @@ import TableActionColumn from "@/components/Tables/TableActionColumn";
 
 const TeamTableActionColumn: React.FC<{
   id: string;
-  fileKeys?: string[] ;
+  fileKeys?: string[];
   onEdit: () => void;
 }> = ({ id, fileKeys, onEdit }) => {
   const { setShowDeleteTeamModal, DeleteTeamModal } = useDeleteTeamModal({
