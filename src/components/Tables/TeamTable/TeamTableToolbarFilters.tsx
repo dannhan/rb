@@ -33,12 +33,7 @@ const TeamTableToolbarFilters: React.FC = () => {
       {isFiltered && (
         <Button
           variant="ghost"
-          onClick={() =>
-            setFilters({
-              search: null,
-              status: null,
-            })
-          }
+          onClick={() => setFilters({ search: null, status: null })}
           className="hidden h-8 px-2 lg:flex lg:px-3"
         >
           Reset
