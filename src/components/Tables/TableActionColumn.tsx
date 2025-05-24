@@ -25,7 +25,7 @@ const TableActionColumn: React.FC<Props> = ({ items }) => {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="flex h-10 w-14 p-0 data-[state=open]:bg-muted"
+          className="flex h-10 w-14 p-0 hover:bg-muted data-[state=open]:bg-muted"
         >
           <EllipsisIcon className="h-4 w-4" />
           <span className="sr-only">Open menu</span>
