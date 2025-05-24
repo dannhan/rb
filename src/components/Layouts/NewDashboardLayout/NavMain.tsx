@@ -33,7 +33,7 @@ const SidebarLink = React.memo(
           asChild
           isActive={isActive}
         >
-          <Link href={item.href}>
+          <Link href={item.href} scroll={true}>
             <Icon />
             {item.title}
           </Link>

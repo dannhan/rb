@@ -5,6 +5,9 @@ import { useProjectImagesContext } from "@/components/Providers/ProjectImagesPro
 
 const ImagesBlock = () => {
   const { projectImages } = useProjectImagesContext();
+
+  if (projectImages.length === 0) return;
+
   return (
     <div className="flex flex-col gap-4 pb-4">
       {projectImages.map(({ key, url }) => (
@@ -12,7 +15,7 @@ const ImagesBlock = () => {
           <Image
             src={url}
             alt="gambar-desain"
-            className="mx-auto object-contain max-h-[720px]"
+            className="mx-auto max-h-[720px] object-contain"
             width={1200}
             height={720}
           />

@@ -20,7 +20,7 @@ const PageContent: React.FC<Props> = ({
         {(hasTitle || hasDescription) && (
           <div>
             {hasTitle && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 py-2">
                 <h1 className="text-xl font-semibold leading-7 md:text-2xl">
                   {title}
                 </h1>
