@@ -4,7 +4,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { projectSchema } from "@/config/dataSchema";
 import { projectRef } from "@/lib/firebase/utils";
 
-import DashboardLayout from "@/components/Layouts/DashboardLayout";
+import NewDashboardLayout from "@/components/Layouts/NewDashboardLayout";
 
 type Props = React.PropsWithChildren<{ params: Promise<{ project: string }> }>;
 export default async function Layout(props: Props) {
@@ -16,9 +16,9 @@ export default async function Layout(props: Props) {
 
   return (
     <NuqsAdapter>
-      <DashboardLayout projectTitle={data.title}>
+      <NewDashboardLayout projectTitle={data.title}>
         {props.children}
-      </DashboardLayout>
+      </NewDashboardLayout>
     </NuqsAdapter>
   );
 }

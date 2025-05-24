@@ -18,11 +18,11 @@ const Logo: React.FC<Props> = ({ className }) => {
         src="/images/logo.png"
         alt="logo ria busana"
         className="object-contain"
-        width={32}
-        height={30}
+        width={28}
+        height={28}
       />
       <h1
-        className="hidden font-black uppercase text-[#004481] min-[300px]:block sm:text-xl"
+        className="hidden font-black uppercase text-[#004481] dark:text-foreground min-[300px]:block sm:text-xl"
         style={cabin.style}
       >
         Ria Busana

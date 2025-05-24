@@ -14,7 +14,7 @@ const SidebarLink = React.memo(
         prefetch={true}
         href={item.href}
         data-state={active ? "active" : "inactive"}
-        className="flex items-center gap-2.5 rounded-md p-2 text-sm font-[455] leading-none text-muted-foreground outline-none transition-[color,font-weight] hover:text-primary focus-visible:ring-2 focus-visible:ring-black/50 data-[state=active]:bg-muted data-[state=active]:text-primary"
+        className="flex items-center gap-2.5 rounded-md py-2 px-3 text-sm font-[455] leading-none text-muted-foreground outline-none transition-[color,font-weight] hover:bg-muted/80 focus-visible:ring-2 focus-visible:ring-black/50 data-[state=active]:bg-primary/5 data-[state=active]:text-primary"
       >
         <Icon className="h-4 w-4" />
         {item.title}
