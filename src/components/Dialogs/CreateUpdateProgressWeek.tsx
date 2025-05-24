@@ -53,7 +53,7 @@ export const useCreateUpdateProgressWeekModal = ({
   setSelectedId,
 }: {
   id: string | null;
-  setSelectedId: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedId?: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
   const [
     showCreateUpdateProgressWeekModal,
@@ -66,7 +66,7 @@ export const useCreateUpdateProgressWeekModal = ({
         id={id}
         showModal={showCreateUpdateProgressWeekModal}
         setShowModal={(open) => {
-          setSelectedId(null);
+          setSelectedId?.(null);
           setShowCreateUpdateProgressWeekModal(open);
         }}
       />

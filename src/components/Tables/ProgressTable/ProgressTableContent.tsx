@@ -30,7 +30,6 @@ import {
 
 import EmptyState from "@/components/Common/EmptyState";
 import TablePagination from "@/components/Tables/TablePagination";
-import ProgressTablePrint from "./ProgressTablePrint";
 import progressTableConfig from "./progressTableConfig";
 import { Button } from "@/components/ui/button";
 
@@ -43,8 +42,13 @@ const ProgressTable: React.FC = () => {
   const { admin } = useRoleContext();
   const { weeks } = useProgressWeeksContext();
   const { items, shouldFocus } = useProgressItemsContext();
-  const { CreateUpdateProgressWeekModal, CreateProgressWeekButton } =
-    useCreateUpdateProgressWeekModal({ id: selectedId, setSelectedId });
+  const {
+    CreateUpdateProgressWeekModal,
+    setShowCreateUpdateProgressWeekModal,
+  } = useCreateUpdateProgressWeekModal({
+    id: selectedId,
+    setSelectedId,
+  });
 
   const table = useReactTable({
     data: items,
@@ -152,83 +156,74 @@ const ProgressTable: React.FC = () => {
   }, [items.length, shouldFocus, table]);
 
   return (
-    <div className="space-y-4 pb-16">
+    <div className="relative overflow-hidden rounded-lg border">
       <CreateUpdateProgressWeekModal />
-      <div className="flex items-center gap-2">
-        <h1 className="flex-1 text-xl font-semibold leading-7 md:text-2xl">
-          Progress Proyek
-        </h1>
-        <CreateProgressWeekButton />
-        <ProgressTablePrint className="ml-auto flex justify-end sm:ml-0" />
-      </div>
-      <div className="relative overflow-hidden rounded-lg border">
-        <Table className="w-full border-separate border-spacing-0">
-          <TableHeader className="bg-accent">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                {headerGroup.headers.map((header) => {
-                  const meta = header.column.columnDef.meta;
-                  return (
-                    <TableHead
-                      key={header.id}
-                      style={{
-                        minWidth: `${header.getSize()}px`,
-                        ...meta?.style,
-                      }}
-                      className={cn(
-                        "relative min-h-[52px] font-normal text-muted-foreground",
-                        meta?.headerClassName,
-                      )}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.original.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="group/row"
-              >
-                {row.getVisibleCells().map(({ id, column, getContext }) => (
-                  <TableCell
-                    key={id}
-                    style={column.columnDef.meta?.style}
+      <Table className="w-full border-separate border-spacing-0">
+        <TableHeader className="bg-accent">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id} className="hover:bg-transparent">
+              {headerGroup.headers.map((header) => {
+                const meta = header.column.columnDef.meta;
+                return (
+                  <TableHead
+                    key={header.id}
+                    style={{
+                      minWidth: `${header.getSize()}px`,
+                      ...meta?.style,
+                    }}
                     className={cn(
-                      "whitespace-nowrap border-t transition-colors group-hover/row:bg-accent dark:group-hover/row:bg-accent",
-                      column.columnDef.meta?.cellClassName,
+                      "relative min-h-[52px] font-normal text-muted-foreground",
+                      meta?.headerClassName,
                     )}
                   >
-                    {flexRender(column.columnDef.cell, getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        {!table.getRowModel().rows?.length && (
-          <div className="hover:bg-transparent">
-            <div className="flex h-96 items-center justify-center text-center text-lg">
-              <EmptyState
-                admin={admin}
-                className="w-full border-none bg-transparent shadow-none"
-                title="No data found."
-              />
-            </div>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows.map((row) => (
+            <TableRow
+              key={row.original.id}
+              data-state={row.getIsSelected() && "selected"}
+              className="group/row"
+            >
+              {row.getVisibleCells().map(({ id, column, getContext }) => (
+                <TableCell
+                  key={id}
+                  style={column.columnDef.meta?.style}
+                  className={cn(
+                    "whitespace-nowrap border-t transition-colors group-hover/row:bg-accent dark:group-hover/row:bg-accent",
+                    column.columnDef.meta?.cellClassName,
+                  )}
+                >
+                  {flexRender(column.columnDef.cell, getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      {!table.getRowModel().rows?.length && (
+        <div className="hover:bg-transparent">
+          <div className="flex h-96 items-center justify-center text-center text-lg">
+            <EmptyState
+              admin={admin}
+              className="w-full border-none bg-transparent shadow-none"
+              title="No data found."
+            />
           </div>
-        )}
-        <div className="sticky -bottom-4 z-50 border-t bg-background p-3">
-          <TablePagination table={table} />
         </div>
+      )}
+      <div className="sticky -bottom-4 z-50 border-t bg-background p-3">
+        <TablePagination table={table} />
       </div>
     </div>
   );

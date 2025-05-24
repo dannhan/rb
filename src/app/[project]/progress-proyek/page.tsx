@@ -8,7 +8,7 @@ import { RoleProvider } from "@/components/Providers/UserRoleProvider";
 import { ProgressItemsProvider } from "@/components/Providers/ProgressItemsProvider";
 import { ProgressWeeksProvider } from "@/components/Providers/ProgressWeeksProvider";
 import PageContent from "@/components/Layouts/PageContent";
-import ProgressTable from "@/components/Tables/ProgressTable/ProgressTable";
+import ProgressTable from "@/components/Tables/ProgressTable";
 
 type Props = { params: Promise<{ project: string }> };
 export default async function Page(props: Props) {
@@ -26,7 +26,9 @@ export default async function Page(props: Props) {
     <RoleProvider role={(await auth())?.user.role}>
       <ProgressWeeksProvider initialWeeks={weeks}>
         <ProgressItemsProvider initialItems={items}>
-          <ProgressTable />
+          <PageContent title="Progress Proyek">
+            <ProgressTable />
+          </PageContent>
         </ProgressItemsProvider>
       </ProgressWeeksProvider>
     </RoleProvider>

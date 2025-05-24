@@ -34,7 +34,7 @@ const ProgressTablePrint: React.FC<Props> = ({ className }) => {
         Print
       </Button>
       <div ref={contentRef} className="m-10 hidden print:block">
-        <DocumentHeader title="PROGRESS REPORT" />
+        <DocumentHeader title="PROGRESS PROYEK" />
         <Table className="border-collapse border border-black">
           <thead>
             <tr className="border border-black bg-yellow-300 text-black">
